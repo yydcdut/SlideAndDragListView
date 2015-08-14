@@ -24,7 +24,7 @@ import java.util.List;
  * Created by yuyidong on 15/8/1.
  */
 public class SlideAndDragListView<T> extends ListView implements Handler.Callback, View.OnDragListener,
-        EditAdapter.OnButtonClickListener {
+        EditAdapter.OnButtonClickListener, AdapterView.OnItemClickListener {
     /* Handler 的 Message 信息 */
     private static final int MSG_WHAT_LONG_CLICK = 1;
     /* 时间 */
@@ -56,7 +56,9 @@ public class SlideAndDragListView<T> extends ListView implements Handler.Callbac
     /* X方向滑动了多少 */
     private int mXScrollDistance;
     /* 监听器 */
-    private OnItemLongClickListener mLongClickListener;
+    private OnListItemLongClickListener mOnListItemLongClickListener;
+    private OnListItemClickListener mOnListItemClickListener;
+
     /* 那两个button的长度 */
     private int mBGWidth = (int) getContext().getResources().getDimension(R.dimen.slv_item_bg_width) * 2;//因为有2个
 
@@ -108,10 +110,10 @@ public class SlideAndDragListView<T> extends ListView implements Handler.Callbac
                     //找到那个位置的view
                     View view = getChildAt(mSlideTargetPosition - getFirstVisiblePosition());
                     //如果设置了监听器的话，就触发
-                    if (mLongClickListener != null) {
+                    if (mOnListItemLongClickListener != null) {
                         scrollBack();
                         mVibrator.vibrate(100);
-                        mLongClickListener.onItemLongClick(view, position);
+                        mOnListItemLongClickListener.onListItemLongClick(view, position);
                     }
                     mCurrentPosition = position;
                     mBeforeCurrentPosition = position;
@@ -131,10 +133,13 @@ public class SlideAndDragListView<T> extends ListView implements Handler.Callbac
         return true;
     }
 
+    private boolean mIsScrolling = false;
+
     @Override
     public void computeScroll() {
         //滑动到指定位置
         if (mScroller.computeScrollOffset()) {
+            mIsScrolling = true;
             if (mSlideTargetView != null) {
                 mSlideTargetView.scrollTo(mScroller.getCurrX(), mScroller.getCurrY());
                 postInvalidate();
@@ -142,6 +147,8 @@ public class SlideAndDragListView<T> extends ListView implements Handler.Callbac
                     mSlideTargetView = null;
                 }
             }
+        } else {
+            mIsScrolling = false;
         }
         super.computeScroll();
     }
@@ -180,6 +187,9 @@ public class SlideAndDragListView<T> extends ListView implements Handler.Callbac
     public boolean onTouchEvent(MotionEvent ev) {
         switch (ev.getAction()) {
             case MotionEvent.ACTION_DOWN:
+                if (mIsScrolling) {//scroll正在滑动的话就不要做其他处理了
+                    return super.onTouchEvent(ev);
+                }
                 //获取出坐标来
                 mXDown = (int) ev.getX();
                 mYDown = (int) ev.getY();
@@ -206,6 +216,9 @@ public class SlideAndDragListView<T> extends ListView implements Handler.Callbac
                 mState = STATE_DOWN;
                 break;
             case MotionEvent.ACTION_MOVE:
+                if (mIsScrolling) {//scroll正在滑动的话就不要做其他处理了
+                    return super.onTouchEvent(ev);
+                }
                 if (fingerNotMove(ev)) {//手指的范围在50以内
                     if (mState != STATE_SCROLL && mState != STATE_LONG_CLICK_FINISH) {//状态不为滑动状态且不为已经触发完成
                         sendLongClickMessage();
@@ -234,6 +247,9 @@ public class SlideAndDragListView<T> extends ListView implements Handler.Callbac
                 break;
             case MotionEvent.ACTION_UP:
             case MotionEvent.ACTION_CANCEL:
+                if (mIsScrolling) {//scroll正在滑动的话就不要做其他处理了
+                    return super.onTouchEvent(ev);
+                }
                 if (mSlideTargetView != null) {
                     //如果滑出的话，那么就滑到固定位置(只要滑出了 mBGWidth / 2 ，就算滑出去了)
                     if (Math.abs(mSlideTargetView.getScrollX()) > mBGWidth / 2) {
@@ -242,11 +258,10 @@ public class SlideAndDragListView<T> extends ListView implements Handler.Callbac
                         }
                         //滑出
                         int delta = 0;
+                        delta = mBGWidth - Math.abs(mSlideTargetView.getScrollX());
                         if (Math.abs(mSlideTargetView.getScrollX()) < mBGWidth) {
-                            delta = mBGWidth - Math.abs(mSlideTargetView.getScrollX());
                             mScroller.startScroll(mSlideTargetView.getScrollX(), 0, -delta, 0, SCROLL_QUICK_TIME);
                         } else {
-                            delta = mBGWidth - Math.abs(mSlideTargetView.getScrollX());
                             mScroller.startScroll(mSlideTargetView.getScrollX(), 0, -delta, 0, SCROLL_TIME);
                         }
                         postInvalidate();
@@ -351,8 +366,11 @@ public class SlideAndDragListView<T> extends ListView implements Handler.Callbac
         //这个系统的方法禁用了
     }
 
-    public interface OnItemLongClickListener {
-        void onItemLongClick(View view, int position);
+    /**
+     * 自己写的长点击事件
+     */
+    public interface OnListItemLongClickListener {
+        void onListItemLongClick(View view, int position);
     }
 
     /**
@@ -360,8 +378,45 @@ public class SlideAndDragListView<T> extends ListView implements Handler.Callbac
      *
      * @param listener
      */
-    public void setOnItemLongClickListener(OnItemLongClickListener listener) {
-        mLongClickListener = listener;
+    public void setOnListItemLongClickListener(OnListItemLongClickListener listener) {
+        mOnListItemLongClickListener = listener;
+    }
+
+    @Deprecated
+    @Override
+    public void setOnItemClickListener(AdapterView.OnItemClickListener listener) {
+        //do nothing
+        //这个系统的方法禁用了
+    }
+
+    /**
+     * 自己的单击事件
+     */
+    public interface OnListItemClickListener {
+        void onListItemClick(View v, int position);
+    }
+
+    /**
+     * 设置监听器
+     *
+     * @param listener
+     */
+    public void setOnListItemClickListener(OnListItemClickListener listener) {
+        if (listener != null) {
+            mOnListItemClickListener = listener;
+            super.setOnItemClickListener(this);
+        } else {
+            mOnListItemClickListener = null;
+            super.setOnItemClickListener(null);
+        }
+    }
+
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        scrollBack();
+        if (mOnListItemClickListener != null) {
+            mOnListItemClickListener.onListItemClick(view, position);
+        }
     }
 
     @Override
