@@ -10,12 +10,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.yydcdut.demo.R;
-import com.yydcdut.demo.adapter.EditAdapter;
 import com.yydcdut.demo.model.Bean;
 import com.yydcdut.demo.model.DemoModel;
 import com.yydcdut.demo.utils.RandomColor;
-import com.yydcdut.demo.view.SlideAndDragListView;
 import com.yydcdut.demo.view.TextDrawable;
+import com.yydcdut.sdlv.SDAdapter;
+import com.yydcdut.sdlv.SlideAndDragListView;
 
 /**
  * Created by yuyidong on 15/7/31.
@@ -42,7 +42,7 @@ public class EditActivity extends AppCompatActivity implements SlideAndDragListV
         listView.setOnButtonClickListenerProxy(this);
     }
 
-    private EditAdapter mBaseAdapter = new EditAdapter(this, DemoModel.getInstance().getData()) {
+    private SDAdapter mBaseAdapter = new SDAdapter(this, DemoModel.getInstance().getData()) {
 
         @Override
         public View getView(Context context, View convertView, int position, int dragPosition) {

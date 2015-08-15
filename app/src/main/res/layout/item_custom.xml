@@ -31,6 +31,6 @@
         android:lines="1"
         android:maxLength="8"
         android:textColor="@android:color/black"
-        android:textSize="@dimen/default_textSize"/>
+        android:textSize="@dimen/txt_size"/>
 
 </RelativeLayout>

@@ -5,7 +5,7 @@
                 android:background="@android:color/white"
                 android:orientation="vertical">
 
-    <com.yydcdut.demo.view.SlideAndDragListView
+    <com.yydcdut.sdlv.SlideAndDragListView
         android:id="@+id/lv_edit"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
@@ -13,6 +13,6 @@
         android:dividerHeight="0.5dip"
         android:paddingLeft="8dip"
         android:paddingRight="8dip">
-    </com.yydcdut.demo.view.SlideAndDragListView>
+    </com.yydcdut.sdlv.SlideAndDragListView>
 
 </RelativeLayout>

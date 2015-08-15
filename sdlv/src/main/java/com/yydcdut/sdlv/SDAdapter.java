@@ -1,4 +1,4 @@
-package com.yydcdut.demo.adapter;
+package com.yydcdut.sdlv;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -8,15 +8,15 @@ import android.widget.BaseAdapter;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
-import com.yydcdut.demo.R;
-
 import java.util.List;
 
 /**
  * Created by yuyidong on 15/8/14.
  */
-public abstract class EditAdapter<T> extends BaseAdapter implements View.OnClickListener {
+public abstract class SDAdapter<T> extends BaseAdapter implements View.OnClickListener {
+    /* 上下文 */
     private Context mContext;
+    /* 数据 */
     private List<T> mDataList;
     /* Drag的位置 */
     private int mDragPosition = -1;
@@ -25,8 +25,7 @@ public abstract class EditAdapter<T> extends BaseAdapter implements View.OnClick
     /* button的单击监听器 */
     private OnButtonClickListener mOnButtonClickListener;
 
-
-    public EditAdapter(Context context, List<T> dataList) {
+    public SDAdapter(Context context, List<T> dataList) {
         mContext = context;
         mDataList = dataList;
     }
@@ -52,19 +51,17 @@ public abstract class EditAdapter<T> extends BaseAdapter implements View.OnClick
         if (convertView == null) {
             holder = new ViewHolder();
             convertView = LayoutInflater.from(mContext).inflate(R.layout.item_sdlv, null);
-            //--------------------------------
             holder.layoutCustom = (FrameLayout) convertView.findViewById(R.id.layout_custom);
-            //--------------------------------
             holder.layoutScroll = convertView.findViewById(R.id.layout_item_edit);
-            holder.btnDelete = (TextView) convertView.findViewById(R.id.txt_item_edit_delete);
-            holder.btnRename = (TextView) convertView.findViewById(R.id.txt_item_edit_rename);
+            holder.btnDelete = (TextView) convertView.findViewById(R.id.txt_item_edit_btn1);
+            holder.btnRename = (TextView) convertView.findViewById(R.id.txt_item_edit_btn2);
             holder.layoutBG = convertView.findViewById(R.id.layout_item_edit_bg);
             holder.imgBG = convertView.findViewById(R.id.img_item_edit_bg);
             convertView.setTag(holder);
         } else {
             holder = (ViewHolder) convertView.getTag();
         }
-        //--------------------------------
+        //用户的view
         View customView = getView(mContext, holder.layoutCustom.getChildAt(0), position, mDragPosition);
         if (holder.layoutCustom.getChildAt(0) == null) {
             holder.layoutCustom.addView(customView);
@@ -72,7 +69,6 @@ public abstract class EditAdapter<T> extends BaseAdapter implements View.OnClick
             holder.layoutCustom.removeViewAt(0);
             holder.layoutCustom.addView(customView);
         }
-        //--------------------------------
         //所有的都归位
         holder.layoutScroll.scrollTo(0, 0);
         //设置监听器
@@ -84,21 +80,27 @@ public abstract class EditAdapter<T> extends BaseAdapter implements View.OnClick
         return convertView;
     }
 
+    /**
+     * 与BaseAdapter类似
+     *
+     * @param context
+     * @param convertView
+     * @param position
+     * @param dragPosition 当前拖动的item的位置，如果没有拖动item的话值是-1
+     * @return
+     */
     public abstract View getView(Context context, View convertView, int position, int dragPosition);
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.txt_item_edit_delete:
-                if (mOnButtonClickListener != null && mBtnPosition != -1) {
-                    mOnButtonClickListener.onClick(v, mBtnPosition, 0);
-                }
-                break;
-            case R.id.txt_item_edit_rename:
-                if (mOnButtonClickListener != null && mBtnPosition != -1) {
-                    mOnButtonClickListener.onClick(v, mBtnPosition, 1);
-                }
-                break;
+        if (v.getId() == R.id.txt_item_edit_btn1) {
+            if (mOnButtonClickListener != null && mBtnPosition != -1) {
+                mOnButtonClickListener.onClick(v, mBtnPosition, 0);
+            }
+        } else if (v.getId() == R.id.txt_item_edit_btn2) {
+            if (mOnButtonClickListener != null && mBtnPosition != -1) {
+                mOnButtonClickListener.onClick(v, mBtnPosition, 1);
+            }
         }
     }
 

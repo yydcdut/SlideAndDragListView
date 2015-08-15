@@ -1,4 +1,4 @@
-package com.yydcdut.demo.view;
+package com.yydcdut.sdlv;
 
 import android.content.ClipData;
 import android.content.ClipDescription;
@@ -15,16 +15,13 @@ import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.Scroller;
 
-import com.yydcdut.demo.R;
-import com.yydcdut.demo.adapter.EditAdapter;
-
 import java.util.List;
 
 /**
  * Created by yuyidong on 15/8/1.
  */
 public class SlideAndDragListView<T> extends ListView implements Handler.Callback, View.OnDragListener,
-        EditAdapter.OnButtonClickListener, AdapterView.OnItemClickListener {
+        SDAdapter.OnButtonClickListener, AdapterView.OnItemClickListener {
     /* Handler 的 Message 信息 */
     private static final int MSG_WHAT_LONG_CLICK = 1;
     /* 时间 */
@@ -61,7 +58,7 @@ public class SlideAndDragListView<T> extends ListView implements Handler.Callbac
     private OnListItemClickListener mTempListItemClickListener;
 
     /* 那两个button的长度 */
-    private int mBGWidth = (int) getContext().getResources().getDimension(R.dimen.slv_item_bg_width) * 2;//因为有2个
+    private int mBGWidth = (int) getContext().getResources().getDimension(R.dimen.slv_item_bg_btn_width) * 2;//因为有2个
 
     /* 判断drag往上还是往下 */
     private boolean mUp = false;
@@ -72,7 +69,7 @@ public class SlideAndDragListView<T> extends ListView implements Handler.Callbac
     /* 之前之前drag所在ListView中的位置 */
     private int mBeforeBeforePosition;
     /* 适配器 */
-    private EditAdapter mEditAdapter;
+    private SDAdapter mSDAdapter;
     /* 监听器 */
     private OnDragListener mOnDragListener;
     /* 数据 */
@@ -111,7 +108,7 @@ public class SlideAndDragListView<T> extends ListView implements Handler.Callbac
                     //找到那个位置的view
                     View view = getChildAt(mSlideTargetPosition - getFirstVisiblePosition());
                     //通知adapter
-                    mEditAdapter.setDragPosition(position);
+                    mSDAdapter.setDragPosition(position);
                     //如果设置了监听器的话，就触发
                     if (mOnListItemLongClickListener != null) {
                         scrollBack();
@@ -129,7 +126,7 @@ public class SlideAndDragListView<T> extends ListView implements Handler.Callbac
                     ClipData data = new ClipData("1", new String[]{ClipDescription.MIMETYPE_TEXT_PLAIN}, item);
                     view.startDrag(data, new View.DragShadowBuilder(view), null, 0);
                     //通知adapter变颜色
-                    mEditAdapter.notifyDataSetChanged();
+                    mSDAdapter.notifyDataSetChanged();
                 }
                 break;
         }
@@ -257,7 +254,7 @@ public class SlideAndDragListView<T> extends ListView implements Handler.Callbac
                     //如果滑出的话，那么就滑到固定位置(只要滑出了 mBGWidth / 2 ，就算滑出去了)
                     if (Math.abs(mSlideTargetView.getScrollX()) > mBGWidth / 2) {
                         //通知adapter
-                        mEditAdapter.setBtnPosition(mSlideTargetPosition);
+                        mSDAdapter.setBtnPosition(mSlideTargetPosition);
                         //不触发onListItemClick事件
                         mOnListItemClickListener = null;
                         if (mOnSlideListener != null) {
@@ -273,7 +270,7 @@ public class SlideAndDragListView<T> extends ListView implements Handler.Callbac
                         postInvalidate();
                     } else {
                         //通知adapter
-                        mEditAdapter.setBtnPosition(-1);
+                        mSDAdapter.setBtnPosition(-1);
                         //如果有onListItemClick事件的话，就赋值过去，代表可以触发了
                         if (mTempListItemClickListener != null && mOnListItemClickListener == null) {
                             mOnListItemClickListener = mTempListItemClickListener;
@@ -363,7 +360,7 @@ public class SlideAndDragListView<T> extends ListView implements Handler.Callbac
                 //如果scroll过的话就scroll到0,0
                 backView.scrollTo(0, 0);
                 //通知adapter
-                mEditAdapter.setBtnPosition(-1);
+                mSDAdapter.setBtnPosition(-1);
                 //如果有onListItemClick事件的话，就赋值过去，代表可以触发了
                 if (mTempListItemClickListener != null && mOnListItemClickListener == null) {
                     mOnListItemClickListener = mTempListItemClickListener;
@@ -493,13 +490,13 @@ public class SlideAndDragListView<T> extends ListView implements Handler.Callbac
                                 mDataList.set(position, t);
                             }
                         }
-                        mEditAdapter.notifyDataSetChanged();
+                        mSDAdapter.notifyDataSetChanged();
                         //更新位置
                         mCurrentPosition = position;
                     }
                 }
                 //通知adapter
-                mEditAdapter.setDragPosition(position);
+                mSDAdapter.setDragPosition(position);
                 if (mOnDragListener != null) {
                     mOnDragListener.onDragViewMoving(mCurrentPosition);
                 }
@@ -507,9 +504,9 @@ public class SlideAndDragListView<T> extends ListView implements Handler.Callbac
             case DragEvent.ACTION_DRAG_EXITED:
                 return true;
             case DragEvent.ACTION_DROP:
-                mEditAdapter.notifyDataSetChanged();
+                mSDAdapter.notifyDataSetChanged();
                 //通知adapter
-                mEditAdapter.setDragPosition(-1);
+                mSDAdapter.setDragPosition(-1);
                 if (mOnDragListener != null) {
                     mOnDragListener.onDragViewDown(mCurrentPosition);
                 }
@@ -526,9 +523,9 @@ public class SlideAndDragListView<T> extends ListView implements Handler.Callbac
     @Override
     public void setAdapter(ListAdapter adapter) {
         super.setAdapter(adapter);
-        mEditAdapter = (EditAdapter) adapter;
-        mEditAdapter.setOnButtonClickListener(this);
-        mDataList = mEditAdapter.getDataList();
+        mSDAdapter = (SDAdapter) adapter;
+        mSDAdapter.setOnButtonClickListener(this);
+        mDataList = mSDAdapter.getDataList();
     }
 
     /**
