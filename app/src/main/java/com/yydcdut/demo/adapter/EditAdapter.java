@@ -6,23 +6,18 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.FrameLayout;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.yydcdut.demo.R;
-import com.yydcdut.demo.model.Bean;
-import com.yydcdut.demo.utils.RandomColor;
-import com.yydcdut.demo.view.TextDrawable;
 
 import java.util.List;
 
 /**
  * Created by yuyidong on 15/8/14.
  */
-public class EditAdapter extends BaseAdapter implements View.OnClickListener {
+public abstract class EditAdapter<T> extends BaseAdapter implements View.OnClickListener {
     private Context mContext;
-    private List<Bean> mDataList;
-    private RandomColor mColor = RandomColor.MATERIAL;
+    private List<T> mDataList;
     /* Drag的位置 */
     private int mDragPosition = -1;
     /* 点击button的位置 */
@@ -31,7 +26,7 @@ public class EditAdapter extends BaseAdapter implements View.OnClickListener {
     private OnButtonClickListener mOnButtonClickListener;
 
 
-    public EditAdapter(Context context, List<Bean> dataList) {
+    public EditAdapter(Context context, List<T> dataList) {
         mContext = context;
         mDataList = dataList;
     }
@@ -89,35 +84,7 @@ public class EditAdapter extends BaseAdapter implements View.OnClickListener {
         return convertView;
     }
 
-    public View getView(Context context, View convertView, int position, int dragPosition) {
-        CustomViewHolder cvh;
-        if (convertView == null) {
-            cvh = new CustomViewHolder();
-            convertView = LayoutInflater.from(context).inflate(R.layout.item_custom, null);
-            cvh.imgLogo = (ImageView) convertView.findViewById(R.id.img_item_edit);
-            cvh.txtName = (TextView) convertView.findViewById(R.id.txt_item_edit);
-            convertView.setTag(cvh);
-        } else {
-            cvh = (CustomViewHolder) convertView.getTag();
-        }
-        Bean bean = (Bean) this.getItem(position);
-        cvh.txtName.setText(bean.name);
-        //把当前选中的颜色变为红色
-        if (dragPosition == position) {
-            cvh.imgLogo.setImageDrawable(TextDrawable.builder().buildRound(bean.name, context.getResources().getColor(R.color.red_colorPrimary)));
-            cvh.txtName.setTextColor(mContext.getResources().getColor(R.color.red_colorPrimary));
-        } else {
-            cvh.imgLogo.setImageDrawable(TextDrawable.builder().buildRound(bean.name, mColor.getColor(bean.name)));
-            cvh.txtName.setTextColor(mContext.getResources().getColor(R.color.txt_gray));
-        }
-        return convertView;
-    }
-
-    public class CustomViewHolder {
-        public ImageView imgLogo;
-        public TextView txtName;
-    }
-
+    public abstract View getView(Context context, View convertView, int position, int dragPosition);
 
     @Override
     public void onClick(View v) {
@@ -190,7 +157,7 @@ public class EditAdapter extends BaseAdapter implements View.OnClickListener {
      *
      * @return
      */
-    public List<Bean> getDataList() {
+    public List<T> getDataList() {
         return mDataList;
     }
 

@@ -528,11 +528,7 @@ public class SlideAndDragListView<T> extends ListView implements Handler.Callbac
         super.setAdapter(adapter);
         mEditAdapter = (EditAdapter) adapter;
         mEditAdapter.setOnButtonClickListener(this);
-//        mDataList = mEditAdapter.getDataList();
-    }
-
-    public void setData(List<T> list) {
-        mDataList = list;
+        mDataList = mEditAdapter.getDataList();
     }
 
     /**
