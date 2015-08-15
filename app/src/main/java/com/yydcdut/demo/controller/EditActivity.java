@@ -44,34 +44,27 @@ public class EditActivity extends AppCompatActivity implements SlideAndDragListV
 
     @Override
     public void onListItemLongClick(View view, int position) {
-        mBaseAdapter.setDragPosition(position);
-        Toast.makeText(EditActivity.this, "onItemLongClick   position--->" + position, Toast.LENGTH_SHORT).show();
+//        Toast.makeText(EditActivity.this, "onItemLongClick   position--->" + position, Toast.LENGTH_SHORT).show();
     }
 
     @Override
     public void onDragViewMoving(int position) {
-        mBaseAdapter.setDragPosition(position);
 //        Toast.makeText(EditActivity.this, "onDragViewMoving   position--->" + position, Toast.LENGTH_SHORT).show();
     }
 
     @Override
     public void onDragViewDown(int position) {
-        mBaseAdapter.setDragPosition(-1);
-        Toast.makeText(EditActivity.this, "onDragViewDown   position--->" + position, Toast.LENGTH_SHORT).show();
+//        Toast.makeText(EditActivity.this, "onDragViewDown   position--->" + position, Toast.LENGTH_SHORT).show();
     }
 
     @Override
     public void onSlideOpen(View view, int position) {
-        mBaseAdapter.setBtnPosition(position);
-        mListView.setOnListItemClickListener(null);
-        Toast.makeText(EditActivity.this, "onSlideOpen   position--->" + position, Toast.LENGTH_SHORT).show();
+//        Toast.makeText(EditActivity.this, "onSlideOpen   position--->" + position, Toast.LENGTH_SHORT).show();
     }
 
     @Override
     public void onSlideClose(View view, int position) {
-        mBaseAdapter.setBtnPosition(-1);
-        mListView.setOnListItemClickListener(this);
-        Toast.makeText(EditActivity.this, "onSlideClose   position--->" + position, Toast.LENGTH_SHORT).show();
+//        Toast.makeText(EditActivity.this, "onSlideClose   position--->" + position, Toast.LENGTH_SHORT).show();
     }
 
     @Override

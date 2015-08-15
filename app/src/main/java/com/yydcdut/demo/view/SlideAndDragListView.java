@@ -58,20 +58,21 @@ public class SlideAndDragListView<T> extends ListView implements Handler.Callbac
     /* 监听器 */
     private OnListItemLongClickListener mOnListItemLongClickListener;
     private OnListItemClickListener mOnListItemClickListener;
+    private OnListItemClickListener mTempListItemClickListener;
 
     /* 那两个button的长度 */
     private int mBGWidth = (int) getContext().getResources().getDimension(R.dimen.slv_item_bg_width) * 2;//因为有2个
 
     /* 判断drag往上还是往下 */
     private boolean mUp = false;
-    /* 当前drag所在listview中的位置 */
+    /* 当前drag所在ListView中的位置 */
     private int mCurrentPosition;
-    /* 之前drag所在listview中的位置 */
+    /* 之前drag所在ListView中的位置 */
     private int mBeforeCurrentPosition;
-    /* 之前之前drag所在listview中的位置 */
+    /* 之前之前drag所在ListView中的位置 */
     private int mBeforeBeforePosition;
     /* 适配器 */
-    private EditAdapter mBaseAdapter;
+    private EditAdapter mEditAdapter;
     /* 监听器 */
     private OnDragListener mOnDragListener;
     /* 数据 */
@@ -109,6 +110,8 @@ public class SlideAndDragListView<T> extends ListView implements Handler.Callbac
                     int position = msg.arg1;
                     //找到那个位置的view
                     View view = getChildAt(mSlideTargetPosition - getFirstVisiblePosition());
+                    //通知adapter
+                    mEditAdapter.setDragPosition(position);
                     //如果设置了监听器的话，就触发
                     if (mOnListItemLongClickListener != null) {
                         scrollBack();
@@ -126,7 +129,7 @@ public class SlideAndDragListView<T> extends ListView implements Handler.Callbac
                     ClipData data = new ClipData("1", new String[]{ClipDescription.MIMETYPE_TEXT_PLAIN}, item);
                     view.startDrag(data, new View.DragShadowBuilder(view), null, 0);
                     //通知adapter变颜色
-                    mBaseAdapter.notifyDataSetChanged();
+                    mEditAdapter.notifyDataSetChanged();
                 }
                 break;
         }
@@ -253,12 +256,15 @@ public class SlideAndDragListView<T> extends ListView implements Handler.Callbac
                 if (mSlideTargetView != null) {
                     //如果滑出的话，那么就滑到固定位置(只要滑出了 mBGWidth / 2 ，就算滑出去了)
                     if (Math.abs(mSlideTargetView.getScrollX()) > mBGWidth / 2) {
+                        //通知adapter
+                        mEditAdapter.setBtnPosition(mSlideTargetPosition);
+                        //不触发onListItemClick事件
+                        mOnListItemClickListener = null;
                         if (mOnSlideListener != null) {
                             mOnSlideListener.onSlideOpen(mSlideTargetView, mSlideTargetPosition);
                         }
                         //滑出
-                        int delta = 0;
-                        delta = mBGWidth - Math.abs(mSlideTargetView.getScrollX());
+                        int delta = mBGWidth - Math.abs(mSlideTargetView.getScrollX());
                         if (Math.abs(mSlideTargetView.getScrollX()) < mBGWidth) {
                             mScroller.startScroll(mSlideTargetView.getScrollX(), 0, -delta, 0, SCROLL_QUICK_TIME);
                         } else {
@@ -266,6 +272,12 @@ public class SlideAndDragListView<T> extends ListView implements Handler.Callbac
                         }
                         postInvalidate();
                     } else {
+                        //通知adapter
+                        mEditAdapter.setBtnPosition(-1);
+                        //如果有onListItemClick事件的话，就赋值过去，代表可以触发了
+                        if (mTempListItemClickListener != null && mOnListItemClickListener == null) {
+                            mOnListItemClickListener = mTempListItemClickListener;
+                        }
                         //滑回去,归位
                         if (mOnSlideListener != null) {
                             mOnSlideListener.onSlideClose(mSlideTargetView, mSlideTargetPosition);
@@ -339,7 +351,7 @@ public class SlideAndDragListView<T> extends ListView implements Handler.Callbac
      */
     private boolean scrollBack() {
         boolean bool = false;
-        //计算当前listview上有多少个item
+        //计算当前ListView上有多少个item
         int total = getLastVisiblePosition() - getFirstVisiblePosition();
         for (int i = 0; i < total; i++) {
             View backLayoutView = getChildAt(i);
@@ -350,6 +362,12 @@ public class SlideAndDragListView<T> extends ListView implements Handler.Callbac
             } else {//这里scroll回去不要动画也挺连贯了
                 //如果scroll过的话就scroll到0,0
                 backView.scrollTo(0, 0);
+                //通知adapter
+                mEditAdapter.setBtnPosition(-1);
+                //如果有onListItemClick事件的话，就赋值过去，代表可以触发了
+                if (mTempListItemClickListener != null && mOnListItemClickListener == null) {
+                    mOnListItemClickListener = mTempListItemClickListener;
+                }
                 if (mOnSlideListener != null) {
                     mOnSlideListener.onSlideClose(backView, i);
                 }
@@ -403,10 +421,12 @@ public class SlideAndDragListView<T> extends ListView implements Handler.Callbac
      */
     public void setOnListItemClickListener(OnListItemClickListener listener) {
         if (listener != null) {
+            mTempListItemClickListener = listener;
             mOnListItemClickListener = listener;
             super.setOnItemClickListener(this);
         } else {
             mOnListItemClickListener = null;
+            mTempListItemClickListener = null;
             super.setOnItemClickListener(null);
         }
     }
@@ -428,7 +448,7 @@ public class SlideAndDragListView<T> extends ListView implements Handler.Callbac
             case DragEvent.ACTION_DRAG_ENTERED:
                 return true;
             case DragEvent.ACTION_DRAG_LOCATION:
-                //当前移动的item在listview中的position
+                //当前移动的item在ListView中的position
                 int position = pointToPosition((int) event.getX(), (int) event.getY());
                 //如果位置发生了改变
                 if (mBeforeCurrentPosition != position) {
@@ -473,11 +493,13 @@ public class SlideAndDragListView<T> extends ListView implements Handler.Callbac
                                 mDataList.set(position, t);
                             }
                         }
-                        mBaseAdapter.notifyDataSetChanged();
+                        mEditAdapter.notifyDataSetChanged();
                         //更新位置
                         mCurrentPosition = position;
                     }
                 }
+                //通知adapter
+                mEditAdapter.setDragPosition(position);
                 if (mOnDragListener != null) {
                     mOnDragListener.onDragViewMoving(mCurrentPosition);
                 }
@@ -485,7 +507,9 @@ public class SlideAndDragListView<T> extends ListView implements Handler.Callbac
             case DragEvent.ACTION_DRAG_EXITED:
                 return true;
             case DragEvent.ACTION_DROP:
-                mBaseAdapter.notifyDataSetChanged();
+                mEditAdapter.notifyDataSetChanged();
+                //通知adapter
+                mEditAdapter.setDragPosition(-1);
                 if (mOnDragListener != null) {
                     mOnDragListener.onDragViewDown(mCurrentPosition);
                 }
@@ -502,9 +526,9 @@ public class SlideAndDragListView<T> extends ListView implements Handler.Callbac
     @Override
     public void setAdapter(ListAdapter adapter) {
         super.setAdapter(adapter);
-        mBaseAdapter = (EditAdapter) adapter;
-        mBaseAdapter.setOnButtonClickListener(this);
-//        mDataList = mBaseAdapter.getDataList();
+        mEditAdapter = (EditAdapter) adapter;
+        mEditAdapter.setOnButtonClickListener(this);
+//        mDataList = mEditAdapter.getDataList();
     }
 
     public void setData(List<T> list) {
@@ -512,14 +536,14 @@ public class SlideAndDragListView<T> extends ListView implements Handler.Callbac
     }
 
     /**
-     * 如果到了两端，判断listview是往上滑动还是listview往下滑动
+     * 如果到了两端，判断ListView是往上滑动还是ListView往下滑动
      *
      * @param position
      */
     private void moveListViewUpOrDown(int position) {
-        //listview中最上面的显示的位置
+        //ListView中最上面的显示的位置
         int firstPosition = getFirstVisiblePosition();
-        //listview中最下面的显示的位置
+        //ListView中最下面的显示的位置
         int lastPosition = getLastVisiblePosition();
         //能够往上的话往上
         if ((position == firstPosition || position == firstPosition + 1) && firstPosition != 0) {
