@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -55,9 +56,10 @@ public class EditAdapter extends BaseAdapter implements View.OnClickListener {
         ViewHolder holder;
         if (convertView == null) {
             holder = new ViewHolder();
-            convertView = LayoutInflater.from(mContext).inflate(R.layout.item_edit, null);
-            holder.imgLogo = (ImageView) convertView.findViewById(R.id.img_item_edit);
-            holder.txtName = (TextView) convertView.findViewById(R.id.txt_item_edit);
+            convertView = LayoutInflater.from(mContext).inflate(R.layout.item_sdlv, null);
+            //--------------------------------
+            holder.layoutCustom = (FrameLayout) convertView.findViewById(R.id.layout_custom);
+            //--------------------------------
             holder.layoutScroll = convertView.findViewById(R.id.layout_item_edit);
             holder.btnDelete = (TextView) convertView.findViewById(R.id.txt_item_edit_delete);
             holder.btnRename = (TextView) convertView.findViewById(R.id.txt_item_edit_rename);
@@ -67,17 +69,15 @@ public class EditAdapter extends BaseAdapter implements View.OnClickListener {
         } else {
             holder = (ViewHolder) convertView.getTag();
         }
-        //把当前选中的颜色变为红色
-        String name = mDataList.get(position).name;
-        if (mDragPosition == position) {
-            holder.imgLogo.setImageDrawable(TextDrawable.builder().buildRound(name, mContext.getResources().getColor(R.color.red_colorPrimary)));
-            holder.txtName.setTextColor(mContext.getResources().getColor(R.color.red_colorPrimary));
+        //--------------------------------
+        View customView = getView(mContext, holder.layoutCustom.getChildAt(0), position, mDragPosition);
+        if (holder.layoutCustom.getChildAt(0) == null) {
+            holder.layoutCustom.addView(customView);
         } else {
-            holder.imgLogo.setImageDrawable(TextDrawable.builder().buildRound(name, mColor.getColor(name)));
-            holder.txtName.setTextColor(mContext.getResources().getColor(R.color.txt_gray));
+            holder.layoutCustom.removeViewAt(0);
+            holder.layoutCustom.addView(customView);
         }
-        //设置name
-        holder.txtName.setText(mDataList.get(position).name);
+        //--------------------------------
         //所有的都归位
         holder.layoutScroll.scrollTo(0, 0);
         //设置监听器
@@ -88,6 +88,36 @@ public class EditAdapter extends BaseAdapter implements View.OnClickListener {
         holder.layoutBG.setVisibility(View.VISIBLE);
         return convertView;
     }
+
+    public View getView(Context context, View convertView, int position, int dragPosition) {
+        CustomViewHolder cvh;
+        if (convertView == null) {
+            cvh = new CustomViewHolder();
+            convertView = LayoutInflater.from(context).inflate(R.layout.item_custom, null);
+            cvh.imgLogo = (ImageView) convertView.findViewById(R.id.img_item_edit);
+            cvh.txtName = (TextView) convertView.findViewById(R.id.txt_item_edit);
+            convertView.setTag(cvh);
+        } else {
+            cvh = (CustomViewHolder) convertView.getTag();
+        }
+        Bean bean = (Bean) this.getItem(position);
+        cvh.txtName.setText(bean.name);
+        //把当前选中的颜色变为红色
+        if (dragPosition == position) {
+            cvh.imgLogo.setImageDrawable(TextDrawable.builder().buildRound(bean.name, context.getResources().getColor(R.color.red_colorPrimary)));
+            cvh.txtName.setTextColor(mContext.getResources().getColor(R.color.red_colorPrimary));
+        } else {
+            cvh.imgLogo.setImageDrawable(TextDrawable.builder().buildRound(bean.name, mColor.getColor(bean.name)));
+            cvh.txtName.setTextColor(mContext.getResources().getColor(R.color.txt_gray));
+        }
+        return convertView;
+    }
+
+    public class CustomViewHolder {
+        public ImageView imgLogo;
+        public TextView txtName;
+    }
+
 
     @Override
     public void onClick(View v) {
@@ -107,12 +137,11 @@ public class EditAdapter extends BaseAdapter implements View.OnClickListener {
 
     class ViewHolder {
         public View layoutScroll;
-        public ImageView imgLogo;
-        public TextView txtName;
         public TextView btnDelete;
         public TextView btnRename;
         public View layoutBG;
         public View imgBG;
+        public FrameLayout layoutCustom;
     }
 
     /**
@@ -164,4 +193,6 @@ public class EditAdapter extends BaseAdapter implements View.OnClickListener {
     public List<Bean> getDataList() {
         return mDataList;
     }
+
+
 }
