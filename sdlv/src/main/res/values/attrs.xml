@@ -2,5 +2,12 @@
 <resources>
     <declare-styleable name="sdlv">
         <attr name="item_height" format="dimension"/>
+        <attr name="item_background" format="reference|color"/>
+
+        <attr name="item_btn_width" format="dimension"/>
+        <attr name="item_btn_number" format="integer"/>
+        <attr name="item_btn1_text" format="string"/>
+        <attr name="item_btn2_text" format="string"/>
+
     </declare-styleable>
 </resources>

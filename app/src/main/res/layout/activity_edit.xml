@@ -14,6 +14,10 @@
         android:dividerHeight="0.5dip"
         android:paddingLeft="8dip"
         android:paddingRight="8dip"
+        sdlv:item_btn1_text="Delete1"
+        sdlv:item_btn2_text="Rename1"
+        sdlv:item_btn_number="2"
+        sdlv:item_btn_width="60dip"
         sdlv:item_height="80dip">
     </com.yydcdut.sdlv.SlideAndDragListView>
 

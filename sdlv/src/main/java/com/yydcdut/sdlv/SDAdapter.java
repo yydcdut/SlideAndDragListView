@@ -62,8 +62,16 @@ public abstract class SDAdapter<T> extends BaseAdapter implements View.OnClickLi
             holder.imgBG = (SDItemBGImage) convertView.findViewById(R.id.img_item_bg);
             holder.imgBG.setHeight((int) mItemHeight);
             holder.layoutCustom = (FrameLayout) convertView.findViewById(R.id.layout_custom);
-            holder.btnDelete = (TextView) convertView.findViewById(R.id.txt_item_edit_btn1);
-            holder.btnRename = (TextView) convertView.findViewById(R.id.txt_item_edit_btn2);
+            holder.btn1 = (TextView) convertView.findViewById(R.id.txt_item_edit_btn1);
+            holder.btn2 = (TextView) convertView.findViewById(R.id.txt_item_edit_btn2);
+            //判断哪些隐藏哪些显示
+            checkVisible(holder);
+            //设置text
+            holder.btn1.setText(mItemBtn1Text);//setText有容错处理
+            holder.btn2.setText(mItemBtn2Text);//setText有容错处理
+            //设置监听器
+            holder.btn1.setOnClickListener(this);
+            holder.btn2.setOnClickListener(this);
             convertView.setTag(holder);
         } else {
             holder = (ViewHolder) convertView.getTag();
@@ -79,9 +87,7 @@ public abstract class SDAdapter<T> extends BaseAdapter implements View.OnClickLi
         }
         //所有的都归位
         holder.layoutScroll.scrollTo(0, 0);
-        //设置监听器
-        holder.btnDelete.setOnClickListener(this);
-        holder.btnRename.setOnClickListener(this);
+
         //把背景显示出来（因为在drag的时候会将背景透明，因为好看）
         holder.imgBGScroll.setVisibility(View.VISIBLE);
         holder.layoutBG.setVisibility(View.VISIBLE);
@@ -118,9 +124,33 @@ public abstract class SDAdapter<T> extends BaseAdapter implements View.OnClickLi
         public SDItemLayout layoutBG;
         public SDItemBGImage imgBGScroll;
         public SDItemBGImage imgBG;
-        public TextView btnDelete;
-        public TextView btnRename;
+        public TextView btn1;
+        public TextView btn2;
         public FrameLayout layoutCustom;
+    }
+
+    /**
+     * 判断用户要几个button
+     *
+     * @param vh
+     */
+    private void checkVisible(ViewHolder vh) {
+        switch (mItemBtnNumber) {
+            case 0:
+                vh.btn1.setVisibility(View.GONE);
+                vh.btn2.setVisibility(View.GONE);
+                break;
+            case 1:
+                vh.btn1.setVisibility(View.VISIBLE);
+                vh.btn2.setVisibility(View.GONE);
+                break;
+            case 2:
+                vh.btn1.setVisibility(View.VISIBLE);
+                vh.btn2.setVisibility(View.VISIBLE);
+                break;
+            default:
+                throw new IllegalArgumentException("");
+        }
     }
 
     /**
@@ -177,6 +207,22 @@ public abstract class SDAdapter<T> extends BaseAdapter implements View.OnClickLi
 
     protected void setItemHeight(float height) {
         mItemHeight = height;
+    }
+
+    private int mItemBtnNumber;
+    private String mItemBtn1Text;
+    private String mItemBtn2Text;
+
+    protected void setItemBtnNumber(int number, String... text) {
+        mItemBtnNumber = number;
+        mItemBtn1Text = text[0];
+        mItemBtn2Text = text[1];
+    }
+
+    private float mItemBtnWidth;
+
+    protected void setItemBtnWidth(float width) {
+        mItemBtnWidth = width;
     }
 
 

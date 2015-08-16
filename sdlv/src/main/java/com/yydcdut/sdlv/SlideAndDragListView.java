@@ -7,6 +7,7 @@ import android.content.res.TypedArray;
 import android.os.Handler;
 import android.os.Message;
 import android.os.Vibrator;
+import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.DragEvent;
 import android.view.MotionEvent;
@@ -23,6 +24,7 @@ import java.util.List;
  */
 public class SlideAndDragListView<T> extends ListView implements Handler.Callback, View.OnDragListener,
         SDAdapter.OnButtonClickListener, AdapterView.OnItemClickListener {
+    private static final int ITEM_BTN_NUMBER_MAX = 2;
     /* Handler 的 Message 信息 */
     private static final int MSG_WHAT_LONG_CLICK = 1;
     /* 时间 */
@@ -59,8 +61,7 @@ public class SlideAndDragListView<T> extends ListView implements Handler.Callbac
     private OnListItemClickListener mTempListItemClickListener;
 
     /* 那两个button的长度 */
-    private int mBGWidth = (int) getContext().getResources().getDimension(R.dimen.slv_item_bg_btn_width) * 2;//因为有2个
-
+    private int mBGWidth;
     /* 判断drag往上还是往下 */
     private boolean mUp = false;
     /* 当前drag所在ListView中的位置 */
@@ -82,6 +83,13 @@ public class SlideAndDragListView<T> extends ListView implements Handler.Callbac
     /* Attrs */
     private float mItemHeight = 0;
     private float mItemHeightDefault = getContext().getResources().getDimension(R.dimen.slv_item_height);
+    private int mBGResourceId;
+    private float mItemBtnWidth = 0;
+    private float mItemBtnWidthDefault = getContext().getResources().getDimension(R.dimen.slv_item_bg_btn_width);
+    private int mItemBtnNumber = 0;
+    private int mItemBtnNumberDefault = 2;
+    private String mItemBtn1Text;
+    private String mItemBtn2Text;
 
     public SlideAndDragListView(Context context) {
         this(context, null);
@@ -93,20 +101,28 @@ public class SlideAndDragListView<T> extends ListView implements Handler.Callbac
 
     public SlideAndDragListView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        //-------------------------- attrs -------------
+        //-------------------------- attrs --------------------------
         TypedArray a = context.getTheme().obtainStyledAttributes(attrs, R.styleable.sdlv, defStyleAttr, 0);
-        int n = a.getIndexCount();
-        for (int i = 0; i < n; i++) {
-            int attr = a.getIndex(i);
-            if (attr == R.styleable.sdlv_item_height) {
-                mItemHeight = a.getDimension(attr, mItemHeightDefault);
-            }
-
+        mItemHeight = a.getDimension(R.styleable.sdlv_item_height, mItemHeightDefault);
+        mItemBtnWidth = a.getDimension(R.styleable.sdlv_item_btn_width, mItemBtnWidthDefault);
+        mBGResourceId = a.getResourceId(R.styleable.sdlv_item_background, 0);
+        mItemBtnNumber = a.getInt(R.styleable.sdlv_item_btn_number, mItemBtnNumberDefault);
+        if (mItemBtnNumber > ITEM_BTN_NUMBER_MAX || mItemBtnNumber < 0) {
+            throw new IllegalArgumentException("The number of Item buttons should be in between 0 and 2 !");
         }
+        mItemBtn1Text = a.getString(R.styleable.sdlv_item_btn1_text);
+        mItemBtn2Text = a.getString(R.styleable.sdlv_item_btn2_text);
+        if (!TextUtils.isEmpty(mItemBtn2Text) && TextUtils.isEmpty(mItemBtn1Text)) {
+            throw new IllegalArgumentException("先1后2");
+        }
+
         a.recycle();
-        //-------------------------- attrs -------------
+        //-------------------------- attrs --------------------------
+        mBGWidth = (int) (mItemBtnWidth * mItemBtnNumber);
         mScroller = new Scroller(getContext());
-        mVibrator = (Vibrator) getContext().getSystemService(Context.VIBRATOR_SERVICE);
+        mVibrator = (Vibrator)
+                getContext().getSystemService(Context.VIBRATOR_SERVICE);
+
         mHandler = new Handler(this);
         setOnDragListener(this);
     }
@@ -541,6 +557,8 @@ public class SlideAndDragListView<T> extends ListView implements Handler.Callbac
         mSDAdapter = (SDAdapter) adapter;
         mSDAdapter.setOnButtonClickListener(this);
         mSDAdapter.setItemHeight(mItemHeight);
+        mSDAdapter.setItemBtnNumber(mItemBtnNumber, mItemBtn1Text, mItemBtn2Text);
+        mSDAdapter.setItemBtnWidth(mItemBtnWidth);
         mDataList = mSDAdapter.getDataList();
     }
 
@@ -605,6 +623,7 @@ public class SlideAndDragListView<T> extends ListView implements Handler.Callbac
      */
     public interface OnButtonClickListenerProxy {
         void onClick(View v, int position, int number);
+
     }
 
     /**
