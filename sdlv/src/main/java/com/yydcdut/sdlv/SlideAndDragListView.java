@@ -3,6 +3,7 @@ package com.yydcdut.sdlv;
 import android.content.ClipData;
 import android.content.ClipDescription;
 import android.content.Context;
+import android.content.res.TypedArray;
 import android.os.Handler;
 import android.os.Message;
 import android.os.Vibrator;
@@ -78,7 +79,9 @@ public class SlideAndDragListView<T> extends ListView implements Handler.Callbac
     private OnSlideListener mOnSlideListener;
     /* 代理Adapter里面的button的click事件 */
     private OnButtonClickListenerProxy mOnButtonClickListenerProxy;
-
+    /* Attrs */
+    private float mItemHeight = 0;
+    private float mItemHeightDefault = getContext().getResources().getDimension(R.dimen.slv_item_height);
 
     public SlideAndDragListView(Context context) {
         this(context, null);
@@ -90,6 +93,18 @@ public class SlideAndDragListView<T> extends ListView implements Handler.Callbac
 
     public SlideAndDragListView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
+        //-------------------------- attrs -------------
+        TypedArray a = context.getTheme().obtainStyledAttributes(attrs, R.styleable.sdlv, defStyleAttr, 0);
+        int n = a.getIndexCount();
+        for (int i = 0; i < n; i++) {
+            int attr = a.getIndex(i);
+            if (attr == R.styleable.sdlv_item_height) {
+                mItemHeight = a.getDimension(attr, mItemHeightDefault);
+            }
+
+        }
+        a.recycle();
+        //-------------------------- attrs -------------
         mScroller = new Scroller(getContext());
         mVibrator = (Vibrator) getContext().getSystemService(Context.VIBRATOR_SERVICE);
         mHandler = new Handler(this);
@@ -525,6 +540,7 @@ public class SlideAndDragListView<T> extends ListView implements Handler.Callbac
         super.setAdapter(adapter);
         mSDAdapter = (SDAdapter) adapter;
         mSDAdapter.setOnButtonClickListener(this);
+        mSDAdapter.setItemHeight(mItemHeight);
         mDataList = mSDAdapter.getDataList();
     }
 

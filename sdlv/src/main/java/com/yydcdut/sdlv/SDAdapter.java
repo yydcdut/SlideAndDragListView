@@ -48,20 +48,19 @@ public abstract class SDAdapter<T> extends BaseAdapter implements View.OnClickLi
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         ViewHolder holder;
-        int height = (int) (mContext.getResources().getDimension(R.dimen.slv_item_height) + 40);
         if (convertView == null) {
             holder = new ViewHolder();
             convertView = LayoutInflater.from(mContext).inflate(R.layout.item_sdlv, null);
             holder.layoutMain = (SDItemLayout) convertView.findViewById(R.id.layout_item_main);
-            holder.layoutMain.setHeight(height);
+            holder.layoutMain.setHeight((int) mItemHeight);
             holder.layoutScroll = (SDItemLayout) convertView.findViewById(R.id.layout_item_scroll);
-            holder.layoutScroll.setHeight(height);
+            holder.layoutScroll.setHeight((int) mItemHeight);
             holder.layoutBG = (SDItemLayout) convertView.findViewById(R.id.layout_item_bg);
-            holder.layoutBG.setHeight(height);
+            holder.layoutBG.setHeight((int) mItemHeight);
             holder.imgBGScroll = (SDItemBGImage) convertView.findViewById(R.id.img_item_scroll_bg);
-            holder.imgBGScroll.setHeight(height);
+            holder.imgBGScroll.setHeight((int) mItemHeight);
             holder.imgBG = (SDItemBGImage) convertView.findViewById(R.id.img_item_bg);
-            holder.imgBG.setHeight(height);
+            holder.imgBG.setHeight((int) mItemHeight);
             holder.layoutCustom = (FrameLayout) convertView.findViewById(R.id.layout_custom);
             holder.btnDelete = (TextView) convertView.findViewById(R.id.txt_item_edit_btn1);
             holder.btnRename = (TextView) convertView.findViewById(R.id.txt_item_edit_btn2);
@@ -172,6 +171,12 @@ public abstract class SDAdapter<T> extends BaseAdapter implements View.OnClickLi
      */
     protected List<T> getDataList() {
         return mDataList;
+    }
+
+    private float mItemHeight;
+
+    protected void setItemHeight(float height) {
+        mItemHeight = height;
     }
 
 
