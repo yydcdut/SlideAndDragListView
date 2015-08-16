@@ -1,20 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                xmlns:tools="http://schemas.android.com/tools"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                tools:ignore="MissingPrefix">
+<com.yydcdut.sdlv.SDItemLayout
+    android:id="@+id/layout_item_main"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:ignore="MissingPrefix">
 
-    <RelativeLayout
-        android:id="@+id/layout_item_edit_bg"
+    <com.yydcdut.sdlv.SDItemLayout
+        android:id="@+id/layout_item_bg"
         android:layout_width="fill_parent"
         android:layout_height="@dimen/slv_item_height"
-        android:background="@color/white">
+        android:background="@android:color/transparent">
 
-        <ImageView
+        <com.yydcdut.sdlv.SDItemBGImage
+            android:id="@+id/img_item_bg"
             android:layout_width="fill_parent"
             android:layout_height="@dimen/slv_item_height"
-            android:src="@color/white"/>
+            android:src="@android:color/white"/>
 
         <TextView
             android:id="@+id/txt_item_edit_btn1"
@@ -22,7 +25,7 @@
             android:layout_height="@dimen/slv_item_height"
             android:layout_alignParentLeft="true"
             android:layout_centerVertical="true"
-            android:background="@color/red"
+            android:background="@drawable/btn1_drawable"
             android:gravity="center"
             android:lines="1"
             android:text="@string/btn1"
@@ -35,22 +38,23 @@
             android:layout_height="@dimen/slv_item_height"
             android:layout_centerVertical="true"
             android:layout_toRightOf="@+id/txt_item_edit_btn1"
-            android:background="@color/gray"
+            android:background="@drawable/btn2_drawable"
             android:gravity="center"
             android:lines="1"
             android:text="@string/btn2"
-            android:textColor="@color/white"
+            android:textColor="@android:color/white"
             android:textSize="@dimen/txt_size"/>
 
-    </RelativeLayout>
+    </com.yydcdut.sdlv.SDItemLayout>
 
-    <RelativeLayout
-        android:id="@+id/layout_item_edit"
+    <com.yydcdut.sdlv.SDItemLayout
+        android:id="@+id/layout_item_scroll"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/slv_item_height">
+        android:layout_height="@dimen/slv_item_height"
+        android:background="@android:color/transparent">
 
-        <ImageView
-            android:id="@+id/img_item_edit_bg"
+        <com.yydcdut.sdlv.SDItemBGImage
+            android:id="@+id/img_item_scroll_bg"
             android:layout_width="fill_parent"
             android:layout_height="@dimen/slv_item_height"
             android:src="@android:color/white"/>
@@ -61,6 +65,6 @@
             android:layout_height="@dimen/slv_item_height">
         </FrameLayout>
 
-    </RelativeLayout>
+    </com.yydcdut.sdlv.SDItemLayout>
 
-</RelativeLayout>
+</com.yydcdut.sdlv.SDItemLayout>

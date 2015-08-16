@@ -119,8 +119,8 @@ public class SlideAndDragListView<T> extends ListView implements Handler.Callbac
                     mBeforeCurrentPosition = position;
                     mBeforeBeforePosition = position;
                     //把背景给弄透明，这样drag的时候要好看些
-                    view.findViewById(R.id.layout_item_edit_bg).setVisibility(INVISIBLE);
-                    view.findViewById(R.id.img_item_edit_bg).setVisibility(INVISIBLE);
+                    view.findViewById(R.id.layout_item_bg).setVisibility(INVISIBLE);
+                    view.findViewById(R.id.img_item_scroll_bg).setVisibility(INVISIBLE);
                     //drag
                     ClipData.Item item = new ClipData.Item("1");
                     ClipData data = new ClipData("1", new String[]{ClipDescription.MIMETYPE_TEXT_PLAIN}, item);
@@ -205,7 +205,7 @@ public class SlideAndDragListView<T> extends ListView implements Handler.Callbac
                 if (view == null) {
                     return super.onTouchEvent(ev);
                 }
-                mSlideTargetView = view.findViewById(R.id.layout_item_edit);
+                mSlideTargetView = view.findViewById(R.id.layout_item_scroll);
                 if (mSlideTargetView != null) {
                     //如果已经是滑开了的或者没有滑开的
                     mXScrollDistance = mSlideTargetView.getScrollX();
@@ -352,7 +352,7 @@ public class SlideAndDragListView<T> extends ListView implements Handler.Callbac
         int total = getLastVisiblePosition() - getFirstVisiblePosition();
         for (int i = 0; i < total; i++) {
             View backLayoutView = getChildAt(i);
-            View backView = backLayoutView.findViewById(R.id.layout_item_edit);
+            View backView = backLayoutView.findViewById(R.id.layout_item_scroll);
             //判断当前这个view有没有scroll过
             if (backView.getScrollX() == 0) {
                 continue;

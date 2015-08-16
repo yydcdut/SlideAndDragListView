@@ -48,19 +48,28 @@ public abstract class SDAdapter<T> extends BaseAdapter implements View.OnClickLi
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         ViewHolder holder;
+        int height = (int) (mContext.getResources().getDimension(R.dimen.slv_item_height) + 40);
         if (convertView == null) {
             holder = new ViewHolder();
             convertView = LayoutInflater.from(mContext).inflate(R.layout.item_sdlv, null);
+            holder.layoutMain = (SDItemLayout) convertView.findViewById(R.id.layout_item_main);
+            holder.layoutMain.setHeight(height);
+            holder.layoutScroll = (SDItemLayout) convertView.findViewById(R.id.layout_item_scroll);
+            holder.layoutScroll.setHeight(height);
+            holder.layoutBG = (SDItemLayout) convertView.findViewById(R.id.layout_item_bg);
+            holder.layoutBG.setHeight(height);
+            holder.imgBGScroll = (SDItemBGImage) convertView.findViewById(R.id.img_item_scroll_bg);
+            holder.imgBGScroll.setHeight(height);
+            holder.imgBG = (SDItemBGImage) convertView.findViewById(R.id.img_item_bg);
+            holder.imgBG.setHeight(height);
             holder.layoutCustom = (FrameLayout) convertView.findViewById(R.id.layout_custom);
-            holder.layoutScroll = convertView.findViewById(R.id.layout_item_edit);
             holder.btnDelete = (TextView) convertView.findViewById(R.id.txt_item_edit_btn1);
             holder.btnRename = (TextView) convertView.findViewById(R.id.txt_item_edit_btn2);
-            holder.layoutBG = convertView.findViewById(R.id.layout_item_edit_bg);
-            holder.imgBG = convertView.findViewById(R.id.img_item_edit_bg);
             convertView.setTag(holder);
         } else {
             holder = (ViewHolder) convertView.getTag();
         }
+
         //用户的view
         View customView = getView(mContext, holder.layoutCustom.getChildAt(0), position, mDragPosition);
         if (holder.layoutCustom.getChildAt(0) == null) {
@@ -75,7 +84,7 @@ public abstract class SDAdapter<T> extends BaseAdapter implements View.OnClickLi
         holder.btnDelete.setOnClickListener(this);
         holder.btnRename.setOnClickListener(this);
         //把背景显示出来（因为在drag的时候会将背景透明，因为好看）
-        holder.imgBG.setVisibility(View.VISIBLE);
+        holder.imgBGScroll.setVisibility(View.VISIBLE);
         holder.layoutBG.setVisibility(View.VISIBLE);
         return convertView;
     }
@@ -105,11 +114,13 @@ public abstract class SDAdapter<T> extends BaseAdapter implements View.OnClickLi
     }
 
     class ViewHolder {
-        public View layoutScroll;
+        public SDItemLayout layoutMain;
+        public SDItemLayout layoutScroll;
+        public SDItemLayout layoutBG;
+        public SDItemBGImage imgBGScroll;
+        public SDItemBGImage imgBG;
         public TextView btnDelete;
         public TextView btnRename;
-        public View layoutBG;
-        public View imgBG;
         public FrameLayout layoutCustom;
     }
 
@@ -118,7 +129,7 @@ public abstract class SDAdapter<T> extends BaseAdapter implements View.OnClickLi
      *
      * @param dragPosition
      */
-    public void setDragPosition(int dragPosition) {
+    protected void setDragPosition(int dragPosition) {
         mDragPosition = dragPosition;
     }
 
@@ -127,7 +138,7 @@ public abstract class SDAdapter<T> extends BaseAdapter implements View.OnClickLi
      *
      * @param btnPosition
      */
-    public void setBtnPosition(int btnPosition) {
+    protected void setBtnPosition(int btnPosition) {
         mBtnPosition = btnPosition;
     }
 
@@ -159,7 +170,7 @@ public abstract class SDAdapter<T> extends BaseAdapter implements View.OnClickLi
      *
      * @return
      */
-    public List<T> getDataList() {
+    protected List<T> getDataList() {
         return mDataList;
     }
 
