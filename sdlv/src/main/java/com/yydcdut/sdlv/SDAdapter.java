@@ -72,9 +72,20 @@ public abstract class SDAdapter<T> extends BaseAdapter implements View.OnClickLi
             //设置监听器
             holder.btn1.setOnClickListener(this);
             holder.btn2.setOnClickListener(this);
+
+            holder.btn1.setClickable(false);
+            holder.btn2.setClickable(false);
             convertView.setTag(holder);
         } else {
             holder = (ViewHolder) convertView.getTag();
+        }
+
+        if (mSlideOpenItemPosition == position) {
+            holder.btn1.setClickable(true);
+            holder.btn2.setClickable(true);
+        } else {
+            holder.btn1.setClickable(false);
+            holder.btn2.setClickable(false);
         }
 
         //用户的view
@@ -223,6 +234,13 @@ public abstract class SDAdapter<T> extends BaseAdapter implements View.OnClickLi
 
     protected void setItemBtnWidth(float width) {
         mItemBtnWidth = width;
+    }
+
+    private int mSlideOpenItemPosition;
+
+    protected void setSlideOpenItemPosition(int position) {
+        mSlideOpenItemPosition = position;
+        notifyDataSetChanged();
     }
 
 

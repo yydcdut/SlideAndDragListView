@@ -215,7 +215,7 @@ public class SlideAndDragListView<T> extends ListView implements Handler.Callbac
     }
 
     @Override
-    public boolean onTouchEvent(MotionEvent ev) {
+    public boolean dispatchTouchEvent(MotionEvent ev) {
         switch (ev.getAction()) {
             case MotionEvent.ACTION_DOWN:
                 if (mIsScrolling) {//scroll正在滑动的话就不要做其他处理了
@@ -228,13 +228,13 @@ public class SlideAndDragListView<T> extends ListView implements Handler.Callbac
                 //通过坐标找到在ListView中的位置
                 mSlideTargetPosition = pointToPosition(mXDown, mYDown);
                 if (mSlideTargetPosition == AdapterView.INVALID_POSITION) {
-                    return super.onTouchEvent(ev);
+                    return super.dispatchTouchEvent(ev);
                 }
 
                 //通过位置找到要slide的view
                 View view = getChildAt(mSlideTargetPosition - getFirstVisiblePosition());
                 if (view == null) {
-                    return super.onTouchEvent(ev);
+                    return super.dispatchTouchEvent(ev);
                 }
                 mSlideTargetView = view.findViewById(R.id.layout_item_scroll);
                 if (mSlideTargetView != null) {
@@ -248,7 +248,7 @@ public class SlideAndDragListView<T> extends ListView implements Handler.Callbac
                 break;
             case MotionEvent.ACTION_MOVE:
                 if (mIsScrolling) {//scroll正在滑动的话就不要做其他处理了
-                    return super.onTouchEvent(ev);
+                    return super.dispatchTouchEvent(ev);
                 }
                 if (fingerNotMove(ev)) {//手指的范围在50以内
                     if (mState != STATE_SCROLL && mState != STATE_LONG_CLICK_FINISH) {//状态不为滑动状态且不为已经触发完成
@@ -267,7 +267,7 @@ public class SlideAndDragListView<T> extends ListView implements Handler.Callbac
                     }
                     //如果有scroll归位的话的话先跳过这次move
                     if (bool) {
-                        return super.onTouchEvent(ev);
+                        return super.dispatchTouchEvent(ev);
                     }
                     //scroll当前的View
                     int moveDistance = (int) ev.getX() - mXDown;//这个往右是正，往左是负
@@ -279,15 +279,16 @@ public class SlideAndDragListView<T> extends ListView implements Handler.Callbac
             case MotionEvent.ACTION_UP:
             case MotionEvent.ACTION_CANCEL:
                 if (mIsScrolling) {//scroll正在滑动的话就不要做其他处理了
-                    return super.onTouchEvent(ev);
+                    return true;
                 }
-                if (mSlideTargetView != null) {
+                if (mSlideTargetView != null && mState == STATE_SCROLL) {
                     //如果滑出的话，那么就滑到固定位置(只要滑出了 mBGWidth / 2 ，就算滑出去了)
                     if (Math.abs(mSlideTargetView.getScrollX()) > mBGWidth / 2) {
                         //通知adapter
                         mSDAdapter.setBtnPosition(mSlideTargetPosition);
                         //不触发onListItemClick事件
                         mOnListItemClickListener = null;
+                        mSDAdapter.setSlideOpenItemPosition(mSlideTargetPosition);
                         if (mOnSlideListener != null) {
                             mOnSlideListener.onSlideOpen(mSlideTargetView, mSlideTargetPosition);
                         }
@@ -302,6 +303,7 @@ public class SlideAndDragListView<T> extends ListView implements Handler.Callbac
                     } else {
                         //通知adapter
                         mSDAdapter.setBtnPosition(-1);
+                        mSDAdapter.setSlideOpenItemPosition(-1);
                         //如果有onListItemClick事件的话，就赋值过去，代表可以触发了
                         if (mTempListItemClickListener != null && mOnListItemClickListener == null) {
                             mOnListItemClickListener = mTempListItemClickListener;
@@ -313,6 +315,13 @@ public class SlideAndDragListView<T> extends ListView implements Handler.Callbac
                         mScroller.startScroll(mSlideTargetView.getScrollX(), 0, -mSlideTargetView.getScrollX(), 0, SCROLL_QUICK_TIME);
                         postInvalidate();
                     }
+                    mState = STATE_NOTHING;
+                    removeLongClickMessage();
+                    //更新last的值
+                    mLastPosition = mSlideTargetPosition;
+                    //设置为无效的
+                    mSlideTargetPosition = AdapterView.INVALID_POSITION;
+                    return false;
                 }
                 mState = STATE_NOTHING;
                 removeLongClickMessage();
@@ -326,7 +335,7 @@ public class SlideAndDragListView<T> extends ListView implements Handler.Callbac
                 mState = STATE_NOTHING;
                 break;
         }
-        return super.onTouchEvent(ev);
+        return super.dispatchTouchEvent(ev);
     }
 
     /**
@@ -392,6 +401,7 @@ public class SlideAndDragListView<T> extends ListView implements Handler.Callbac
                 backView.scrollTo(0, 0);
                 //通知adapter
                 mSDAdapter.setBtnPosition(-1);
+                mSDAdapter.setSlideOpenItemPosition(-1);
                 //如果有onListItemClick事件的话，就赋值过去，代表可以触发了
                 if (mTempListItemClickListener != null && mOnListItemClickListener == null) {
                     mOnListItemClickListener = mTempListItemClickListener;

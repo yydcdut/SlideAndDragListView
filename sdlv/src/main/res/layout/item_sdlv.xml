@@ -17,7 +17,7 @@
             android:id="@+id/img_item_bg"
             android:layout_width="fill_parent"
             android:layout_height="@dimen/slv_item_height"
-            android:background="@drawable/bg_drawable"/>
+            android:background="@android:color/white"/>
 
         <TextView
             android:id="@+id/txt_item_edit_btn1"
@@ -57,7 +57,7 @@
             android:id="@+id/img_item_scroll_bg"
             android:layout_width="fill_parent"
             android:layout_height="@dimen/slv_item_height"
-            android:background="@drawable/bg_drawable"/>
+            android:background="@android:color/white"/>
 
         <FrameLayout
             android:id="@+id/layout_custom"
