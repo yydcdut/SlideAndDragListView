@@ -83,11 +83,8 @@ public class SlideAndDragListView<T> extends ListView implements Handler.Callbac
     private OnButtonClickListenerProxy mOnButtonClickListenerProxy;
     /* Attrs */
     private float mItemHeight = 0;
-    private float mItemHeightDefault = getContext().getResources().getDimension(R.dimen.slv_item_height);
     private float mItemBtnWidth = 0;
-    private float mItemBtnWidthDefault = getContext().getResources().getDimension(R.dimen.slv_item_bg_btn_width);
     private int mItemBtnNumber = 0;
-    private int mItemBtnNumberDefault = 2;
     private String mItemBtn1Text;
     private String mItemBtn2Text;
     private Drawable mItemBGDrawable = null;
@@ -103,20 +100,23 @@ public class SlideAndDragListView<T> extends ListView implements Handler.Callbac
     public SlideAndDragListView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         //-------------------------- attrs --------------------------
+        float itemHeightDefault = getContext().getResources().getDimension(R.dimen.slv_item_height);
+        float itemBtnWidthDefault = getContext().getResources().getDimension(R.dimen.slv_item_bg_btn_width);
+        int itemBtnNumberDefault = 2;
+
         TypedArray a = context.getTheme().obtainStyledAttributes(attrs, R.styleable.sdlv, defStyleAttr, 0);
-        mItemHeight = a.getDimension(R.styleable.sdlv_item_height, mItemHeightDefault);
-        mItemBtnWidth = a.getDimension(R.styleable.sdlv_item_btn_width, mItemBtnWidthDefault);
-        mItemBtnNumber = a.getInt(R.styleable.sdlv_item_btn_number, mItemBtnNumberDefault);
+        mItemHeight = a.getDimension(R.styleable.sdlv_item_height, itemHeightDefault);
+        mItemBtnWidth = a.getDimension(R.styleable.sdlv_item_btn_width, itemBtnWidthDefault);
+        mItemBtnNumber = a.getInt(R.styleable.sdlv_item_btn_number, itemBtnNumberDefault);
         if (mItemBtnNumber > ITEM_BTN_NUMBER_MAX || mItemBtnNumber < 0) {
             throw new IllegalArgumentException("The number of Item buttons should be in between 0 and 2 !");
         }
         mItemBtn1Text = a.getString(R.styleable.sdlv_item_btn1_text);
         mItemBtn2Text = a.getString(R.styleable.sdlv_item_btn2_text);
         if (!TextUtils.isEmpty(mItemBtn2Text) && TextUtils.isEmpty(mItemBtn1Text)) {
-            throw new IllegalArgumentException("先1后2");
+            throw new IllegalArgumentException("The \'item_btn2_text\' has value, but \'item_btn1_text\' dose not have value!");
         }
         mItemBGDrawable = a.getDrawable(R.styleable.sdlv_item_background);
-
         a.recycle();
         //-------------------------- attrs --------------------------
         mBGWidth = (int) (mItemBtnWidth * mItemBtnNumber);
@@ -395,9 +395,7 @@ public class SlideAndDragListView<T> extends ListView implements Handler.Callbac
             View backLayoutView = getChildAt(i);
             View backView = backLayoutView.findViewById(R.id.layout_item_scroll);
             //判断当前这个view有没有scroll过
-            if (backView.getScrollX() == 0) {
-                continue;
-            } else {//这里scroll回去不要动画也挺连贯了
+            if (backView.getScrollX() != 0) {//这里scroll回去不要动画也挺连贯了
                 //如果scroll过的话就scroll到0,0
                 backView.scrollTo(0, 0);
                 //通知adapter
@@ -435,6 +433,7 @@ public class SlideAndDragListView<T> extends ListView implements Handler.Callbac
      *
      * @param listener
      */
+
     public void setOnListItemLongClickListener(OnListItemLongClickListener listener) {
         mOnListItemLongClickListener = listener;
     }
@@ -494,7 +493,7 @@ public class SlideAndDragListView<T> extends ListView implements Handler.Callbac
                     //有时候得到的position是-1(AdapterView.INVALID_POSITION)，忽略掉
                     if (position >= 0) {
                         //判断是往上了还是往下了
-                        mUp = position - mBeforeCurrentPosition > 0 ? false : true;
+                        mUp = position - mBeforeCurrentPosition <= 0;
                         //记录移动之后上一次的位置
                         mBeforeBeforePosition = mBeforeCurrentPosition;
                         //记录当前位置
@@ -560,7 +559,6 @@ public class SlideAndDragListView<T> extends ListView implements Handler.Callbac
         }
         return false;
     }
-
 
     @Override
     public void setAdapter(ListAdapter adapter) {

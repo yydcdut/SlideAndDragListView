@@ -16,7 +16,7 @@ import java.util.List;
  */
 public abstract class SDAdapter<T> extends BaseAdapter implements View.OnClickListener {
     /* 上下文 */
-    private Context mContext;
+    private final Context mContext;
     /* 数据 */
     private List<T> mDataList;
     /* Drag的位置 */
@@ -35,7 +35,6 @@ public abstract class SDAdapter<T> extends BaseAdapter implements View.OnClickLi
     private float mItemBtnWidth;
     private Drawable mItemBGDrawable;
     /* ---------- attrs ----------- */
-
 
     public SDAdapter(Context context, List<T> dataList) {
         mContext = context;
@@ -76,6 +75,7 @@ public abstract class SDAdapter<T> extends BaseAdapter implements View.OnClickLi
             holder.layoutCustom = (FrameLayout) convertView.findViewById(R.id.layout_custom);
             holder.btn1 = (TextView) convertView.findViewById(R.id.txt_item_edit_btn1);
             holder.btn2 = (TextView) convertView.findViewById(R.id.txt_item_edit_btn2);
+            //如果用户设置了背景的话就用用户的背景
             if (mItemBGDrawable != null) {
                 holder.imgBG.setBackgroundDrawable(mItemBGDrawable);
                 holder.imgBGScroll.setBackgroundDrawable(mItemBGDrawable);
@@ -88,13 +88,14 @@ public abstract class SDAdapter<T> extends BaseAdapter implements View.OnClickLi
             //设置监听器
             holder.btn1.setOnClickListener(this);
             holder.btn2.setOnClickListener(this);
-
+            //一开始加载的时候都不可点击
             holder.btn1.setClickable(false);
             holder.btn2.setClickable(false);
             convertView.setTag(holder);
         } else {
             holder = (ViewHolder) convertView.getTag();
         }
+
         //没有展开的item里面的btn是不可点击的
         if (mSlideOpenItemPosition == position) {
             holder.btn1.setClickable(true);
@@ -112,6 +113,7 @@ public abstract class SDAdapter<T> extends BaseAdapter implements View.OnClickLi
             holder.layoutCustom.removeViewAt(0);
             holder.layoutCustom.addView(customView);
         }
+
         //所有的都归位
         holder.layoutScroll.scrollTo(0, 0);
 
@@ -232,25 +234,51 @@ public abstract class SDAdapter<T> extends BaseAdapter implements View.OnClickLi
         return mDataList;
     }
 
+    /**
+     * 设置Item的高度
+     *
+     * @param height
+     */
     protected void setItemHeight(float height) {
         mItemHeight = height;
     }
 
+    /**
+     * 设置Item里面的btn的文字
+     *
+     * @param number
+     * @param text
+     */
     protected void setItemBtnNumber(int number, String... text) {
         mItemBtnNumber = number;
         mItemBtn1Text = text[0];
         mItemBtn2Text = text[1];
     }
 
+    /**
+     * 设置item里面的btn的宽度
+     *
+     * @param width
+     */
     protected void setItemBtnWidth(float width) {
         mItemBtnWidth = width;
     }
 
+    /**
+     * 设置slide滑开的item的位置
+     *
+     * @param position
+     */
     protected void setSlideOpenItemPosition(int position) {
         mSlideOpenItemPosition = position;
         notifyDataSetChanged();
     }
 
+    /**
+     * 设置item中2个imageView的backGround
+     *
+     * @param drawable
+     */
     protected void setItemBGDrawable(Drawable drawable) {
         mItemBGDrawable = drawable;
     }
