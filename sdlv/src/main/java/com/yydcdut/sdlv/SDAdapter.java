@@ -7,7 +7,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.FrameLayout;
-import android.widget.TextView;
 
 import java.util.List;
 
@@ -73,8 +72,12 @@ public abstract class SDAdapter<T> extends BaseAdapter implements View.OnClickLi
             holder.imgBG = (SDItemBGImage) convertView.findViewById(R.id.img_item_bg);
             holder.imgBG.setItemHeight((int) mItemHeight);
             holder.layoutCustom = (FrameLayout) convertView.findViewById(R.id.layout_custom);
-            holder.btn1 = (TextView) convertView.findViewById(R.id.txt_item_edit_btn1);
-            holder.btn2 = (TextView) convertView.findViewById(R.id.txt_item_edit_btn2);
+            holder.btn1 = (SDItemText) convertView.findViewById(R.id.txt_item_edit_btn1);
+            holder.btn2 = (SDItemText) convertView.findViewById(R.id.txt_item_edit_btn2);
+            holder.btn1.setBtnWidth((int) mItemBtnWidth);
+            holder.btn1.setBtnHeight((int) mItemHeight);
+            holder.btn2.setBtnWidth((int) mItemBtnWidth);
+            holder.btn2.setBtnHeight((int) mItemHeight);
             //如果用户设置了背景的话就用用户的背景
             if (mItemBGDrawable != null) {
                 holder.imgBG.setBackgroundDrawable(mItemBGDrawable);
@@ -91,6 +94,7 @@ public abstract class SDAdapter<T> extends BaseAdapter implements View.OnClickLi
             //一开始加载的时候都不可点击
             holder.btn1.setClickable(false);
             holder.btn2.setClickable(false);
+
             convertView.setTag(holder);
         } else {
             holder = (ViewHolder) convertView.getTag();
@@ -153,8 +157,8 @@ public abstract class SDAdapter<T> extends BaseAdapter implements View.OnClickLi
         public SDItemLayout layoutBG;
         public SDItemBGImage imgBGScroll;
         public SDItemBGImage imgBG;
-        public TextView btn1;
-        public TextView btn2;
+        public SDItemText btn1;
+        public SDItemText btn2;
         public FrameLayout layoutCustom;
     }
 

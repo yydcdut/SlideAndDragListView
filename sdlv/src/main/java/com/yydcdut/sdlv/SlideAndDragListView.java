@@ -25,6 +25,7 @@ import java.util.List;
  */
 public class SlideAndDragListView<T> extends ListView implements Handler.Callback, View.OnDragListener,
         SDAdapter.OnButtonClickListener, AdapterView.OnItemClickListener {
+    /* item的btn的最大个数 */
     private static final int ITEM_BTN_NUMBER_MAX = 2;
     /* Handler 的 Message 信息 */
     private static final int MSG_WHAT_LONG_CLICK = 1;
@@ -39,7 +40,6 @@ public class SlideAndDragListView<T> extends ListView implements Handler.Callbac
     private static final int STATE_SCROLL = 2;//SCROLL状态
     private static final int STATE_LONG_CLICK_FINISH = 3;//长点击已经触发完成
     private int mState = STATE_NOTHING;
-
     /* Scroller 滑动的 */
     private Scroller mScroller;
     /* 振动 */
@@ -60,7 +60,6 @@ public class SlideAndDragListView<T> extends ListView implements Handler.Callbac
     private OnListItemLongClickListener mOnListItemLongClickListener;
     private OnListItemClickListener mOnListItemClickListener;
     private OnListItemClickListener mTempListItemClickListener;
-
     /* 那两个button的长度 */
     private int mBGWidth;
     /* 判断drag往上还是往下 */
@@ -81,6 +80,8 @@ public class SlideAndDragListView<T> extends ListView implements Handler.Callbac
     private OnSlideListener mOnSlideListener;
     /* 代理Adapter里面的button的click事件 */
     private OnButtonClickListenerProxy mOnButtonClickListenerProxy;
+    /* scroller在scroll的时候不要做触发其他的事情 */
+    private boolean mIsScrollerScrolling = false;
     /* Attrs */
     private float mItemHeight = 0;
     private float mItemBtnWidth = 0;
@@ -103,7 +104,6 @@ public class SlideAndDragListView<T> extends ListView implements Handler.Callbac
         float itemHeightDefault = getContext().getResources().getDimension(R.dimen.slv_item_height);
         float itemBtnWidthDefault = getContext().getResources().getDimension(R.dimen.slv_item_bg_btn_width);
         int itemBtnNumberDefault = 2;
-
         TypedArray a = context.getTheme().obtainStyledAttributes(attrs, R.styleable.sdlv, defStyleAttr, 0);
         mItemHeight = a.getDimension(R.styleable.sdlv_item_height, itemHeightDefault);
         mItemBtnWidth = a.getDimension(R.styleable.sdlv_item_btn_width, itemBtnWidthDefault);
@@ -165,13 +165,11 @@ public class SlideAndDragListView<T> extends ListView implements Handler.Callbac
         return true;
     }
 
-    private boolean mIsScrolling = false;
-
     @Override
     public void computeScroll() {
         //滑动到指定位置
         if (mScroller.computeScrollOffset()) {
-            mIsScrolling = true;
+            mIsScrollerScrolling = true;
             if (mSlideTargetView != null) {
                 mSlideTargetView.scrollTo(mScroller.getCurrX(), mScroller.getCurrY());
                 postInvalidate();
@@ -180,7 +178,7 @@ public class SlideAndDragListView<T> extends ListView implements Handler.Callbac
                 }
             }
         } else {
-            mIsScrolling = false;
+            mIsScrollerScrolling = false;
         }
         super.computeScroll();
     }
@@ -219,8 +217,8 @@ public class SlideAndDragListView<T> extends ListView implements Handler.Callbac
     public boolean dispatchTouchEvent(MotionEvent ev) {
         switch (ev.getAction()) {
             case MotionEvent.ACTION_DOWN:
-                if (mIsScrolling) {//scroll正在滑动的话就不要做其他处理了
-                    return super.onTouchEvent(ev);
+                if (mIsScrollerScrolling) {//scroll正在滑动的话就不要做其他处理了
+                    return false;
                 }
                 //获取出坐标来
                 mXDown = (int) ev.getX();
@@ -248,8 +246,8 @@ public class SlideAndDragListView<T> extends ListView implements Handler.Callbac
                 mState = STATE_DOWN;
                 break;
             case MotionEvent.ACTION_MOVE:
-                if (mIsScrolling) {//scroll正在滑动的话就不要做其他处理了
-                    return super.dispatchTouchEvent(ev);
+                if (mIsScrollerScrolling) {//scroll正在滑动的话就不要做其他处理了
+                    return false;
                 }
                 if (fingerNotMove(ev)) {//手指的范围在50以内
                     if (mState != STATE_SCROLL && mState != STATE_LONG_CLICK_FINISH) {//状态不为滑动状态且不为已经触发完成
@@ -279,8 +277,8 @@ public class SlideAndDragListView<T> extends ListView implements Handler.Callbac
                 break;
             case MotionEvent.ACTION_UP:
             case MotionEvent.ACTION_CANCEL:
-                if (mIsScrolling) {//scroll正在滑动的话就不要做其他处理了
-                    return true;
+                if (mIsScrollerScrolling) {//scroll正在滑动的话就不要做其他处理了
+                    return false;
                 }
                 if (mSlideTargetView != null && mState == STATE_SCROLL) {
                     //如果滑出的话，那么就滑到固定位置(只要滑出了 mBGWidth / 2 ，就算滑出去了)

@@ -29,7 +29,9 @@ public class SDItemBGImage extends ImageView {
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-        int width = MeasureSpec.getSize(widthMeasureSpec);
-        setMeasuredDimension(width, mHeight);
+        if (mHeight > 0) {
+            int width = MeasureSpec.getSize(widthMeasureSpec);
+            setMeasuredDimension(width, mHeight);
+        }
     }
 }
