@@ -83,7 +83,6 @@ public class SlideAndDragListView<T> extends ListView implements Handler.Callbac
     /* Attrs */
     private float mItemHeight = 0;
     private float mItemHeightDefault = getContext().getResources().getDimension(R.dimen.slv_item_height);
-    private int mBGResourceId;
     private float mItemBtnWidth = 0;
     private float mItemBtnWidthDefault = getContext().getResources().getDimension(R.dimen.slv_item_bg_btn_width);
     private int mItemBtnNumber = 0;
@@ -105,7 +104,6 @@ public class SlideAndDragListView<T> extends ListView implements Handler.Callbac
         TypedArray a = context.getTheme().obtainStyledAttributes(attrs, R.styleable.sdlv, defStyleAttr, 0);
         mItemHeight = a.getDimension(R.styleable.sdlv_item_height, mItemHeightDefault);
         mItemBtnWidth = a.getDimension(R.styleable.sdlv_item_btn_width, mItemBtnWidthDefault);
-        mBGResourceId = a.getResourceId(R.styleable.sdlv_item_background, 0);
         mItemBtnNumber = a.getInt(R.styleable.sdlv_item_btn_number, mItemBtnNumberDefault);
         if (mItemBtnNumber > ITEM_BTN_NUMBER_MAX || mItemBtnNumber < 0) {
             throw new IllegalArgumentException("The number of Item buttons should be in between 0 and 2 !");

@@ -22,7 +22,7 @@ public class SDItemLayout extends RelativeLayout {
         super(context, attrs, defStyleAttr);
     }
 
-    public void setHeight(int height) {
+    public void setItemHeight(int height) {
         mHeight = height;
     }
 

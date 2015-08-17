@@ -22,7 +22,7 @@ public class SDItemBGImage extends ImageView {
         super(context, attrs, defStyleAttr);
     }
 
-    public void setHeight(int height) {
+    public void setItemHeight(int height) {
         mHeight = height;
     }
 

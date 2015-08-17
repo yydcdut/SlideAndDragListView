@@ -24,6 +24,16 @@ public abstract class SDAdapter<T> extends BaseAdapter implements View.OnClickLi
     private int mBtnPosition = -1;
     /* button的单击监听器 */
     private OnButtonClickListener mOnButtonClickListener;
+    /* 当前滑开的item的位置 */
+    private int mSlideOpenItemPosition;
+    /* ---------- attrs ----------- */
+    private float mItemHeight;
+    private int mItemBtnNumber;
+    private String mItemBtn1Text;
+    private String mItemBtn2Text;
+    private float mItemBtnWidth;
+    /* ---------- attrs ----------- */
+
 
     public SDAdapter(Context context, List<T> dataList) {
         mContext = context;
@@ -52,15 +62,15 @@ public abstract class SDAdapter<T> extends BaseAdapter implements View.OnClickLi
             holder = new ViewHolder();
             convertView = LayoutInflater.from(mContext).inflate(R.layout.item_sdlv, null);
             holder.layoutMain = (SDItemLayout) convertView.findViewById(R.id.layout_item_main);
-            holder.layoutMain.setHeight((int) mItemHeight);
+            holder.layoutMain.setItemHeight((int) mItemHeight);
             holder.layoutScroll = (SDItemLayout) convertView.findViewById(R.id.layout_item_scroll);
-            holder.layoutScroll.setHeight((int) mItemHeight);
+            holder.layoutScroll.setItemHeight((int) mItemHeight);
             holder.layoutBG = (SDItemLayout) convertView.findViewById(R.id.layout_item_bg);
-            holder.layoutBG.setHeight((int) mItemHeight);
+            holder.layoutBG.setItemHeight((int) mItemHeight);
             holder.imgBGScroll = (SDItemBGImage) convertView.findViewById(R.id.img_item_scroll_bg);
-            holder.imgBGScroll.setHeight((int) mItemHeight);
+            holder.imgBGScroll.setItemHeight((int) mItemHeight);
             holder.imgBG = (SDItemBGImage) convertView.findViewById(R.id.img_item_bg);
-            holder.imgBG.setHeight((int) mItemHeight);
+            holder.imgBG.setItemHeight((int) mItemHeight);
             holder.layoutCustom = (FrameLayout) convertView.findViewById(R.id.layout_custom);
             holder.btn1 = (TextView) convertView.findViewById(R.id.txt_item_edit_btn1);
             holder.btn2 = (TextView) convertView.findViewById(R.id.txt_item_edit_btn2);
@@ -214,15 +224,9 @@ public abstract class SDAdapter<T> extends BaseAdapter implements View.OnClickLi
         return mDataList;
     }
 
-    private float mItemHeight;
-
     protected void setItemHeight(float height) {
         mItemHeight = height;
     }
-
-    private int mItemBtnNumber;
-    private String mItemBtn1Text;
-    private String mItemBtn2Text;
 
     protected void setItemBtnNumber(int number, String... text) {
         mItemBtnNumber = number;
@@ -230,13 +234,9 @@ public abstract class SDAdapter<T> extends BaseAdapter implements View.OnClickLi
         mItemBtn2Text = text[1];
     }
 
-    private float mItemBtnWidth;
-
     protected void setItemBtnWidth(float width) {
         mItemBtnWidth = width;
     }
-
-    private int mSlideOpenItemPosition;
 
     protected void setSlideOpenItemPosition(int position) {
         mSlideOpenItemPosition = position;
