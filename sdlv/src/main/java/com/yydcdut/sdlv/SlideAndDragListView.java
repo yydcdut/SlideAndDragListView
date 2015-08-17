@@ -4,6 +4,7 @@ import android.content.ClipData;
 import android.content.ClipDescription;
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.graphics.drawable.Drawable;
 import android.os.Handler;
 import android.os.Message;
 import android.os.Vibrator;
@@ -89,6 +90,7 @@ public class SlideAndDragListView<T> extends ListView implements Handler.Callbac
     private int mItemBtnNumberDefault = 2;
     private String mItemBtn1Text;
     private String mItemBtn2Text;
+    private Drawable mItemBGDrawable = null;
 
     public SlideAndDragListView(Context context) {
         this(context, null);
@@ -113,6 +115,7 @@ public class SlideAndDragListView<T> extends ListView implements Handler.Callbac
         if (!TextUtils.isEmpty(mItemBtn2Text) && TextUtils.isEmpty(mItemBtn1Text)) {
             throw new IllegalArgumentException("先1后2");
         }
+        mItemBGDrawable = a.getDrawable(R.styleable.sdlv_item_background);
 
         a.recycle();
         //-------------------------- attrs --------------------------
@@ -567,6 +570,7 @@ public class SlideAndDragListView<T> extends ListView implements Handler.Callbac
         mSDAdapter.setItemHeight(mItemHeight);
         mSDAdapter.setItemBtnNumber(mItemBtnNumber, mItemBtn1Text, mItemBtn2Text);
         mSDAdapter.setItemBtnWidth(mItemBtnWidth);
+        mSDAdapter.setItemBGDrawable(mItemBGDrawable);
         mDataList = mSDAdapter.getDataList();
     }
 

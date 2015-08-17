@@ -1,6 +1,7 @@
 package com.yydcdut.sdlv;
 
 import android.content.Context;
+import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -32,6 +33,7 @@ public abstract class SDAdapter<T> extends BaseAdapter implements View.OnClickLi
     private String mItemBtn1Text;
     private String mItemBtn2Text;
     private float mItemBtnWidth;
+    private Drawable mItemBGDrawable;
     /* ---------- attrs ----------- */
 
 
@@ -74,6 +76,10 @@ public abstract class SDAdapter<T> extends BaseAdapter implements View.OnClickLi
             holder.layoutCustom = (FrameLayout) convertView.findViewById(R.id.layout_custom);
             holder.btn1 = (TextView) convertView.findViewById(R.id.txt_item_edit_btn1);
             holder.btn2 = (TextView) convertView.findViewById(R.id.txt_item_edit_btn2);
+            if (mItemBGDrawable != null) {
+                holder.imgBG.setBackgroundDrawable(mItemBGDrawable);
+                holder.imgBGScroll.setBackgroundDrawable(mItemBGDrawable);
+            }
             //判断哪些隐藏哪些显示
             checkVisible(holder);
             //设置text
@@ -89,7 +95,7 @@ public abstract class SDAdapter<T> extends BaseAdapter implements View.OnClickLi
         } else {
             holder = (ViewHolder) convertView.getTag();
         }
-
+        //没有展开的item里面的btn是不可点击的
         if (mSlideOpenItemPosition == position) {
             holder.btn1.setClickable(true);
             holder.btn2.setClickable(true);
@@ -172,6 +178,8 @@ public abstract class SDAdapter<T> extends BaseAdapter implements View.OnClickLi
             default:
                 throw new IllegalArgumentException("");
         }
+        vh.btn1.setClickable(false);
+        vh.btn2.setClickable(false);
     }
 
     /**
@@ -243,5 +251,8 @@ public abstract class SDAdapter<T> extends BaseAdapter implements View.OnClickLi
         notifyDataSetChanged();
     }
 
+    protected void setItemBGDrawable(Drawable drawable) {
+        mItemBGDrawable = drawable;
+    }
 
 }
