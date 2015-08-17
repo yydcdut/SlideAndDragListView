@@ -84,11 +84,15 @@ public class SlideAndDragListView<T> extends ListView implements Handler.Callbac
     private boolean mIsScrollerScrolling = false;
     /* Attrs */
     private float mItemHeight = 0;
+    private Drawable mItemBGDrawable = null;
     private float mItemBtnWidth = 0;
     private int mItemBtnNumber = 0;
     private String mItemBtn1Text;
     private String mItemBtn2Text;
-    private Drawable mItemBGDrawable = null;
+    private int mItemBtn1TextColor;
+    private int mItemBtn2TextColor;
+    private Drawable mItemBtn1Drawable;
+    private Drawable mItemBtn2Drawable;
 
     public SlideAndDragListView(Context context) {
         this(context, null);
@@ -101,13 +105,11 @@ public class SlideAndDragListView<T> extends ListView implements Handler.Callbac
     public SlideAndDragListView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         //-------------------------- attrs --------------------------
-        float itemHeightDefault = getContext().getResources().getDimension(R.dimen.slv_item_height);
-        float itemBtnWidthDefault = getContext().getResources().getDimension(R.dimen.slv_item_bg_btn_width);
-        int itemBtnNumberDefault = 2;
         TypedArray a = context.getTheme().obtainStyledAttributes(attrs, R.styleable.sdlv, defStyleAttr, 0);
-        mItemHeight = a.getDimension(R.styleable.sdlv_item_height, itemHeightDefault);
-        mItemBtnWidth = a.getDimension(R.styleable.sdlv_item_btn_width, itemBtnWidthDefault);
-        mItemBtnNumber = a.getInt(R.styleable.sdlv_item_btn_number, itemBtnNumberDefault);
+        mItemHeight = a.getDimension(R.styleable.sdlv_item_height, getContext().getResources().getDimension(R.dimen.slv_item_height));
+        mItemBGDrawable = a.getDrawable(R.styleable.sdlv_item_background);
+        mItemBtnWidth = a.getDimension(R.styleable.sdlv_item_btn_width, getContext().getResources().getDimension(R.dimen.slv_item_bg_btn_width));
+        mItemBtnNumber = a.getInt(R.styleable.sdlv_item_btn_number, 2);
         if (mItemBtnNumber > ITEM_BTN_NUMBER_MAX || mItemBtnNumber < 0) {
             throw new IllegalArgumentException("The number of Item buttons should be in between 0 and 2 !");
         }
@@ -116,7 +118,10 @@ public class SlideAndDragListView<T> extends ListView implements Handler.Callbac
         if (!TextUtils.isEmpty(mItemBtn2Text) && TextUtils.isEmpty(mItemBtn1Text)) {
             throw new IllegalArgumentException("The \'item_btn2_text\' has value, but \'item_btn1_text\' dose not have value!");
         }
-        mItemBGDrawable = a.getDrawable(R.styleable.sdlv_item_background);
+        mItemBtn1TextColor = a.getColor(R.styleable.sdlv_item_btn1_text_color, getContext().getResources().getColor(android.R.color.white));
+        mItemBtn2TextColor = a.getColor(R.styleable.sdlv_item_btn2_text_color, getContext().getResources().getColor(android.R.color.white));
+        mItemBtn1Drawable = a.getDrawable(R.styleable.sdlv_item_btn1_background);
+        mItemBtn2Drawable = a.getDrawable(R.styleable.sdlv_item_btn2_background);
         a.recycle();
         //-------------------------- attrs --------------------------
         mBGWidth = (int) (mItemBtnWidth * mItemBtnNumber);
@@ -564,9 +569,13 @@ public class SlideAndDragListView<T> extends ListView implements Handler.Callbac
         mSDAdapter = (SDAdapter) adapter;
         mSDAdapter.setOnButtonClickListener(this);
         mSDAdapter.setItemHeight(mItemHeight);
+        mSDAdapter.setItemBGDrawable(mItemBGDrawable);
         mSDAdapter.setItemBtnNumber(mItemBtnNumber, mItemBtn1Text, mItemBtn2Text);
         mSDAdapter.setItemBtnWidth(mItemBtnWidth);
-        mSDAdapter.setItemBGDrawable(mItemBGDrawable);
+        mSDAdapter.setItemBtn1TextColor(mItemBtn1TextColor);
+        mSDAdapter.setItemBtn2TextColor(mItemBtn2TextColor);
+        mSDAdapter.setItemBtn1Drawable(mItemBtn1Drawable);
+        mSDAdapter.setItemBtn2Drawable(mItemBtn2Drawable);
         mDataList = mSDAdapter.getDataList();
     }
 

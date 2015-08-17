@@ -33,6 +33,10 @@ public abstract class SDAdapter<T> extends BaseAdapter implements View.OnClickLi
     private String mItemBtn2Text;
     private float mItemBtnWidth;
     private Drawable mItemBGDrawable;
+    private int mItemBtn1TextColor;
+    private int mItemBtn2TextColor;
+    private Drawable mItemBtn1Drawable;
+    private Drawable mItemBtn2Drawable;
     /* ---------- attrs ----------- */
 
     public SDAdapter(Context context, List<T> dataList) {
@@ -94,7 +98,11 @@ public abstract class SDAdapter<T> extends BaseAdapter implements View.OnClickLi
             //一开始加载的时候都不可点击
             holder.btn1.setClickable(false);
             holder.btn2.setClickable(false);
-
+            //背景和字体颜色
+            holder.btn1.setBackgroundDrawable(mItemBtn1Drawable);
+            holder.btn2.setBackgroundDrawable(mItemBtn2Drawable);
+            holder.btn1.setTextColor(mItemBtn1TextColor);
+            holder.btn2.setTextColor(mItemBtn2TextColor);
             convertView.setTag(holder);
         } else {
             holder = (ViewHolder) convertView.getTag();
@@ -287,4 +295,39 @@ public abstract class SDAdapter<T> extends BaseAdapter implements View.OnClickLi
         mItemBGDrawable = drawable;
     }
 
+    /**
+     * 设置btn1的字体颜色
+     *
+     * @param itemBtn1TextColor
+     */
+    public void setItemBtn1TextColor(int itemBtn1TextColor) {
+        mItemBtn1TextColor = itemBtn1TextColor;
+    }
+
+    /**
+     * 设置btn2的字体颜色
+     *
+     * @param itemBtn2TextColor
+     */
+    public void setItemBtn2TextColor(int itemBtn2TextColor) {
+        mItemBtn2TextColor = itemBtn2TextColor;
+    }
+
+    /**
+     * 设置btn1的background
+     *
+     * @param itemBtn1Drawable
+     */
+    public void setItemBtn1Drawable(Drawable itemBtn1Drawable) {
+        mItemBtn1Drawable = itemBtn1Drawable;
+    }
+
+    /**
+     * 设置btn2的background
+     *
+     * @param itemBtn2Drawable
+     */
+    public void setItemBtn2Drawable(Drawable itemBtn2Drawable) {
+        mItemBtn2Drawable = itemBtn2Drawable;
+    }
 }

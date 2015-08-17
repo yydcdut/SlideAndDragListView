@@ -15,8 +15,12 @@
         android:paddingLeft="8dip"
         android:paddingRight="8dip"
         sdlv:item_background="@android:color/white"
+        sdlv:item_btn1_background="@drawable/btn1_drawable"
         sdlv:item_btn1_text="Delete1"
+        sdlv:item_btn1_text_color="#00ff00"
+        sdlv:item_btn2_background="@drawable/btn2_drawable"
         sdlv:item_btn2_text="Rename1"
+        sdlv:item_btn2_text_color="#ff0000"
         sdlv:item_btn_number="2"
         sdlv:item_btn_width="70dip"
         sdlv:item_height="80dip">
