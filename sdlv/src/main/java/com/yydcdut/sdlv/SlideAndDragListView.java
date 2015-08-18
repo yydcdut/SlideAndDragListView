@@ -255,7 +255,7 @@ public class SlideAndDragListView<T> extends ListView implements Handler.Callbac
                     return false;
                 }
                 if (fingerNotMove(ev)) {//手指的范围在50以内
-                    if (mState != STATE_SCROLL && mState != STATE_LONG_CLICK_FINISH) {//状态不为滑动状态且不为已经触发完成
+                    if (mState != STATE_SCROLL && mState != STATE_LONG_CLICK_FINISH && mState != STATE_LONG_CLICK) {//状态不为滑动状态且不为已经触发完成
                         sendLongClickMessage();
                         mState = STATE_LONG_CLICK;
                     } else if (mState == STATE_SCROLL) {//当为滑动状态的时候
