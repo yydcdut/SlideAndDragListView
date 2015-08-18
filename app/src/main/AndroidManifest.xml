@@ -17,6 +17,5 @@
             </intent-filter>
         </activity>
     </application>
-    <uses-permission android:name="android.permission.VIBRATE"/>
 
 </manifest>

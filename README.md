@@ -76,7 +76,7 @@ SlideAndDragListView is useful for all kinds of prioritized lists: favorites, pl
 sdlv.setOnListItemLongClickListener(new SlideAndDragListView.OnListItemLongClickListener() {
             @Override
             public void onListItemLongClick(View view, int position) {
-                
+
             }
         });
 ```
@@ -89,7 +89,7 @@ sdlv.setOnListItemLongClickListener(new SlideAndDragListView.OnListItemLongClick
 sdlv.setOnListItemClickListener(new SlideAndDragListView.OnListItemClickListener() {
             @Override
             public void onListItemClick(View v, int position) {
-                
+
             }
         });
 ```
@@ -102,7 +102,7 @@ sdlv.setOnListItemClickListener(new SlideAndDragListView.OnListItemClickListener
 sdlv.setOnDragListener(new SlideAndDragListView.OnDragListener() {
             @Override
             public void onDragViewMoving(int position) {
-                
+
             }
 
             @Override
@@ -122,7 +122,7 @@ sdlv.setOnDragListener(new SlideAndDragListView.OnDragListener() {
 sdlv.setOnSlideListener(new SlideAndDragListView.OnSlideListener() {
             @Override
             public void onSlideOpen(View view, int position) {
-                
+
             }
 
             @Override
@@ -141,13 +141,19 @@ sdlv.setOnSlideListener(new SlideAndDragListView.OnSlideListener() {
 ``` java
 sdlv.setOnButtonClickListenerProxy(new SlideAndDragListView.OnButtonClickListenerProxy() {
             @Override
-            public void onClick(View v, int position, int number) {
-                
+            public void onClick(View view, int position, int number) {
+
             }
         });
 ```
 
 `public void onClick(View view, int position, int number)` . The parameter `view` is the button (when sliding open) in ListView item that is clicked, the parameter `position` is the position of the view in the list, and the parameter `number` represents which one is clicked. 
+
+# Permission
+
+``` xml
+<uses-permission android:name="android.permission.VIBRATE"/>
+```
 
 # License
 
@@ -158,4 +164,3 @@ Licensed under the Apache License, Version 2.0 (the "License"); you may not use 
 [http://www.apache.org/licenses/LICENSE-2.0](http://www.apache.org/licenses/LICENSE-2.0)
 
 Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
-
