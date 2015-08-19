@@ -37,6 +37,8 @@ public abstract class SDAdapter<T> extends BaseAdapter implements View.OnClickLi
     private int mItemBtn2TextColor;
     private Drawable mItemBtn1Drawable;
     private Drawable mItemBtn2Drawable;
+    private float mItemBtn1TextSize;
+    private float mItemBtn2TextSize;
     /* ---------- attrs ----------- */
 
     public SDAdapter(Context context, List<T> dataList) {
@@ -103,6 +105,8 @@ public abstract class SDAdapter<T> extends BaseAdapter implements View.OnClickLi
             holder.btn2.setBackgroundDrawable(mItemBtn2Drawable);
             holder.btn1.setTextColor(mItemBtn1TextColor);
             holder.btn2.setTextColor(mItemBtn2TextColor);
+            holder.btn1.setTextSize(mItemBtn1TextSize);
+            holder.btn2.setTextSize(mItemBtn2TextSize);
             convertView.setTag(holder);
         } else {
             holder = (ViewHolder) convertView.getTag();
@@ -329,5 +333,23 @@ public abstract class SDAdapter<T> extends BaseAdapter implements View.OnClickLi
      */
     public void setItemBtn2Drawable(Drawable itemBtn2Drawable) {
         mItemBtn2Drawable = itemBtn2Drawable;
+    }
+
+    /**
+     * 设置btn1的字体大小
+     *
+     * @param itemBtn1TextSize
+     */
+    public void setItemBtn1TextSize(float itemBtn1TextSize) {
+        mItemBtn1TextSize = itemBtn1TextSize;
+    }
+
+    /**
+     * 设置btn2的字体大小
+     *
+     * @param itemBtn2TextSize
+     */
+    public void setItemBtn2TextSize(float itemBtn2TextSize) {
+        mItemBtn2TextSize = itemBtn2TextSize;
     }
 }
