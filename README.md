@@ -25,7 +25,7 @@ SlideAndDragListView is useful for all kinds of prioritized lists: favorites, pl
 ## XML usage
 
 ``` xml
- <com.yydcdut.sdlv.SlideAndDragListView
+<com.yydcdut.sdlv.SlideAndDragListView
         xmlns:sdlv="http://schemas.android.com/apk/res-auto"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
@@ -36,14 +36,14 @@ SlideAndDragListView is useful for all kinds of prioritized lists: favorites, pl
         sdlv:item_background="@android:color/white"
         sdlv:item_btn1_background="@drawable/btn1_drawable"
         sdlv:item_btn1_text="Delete1"
-        sdlv:item_btn1_text_color="#00ff00"
         sdlv:item_btn2_background="@drawable/btn2_drawable"
         sdlv:item_btn2_text="Rename1"
-        sdlv:item_btn2_text_color="#ff0000"
         sdlv:item_btn_number="2"
+        sdlv:item_btn_text_color="#ffffff"
+        sdlv:item_btn_text_size="8sp"
         sdlv:item_btn_width="70dip"
         sdlv:item_height="80dip">
-    </com.yydcdut.sdlv.SlideAndDragListView>
+</com.yydcdut.sdlv.SlideAndDragListView>
 ```
 
 ## XML attributes
