@@ -89,12 +89,10 @@ public class SlideAndDragListView<T> extends ListView implements Handler.Callbac
     private int mItemBtnNumber = 0;
     private String mItemBtn1Text;
     private String mItemBtn2Text;
-    private int mItemBtn1TextColor;
-    private int mItemBtn2TextColor;
     private Drawable mItemBtn1Drawable;
     private Drawable mItemBtn2Drawable;
-    private float mItemBtn1TextSize;
-    private float mItemBtn2TextSize;
+    private int mItemBtnTextColor;
+    private float mItemBtnTextSize;
 
     public SlideAndDragListView(Context context) {
         this(context, null);
@@ -120,12 +118,10 @@ public class SlideAndDragListView<T> extends ListView implements Handler.Callbac
         if (!TextUtils.isEmpty(mItemBtn2Text) && TextUtils.isEmpty(mItemBtn1Text)) {
             throw new IllegalArgumentException("The \'item_btn2_text\' has value, but \'item_btn1_text\' dose not have value!");
         }
-        mItemBtn1TextColor = a.getColor(R.styleable.sdlv_item_btn1_text_color, getContext().getResources().getColor(android.R.color.white));
-        mItemBtn2TextColor = a.getColor(R.styleable.sdlv_item_btn2_text_color, getContext().getResources().getColor(android.R.color.white));
         mItemBtn1Drawable = a.getDrawable(R.styleable.sdlv_item_btn1_background);
         mItemBtn2Drawable = a.getDrawable(R.styleable.sdlv_item_btn2_background);
-        mItemBtn1TextSize = a.getDimension(R.styleable.sdlv_item_btn1_text_size, getContext().getResources().getDimension(R.dimen.txt_size));
-        mItemBtn2TextSize = a.getDimension(R.styleable.sdlv_item_btn2_text_size, getContext().getResources().getDimension(R.dimen.txt_size));
+        mItemBtnTextSize = a.getDimension(R.styleable.sdlv_item_btn_text_size, getContext().getResources().getDimension(R.dimen.txt_size));
+        mItemBtnTextColor = a.getColor(R.styleable.sdlv_item_btn_text_color, getContext().getResources().getColor(android.R.color.white));
         a.recycle();
         //-------------------------- attrs --------------------------
         mBGWidth = (int) (mItemBtnWidth * mItemBtnNumber);
@@ -576,12 +572,10 @@ public class SlideAndDragListView<T> extends ListView implements Handler.Callbac
         mSDAdapter.setItemBGDrawable(mItemBGDrawable);
         mSDAdapter.setItemBtnNumber(mItemBtnNumber, mItemBtn1Text, mItemBtn2Text);
         mSDAdapter.setItemBtnWidth(mItemBtnWidth);
-        mSDAdapter.setItemBtn1TextColor(mItemBtn1TextColor);
-        mSDAdapter.setItemBtn2TextColor(mItemBtn2TextColor);
         mSDAdapter.setItemBtn1Drawable(mItemBtn1Drawable);
         mSDAdapter.setItemBtn2Drawable(mItemBtn2Drawable);
-        mSDAdapter.setItemBtn1TextSize(mItemBtn1TextSize);
-        mSDAdapter.setItemBtn2TextSize(mItemBtn2TextSize);
+        mSDAdapter.setItemBtnTextSize(mItemBtnTextSize);
+        mSDAdapter.setItemBtnTextColor(mItemBtnTextColor);
         mDataList = mSDAdapter.getDataList();
     }
 
