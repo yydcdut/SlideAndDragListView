@@ -54,19 +54,19 @@ SlideAndDragListView is useful for all kinds of prioritized lists: favorites, pl
 
 `item_btn1_text` - the text of the first button.
 
-`item_btn1_text_color` - the color of the first button’s text.
-
 `item_btn2_background` - the background of the second button.
 
 `item_btn2_text` - the text of the second button.
 
-`item_btn2_text_color` - the color of the second button’s text.
-
 `item_btn_number` - the number of button you need, the max is 2 and the min is 0.
 
-`item_btn_width` - the width of button.
+`item_btn_width` - the width of buttons.
 
-`item_height` - the height of the item.
+`item_btn_text_color` - the color of the buttons’ texts.
+
+`item_btn_text_size` - the size of buttons’ texts.
+
+`item_height` - the height of the ListView item.
 
 ## Listeners
 
