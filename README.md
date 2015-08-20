@@ -2,9 +2,7 @@
 
 A ListView that you can slide the item or drag and drop the item to other positions.
 
-![slide](https://raw.githubusercontent.com/yydcdut/SlideAndDragListView/master/gif/slide.gif)
-
-![drag](https://raw.githubusercontent.com/yydcdut/SlideAndDragListView/master/gif/drag.gif)
+<img width="300" height="553" src="https://raw.githubusercontent.com/yydcdut/SlideAndDragListView/master/gif/slide.gif" /> <img width="300" height="553" src="https://raw.githubusercontent.com/yydcdut/SlideAndDragListView/master/gif/drag.gif" />
 
 # Overview
 
