@@ -7,7 +7,7 @@ import android.widget.RelativeLayout;
 /**
  * Created by yuyidong on 15/8/15.
  */
-public class SDItemLayout extends RelativeLayout {
+final class SDItemLayout extends RelativeLayout {
     private int mHeight;
 
     public SDItemLayout(Context context) {
@@ -24,6 +24,7 @@ public class SDItemLayout extends RelativeLayout {
 
     public void setItemHeight(int height) {
         mHeight = height;
+        requestLayout();
     }
 
     @Override

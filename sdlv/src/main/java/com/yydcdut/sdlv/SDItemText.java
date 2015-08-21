@@ -7,7 +7,7 @@ import android.widget.TextView;
 /**
  * Created by yuyidong on 15/8/17.
  */
-public class SDItemText extends TextView {
+final class SDItemText extends TextView {
 
     private int mWidth;
     private int mHeight;
@@ -26,10 +26,12 @@ public class SDItemText extends TextView {
 
     public void setBtnHeight(int height) {
         mHeight = height;
+        requestLayout();
     }
 
     public void setBtnWidth(int width) {
         mWidth = width;
+        requestLayout();
     }
 
     @Override

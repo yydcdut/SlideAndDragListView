@@ -7,7 +7,7 @@ import android.widget.ImageView;
 /**
  * Created by yuyidong on 15/8/16.
  */
-public class SDItemBGImage extends ImageView {
+final class SDItemBGImage extends ImageView {
     private int mHeight;
 
     public SDItemBGImage(Context context) {
@@ -24,6 +24,7 @@ public class SDItemBGImage extends ImageView {
 
     public void setItemHeight(int height) {
         mHeight = height;
+        requestLayout();
     }
 
     @Override
