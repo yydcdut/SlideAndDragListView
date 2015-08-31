@@ -126,8 +126,7 @@ public class SlideAndDragListView<T> extends ListView implements Handler.Callbac
         //-------------------------- attrs --------------------------
         mBGWidth = (int) (mItemBtnWidth * mItemBtnNumber);
         mScroller = new Scroller(getContext());
-        mVibrator = (Vibrator)
-                getContext().getSystemService(Context.VIBRATOR_SERVICE);
+        mVibrator = (Vibrator) getContext().getSystemService(Context.VIBRATOR_SERVICE);
 
         mHandler = new Handler(this);
         setOnDragListener(this);
@@ -155,15 +154,17 @@ public class SlideAndDragListView<T> extends ListView implements Handler.Callbac
                     mCurrentPosition = position;
                     mBeforeCurrentPosition = position;
                     mBeforeBeforePosition = position;
-                    //把背景给弄透明，这样drag的时候要好看些
-                    view.findViewById(R.id.layout_item_bg).setVisibility(INVISIBLE);
-                    view.findViewById(R.id.img_item_scroll_bg).setVisibility(INVISIBLE);
-                    //drag
-                    ClipData.Item item = new ClipData.Item("1");
-                    ClipData data = new ClipData("1", new String[]{ClipDescription.MIMETYPE_TEXT_PLAIN}, item);
-                    view.startDrag(data, new View.DragShadowBuilder(view), null, 0);
-                    //通知adapter变颜色
-                    mSDAdapter.notifyDataSetChanged();
+                    if (mOnDragListener != null) {
+                        //把背景给弄透明，这样drag的时候要好看些
+                        view.findViewById(R.id.layout_item_bg).setVisibility(INVISIBLE);
+                        view.findViewById(R.id.img_item_scroll_bg).setVisibility(INVISIBLE);
+                        //drag
+                        ClipData.Item item = new ClipData.Item("1");
+                        ClipData data = new ClipData("1", new String[]{ClipDescription.MIMETYPE_TEXT_PLAIN}, item);
+                        view.startDrag(data, new View.DragShadowBuilder(view), null, 0);
+                        //通知adapter变颜色
+                        mSDAdapter.notifyDataSetChanged();
+                    }
                 }
                 break;
         }
