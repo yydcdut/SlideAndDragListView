@@ -252,6 +252,9 @@ public class SlideAndDragListView<T> extends ListView implements Handler.Callbac
                 mState = STATE_DOWN;
                 break;
             case MotionEvent.ACTION_MOVE:
+                if (mOnSlideListener == null) {
+                    return super.dispatchTouchEvent(ev);
+                }
                 if (mIsScrollerScrolling) {//scroll正在滑动的话就不要做其他处理了
                     return false;
                 }
