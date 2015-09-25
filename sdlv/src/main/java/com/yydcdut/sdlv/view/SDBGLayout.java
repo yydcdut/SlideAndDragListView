@@ -4,7 +4,6 @@ import android.content.Context;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -15,7 +14,6 @@ public class SDBGLayout extends ViewGroup {
     private static final String TAG_ONE = "one";
     private static final String TAG_TWO = "two";
     private static final String TAG_THREE = "three";
-    private int mHeight;
     private int mBtnWidth;
 
     public SDBGLayout(Context context) {
@@ -31,27 +29,24 @@ public class SDBGLayout extends ViewGroup {
         ImageView bgImage = new ImageView(context);
         bgImage.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
         bgImage.setBackgroundColor(0xffff0000);
-        addView(bgImage, new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT));
+        addView(bgImage, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
 
         TextView leftView = new TextView(context);
         leftView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 100));
         leftView.setBackgroundColor(0xff00ff00);
         leftView.setTag(TAG_ONE);
         leftView.setText("11111");
-        addView(leftView, new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, 100));
+        addView(leftView, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 100));
 
         TextView rightView = new TextView(context);
         rightView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 100));
         rightView.setBackgroundColor(0xff0000ff);
         rightView.setTag(TAG_TWO);
         rightView.setText("22222");
-        addView(rightView, new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, 100));
-
-
+        addView(rightView, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 100));
     }
 
-    public void setLayoutHeight(int height, int btnWidth) {
-        mHeight = height;
+    public void setBtnWidth(int btnWidth) {
         mBtnWidth = btnWidth;
         requestLayout();
     }
@@ -59,16 +54,15 @@ public class SDBGLayout extends ViewGroup {
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-        if (mHeight > 0 && mBtnWidth > 0) {
-            setMeasuredDimension(MeasureSpec.getSize(widthMeasureSpec), mHeight);
+        if (mBtnWidth > 0) {
             int total = getChildCount();
             for (int i = 0; i < total; i++) {
                 View view = getChildAt(i);
                 if (view instanceof ImageView) {
-                    measureChild(view, widthMeasureSpec, MeasureSpec.makeMeasureSpec(mHeight, MeasureSpec.EXACTLY));
+                    measureChild(view, widthMeasureSpec, heightMeasureSpec);
                 } else {
                     measureChild(view, MeasureSpec.makeMeasureSpec(mBtnWidth, MeasureSpec.EXACTLY),
-                            MeasureSpec.makeMeasureSpec(mHeight, MeasureSpec.EXACTLY));
+                            heightMeasureSpec);
                 }
             }
         }
