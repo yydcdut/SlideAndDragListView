@@ -1,12 +1,13 @@
 package com.yydcdut.sdlv;
 
 import android.content.Context;
-import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.FrameLayout;
+
+import com.yydcdut.sdlv.utils.AttrsHolder;
 
 import java.util.List;
 
@@ -27,16 +28,7 @@ public abstract class SDAdapter<T> extends BaseAdapter implements View.OnClickLi
     /* 当前滑开的item的位置 */
     private int mSlideOpenItemPosition;
     /* ---------- attrs ----------- */
-    private float mItemHeight;
-    private int mItemBtnNumber;
-    private String mItemBtn1Text;
-    private String mItemBtn2Text;
-    private float mItemBtnWidth;
-    private Drawable mItemBGDrawable;
-    private int mItemBtnTextColor;
-    private Drawable mItemBtn1Drawable;
-    private Drawable mItemBtn2Drawable;
-    private float mItemBtnTextSize;
+    private AttrsHolder mAttrsHolder;
     /* ---------- attrs ----------- */
 
     public SDAdapter(Context context, List<T> dataList) {
@@ -66,32 +58,32 @@ public abstract class SDAdapter<T> extends BaseAdapter implements View.OnClickLi
             holder = new ViewHolder();
             convertView = LayoutInflater.from(mContext).inflate(R.layout.item_sdlv, null);
             holder.layoutMain = (SDItemLayout) convertView.findViewById(R.id.layout_item_main);
-            holder.layoutMain.setItemHeight((int) mItemHeight);
+            holder.layoutMain.setItemHeight((int) mAttrsHolder.itemHeight);
             holder.layoutScroll = (SDItemLayout) convertView.findViewById(R.id.layout_item_scroll);
-            holder.layoutScroll.setItemHeight((int) mItemHeight);
+            holder.layoutScroll.setItemHeight((int) mAttrsHolder.itemHeight);
             holder.layoutBG = (SDItemLayout) convertView.findViewById(R.id.layout_item_bg);
-            holder.layoutBG.setItemHeight((int) mItemHeight);
+            holder.layoutBG.setItemHeight((int) mAttrsHolder.itemHeight);
             holder.imgBGScroll = (SDItemBGImage) convertView.findViewById(R.id.img_item_scroll_bg);
-            holder.imgBGScroll.setItemHeight((int) mItemHeight);
+            holder.imgBGScroll.setItemHeight((int) mAttrsHolder.itemHeight);
             holder.imgBG = (SDItemBGImage) convertView.findViewById(R.id.img_item_bg);
-            holder.imgBG.setItemHeight((int) mItemHeight);
+            holder.imgBG.setItemHeight((int) mAttrsHolder.itemHeight);
             holder.layoutCustom = (FrameLayout) convertView.findViewById(R.id.layout_custom);
             holder.btn1 = (SDItemText) convertView.findViewById(R.id.txt_item_edit_btn1);
             holder.btn2 = (SDItemText) convertView.findViewById(R.id.txt_item_edit_btn2);
-            holder.btn1.setBtnWidth((int) mItemBtnWidth);
-            holder.btn1.setBtnHeight((int) mItemHeight);
-            holder.btn2.setBtnWidth((int) mItemBtnWidth);
-            holder.btn2.setBtnHeight((int) mItemHeight);
+            holder.btn1.setBtnWidth((int) mAttrsHolder.btnWidth);
+            holder.btn1.setBtnHeight((int) mAttrsHolder.itemHeight);
+            holder.btn2.setBtnWidth((int) mAttrsHolder.btnWidth);
+            holder.btn2.setBtnHeight((int) mAttrsHolder.itemHeight);
             //如果用户设置了背景的话就用用户的背景
-            if (mItemBGDrawable != null) {
-                holder.imgBG.setBackgroundDrawable(mItemBGDrawable);
-                holder.imgBGScroll.setBackgroundDrawable(mItemBGDrawable);
+            if (mAttrsHolder.itemBackGroundDrawable != null) {
+                holder.imgBG.setBackgroundDrawable(mAttrsHolder.itemBackGroundDrawable);
+                holder.imgBGScroll.setBackgroundDrawable(mAttrsHolder.itemBackGroundDrawable);
             }
             //判断哪些隐藏哪些显示
             checkVisible(holder);
             //设置text
-            holder.btn1.setText(mItemBtn1Text);//setText有容错处理
-            holder.btn2.setText(mItemBtn2Text);//setText有容错处理
+            holder.btn1.setText(mAttrsHolder.btn1Text);//setText有容错处理
+            holder.btn2.setText(mAttrsHolder.btn2Text);//setText有容错处理
             //设置监听器
             holder.btn1.setOnClickListener(this);
             holder.btn2.setOnClickListener(this);
@@ -99,12 +91,12 @@ public abstract class SDAdapter<T> extends BaseAdapter implements View.OnClickLi
             holder.btn1.setClickable(false);
             holder.btn2.setClickable(false);
             //背景和字体颜色
-            holder.btn1.setBackgroundDrawable(mItemBtn1Drawable);
-            holder.btn2.setBackgroundDrawable(mItemBtn2Drawable);
-            holder.btn1.setTextColor(mItemBtnTextColor);
-            holder.btn2.setTextColor(mItemBtnTextColor);
-            holder.btn1.setTextSize(mItemBtnTextSize);
-            holder.btn2.setTextSize(mItemBtnTextSize);
+            holder.btn1.setBackgroundDrawable(mAttrsHolder.btn1Drawable);
+            holder.btn2.setBackgroundDrawable(mAttrsHolder.btn2Drawable);
+            holder.btn1.setTextColor(mAttrsHolder.btnTextColor);
+            holder.btn2.setTextColor(mAttrsHolder.btnTextColor);
+            holder.btn1.setTextSize(mAttrsHolder.btnTextSize);
+            holder.btn2.setTextSize(mAttrsHolder.btnTextSize);
             convertView.setTag(holder);
         } else {
             holder = (ViewHolder) convertView.getTag();
@@ -178,7 +170,7 @@ public abstract class SDAdapter<T> extends BaseAdapter implements View.OnClickLi
      * @param vh
      */
     private void checkVisible(ViewHolder vh) {
-        switch (mItemBtnNumber) {
+        switch (mAttrsHolder.btnNumber) {
             case 0:
                 vh.btn1.setVisibility(View.GONE);
                 vh.btn2.setVisibility(View.GONE);
@@ -249,36 +241,6 @@ public abstract class SDAdapter<T> extends BaseAdapter implements View.OnClickLi
     }
 
     /**
-     * 设置Item的高度
-     *
-     * @param height
-     */
-    protected void setItemHeight(float height) {
-        mItemHeight = height;
-    }
-
-    /**
-     * 设置Item里面的btn的文字
-     *
-     * @param number
-     * @param text
-     */
-    protected void setItemBtnNumber(int number, String... text) {
-        mItemBtnNumber = number;
-        mItemBtn1Text = text[0];
-        mItemBtn2Text = text[1];
-    }
-
-    /**
-     * 设置item里面的btn的宽度
-     *
-     * @param width
-     */
-    protected void setItemBtnWidth(float width) {
-        mItemBtnWidth = width;
-    }
-
-    /**
      * 设置slide滑开的item的位置
      *
      * @param position
@@ -288,48 +250,7 @@ public abstract class SDAdapter<T> extends BaseAdapter implements View.OnClickLi
         notifyDataSetChanged();
     }
 
-    /**
-     * 设置item中2个imageView的backGround
-     *
-     * @param drawable
-     */
-    protected void setItemBGDrawable(Drawable drawable) {
-        mItemBGDrawable = drawable;
-    }
-
-    /**
-     * 设置btn1的background
-     *
-     * @param itemBtn1Drawable
-     */
-    public void setItemBtn1Drawable(Drawable itemBtn1Drawable) {
-        mItemBtn1Drawable = itemBtn1Drawable;
-    }
-
-    /**
-     * 设置btn2的background
-     *
-     * @param itemBtn2Drawable
-     */
-    public void setItemBtn2Drawable(Drawable itemBtn2Drawable) {
-        mItemBtn2Drawable = itemBtn2Drawable;
-    }
-
-    /**
-     * 设置btn的字体颜色
-     *
-     * @param itemBtnTextColor
-     */
-    public void setItemBtnTextColor(int itemBtnTextColor) {
-        mItemBtnTextColor = itemBtnTextColor;
-    }
-
-    /**
-     * 设置btn的字体大小
-     *
-     * @param itemBtnTextSize
-     */
-    public void setItemBtnTextSize(float itemBtnTextSize) {
-        mItemBtnTextSize = itemBtnTextSize;
+    public void setAttrsHolder(AttrsHolder attrsHolder) {
+        mAttrsHolder = attrsHolder;
     }
 }
