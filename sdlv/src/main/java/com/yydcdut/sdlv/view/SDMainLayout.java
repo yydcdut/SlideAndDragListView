@@ -2,10 +2,11 @@ package com.yydcdut.sdlv.view;
 
 import android.content.Context;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.widget.FrameLayout;
 import android.widget.Scroller;
+
+import com.yydcdut.sdlv.utils.OnItemSlideListenerProxy;
 
 /**
  * Created by yuyidong on 15/9/24.
@@ -14,14 +15,25 @@ public class SDMainLayout extends FrameLayout {
     /* 时间 */
     private static final int SCROLL_TIME = 500;//500ms
     private static final int SCROLL_QUICK_TIME = 200;//200ms
-
+    /* 控件高度 */
     private int mHeight;
+    /* 子控件中button的宽度 */
     private int mBGWidth;
-
+    /* 子view */
     private SDBGLayout mSDBGLayout;
     private SDCustomLayout mSDCustomLayout;
-
+    /* Scroller */
     private Scroller mScroller;
+    /* 控件是否滑动 */
+    private boolean mIsMoving = false;
+    /* 坐标 */
+    private float mXDown;
+    private float mYDown;
+    /* X方向滑动距离 */
+    private float mXScrollDistance;
+    /* 滑动的监听器 */
+    private OnItemSlideListenerProxy mOnItemSlideListenerProxy;
+
 
     public SDMainLayout(Context context) {
         this(context, null);
@@ -70,12 +82,6 @@ public class SDMainLayout extends FrameLayout {
         mBGWidth = width;
     }
 
-    private float mXDown;
-    private float mYDown;
-    private float mXScrollDistance;
-
-    private boolean mIsMoving = false;
-
     @Override
     public boolean onTouchEvent(MotionEvent ev) {
         getParent().requestDisallowInterceptTouchEvent(false);
@@ -88,10 +94,10 @@ public class SDMainLayout extends FrameLayout {
                 break;
             case MotionEvent.ACTION_MOVE:
                 if (fingerNotMove(ev) && !mIsMoving) {//手指的范围在50以内
-                    Log.i("yuyidong", "yyyyyyyyyyyyyy");
+                    //执行ListView的手势操作
                     getParent().requestDisallowInterceptTouchEvent(false);
                 } else if (fingerLeftAndRightMove(ev) || mIsMoving) {//上下范围在50，主要检测左右滑动
-                    Log.i("yuyidong", "dddddddddddd");
+                    //执行控件的手势操作
                     mIsMoving = true;
                     getParent().requestDisallowInterceptTouchEvent(true);
                     float moveDistance = ev.getX() - mXDown;//这个往右是正，往左是负
@@ -110,10 +116,15 @@ public class SDMainLayout extends FrameLayout {
                     } else {
                         mScroller.startScroll(mSDCustomLayout.getScrollX(), 0, -delta, 0, SCROLL_TIME);
                     }
-                    postInvalidate();
+                    if (mOnItemSlideListenerProxy != null) {
+                        mOnItemSlideListenerProxy.onSlideOpen(this);
+                    }
                 } else {
                     mScroller.startScroll(mSDCustomLayout.getScrollX(), 0, -mSDCustomLayout.getScrollX(), 0, SCROLL_TIME);
-                    postInvalidate();
+                    //滑回去,归位
+                    if (mOnItemSlideListenerProxy != null) {
+                        mOnItemSlideListenerProxy.onSlideClose(this);
+                    }
                 }
                 postInvalidate();
                 mIsMoving = false;
@@ -153,5 +164,9 @@ public class SDMainLayout extends FrameLayout {
             postInvalidate();
         }
         super.computeScroll();
+    }
+
+    public void setOnItemSlideListenerProxy(OnItemSlideListenerProxy onItemSlideListenerProxy) {
+        mOnItemSlideListenerProxy = onItemSlideListenerProxy;
     }
 }

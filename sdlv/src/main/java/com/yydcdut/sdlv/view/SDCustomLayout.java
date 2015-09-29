@@ -37,6 +37,10 @@ public class SDCustomLayout extends FrameLayout {
         return getChildAt(1);
     }
 
+    public View getRealView() {
+        return this;
+    }
+
     public ImageView getBackGroundImage() {
         return mBGImage;
     }

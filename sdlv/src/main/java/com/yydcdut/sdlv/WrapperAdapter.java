@@ -8,15 +8,21 @@ import android.widget.ListAdapter;
 import android.widget.WrapperListAdapter;
 
 import com.yydcdut.sdlv.utils.AttrsHolder;
+import com.yydcdut.sdlv.utils.OnAdapterSlideListenerProxy;
+import com.yydcdut.sdlv.utils.OnItemSlideListenerProxy;
 import com.yydcdut.sdlv.view.SDMainLayout;
 
 /**
  * Created by yuyidong on 15/9/28.
  */
-public class WrapperAdapter implements WrapperListAdapter {
+public class WrapperAdapter implements WrapperListAdapter, OnItemSlideListenerProxy {
     private Context mContext;
     private ListAdapter mAdapter;
     private AttrsHolder mAttrsHolder;
+    /* 当前滑动的item的位置 */
+    private int mSlideItemPosition;
+    /* 监听器 */
+    private OnAdapterSlideListenerProxy mOnAdapterSlideListenerProxy;
 
     public WrapperAdapter(Context context, ListAdapter adapter, AttrsHolder attrsHolder) {
         mContext = context;
@@ -88,6 +94,7 @@ public class WrapperAdapter implements WrapperListAdapter {
             sdMainLayout.getSDBGLayout().getMiddleView().setText(mAttrsHolder.btn2Text);
             sdMainLayout.getSDBGLayout().getMiddleView().setTextSize(mAttrsHolder.btnTextSize);
             sdMainLayout.getSDBGLayout().getMiddleView().setTextColor(mAttrsHolder.btnTextColor);
+            sdMainLayout.setOnItemSlideListenerProxy(this);
             //判断哪些隐藏哪些显示
             checkVisible(sdMainLayout.getSDBGLayout().getLeftView(), sdMainLayout.getSDBGLayout().getMiddleView());
             sdMainLayout.getSDCustomLayout().addCustomView(contentView);
@@ -95,8 +102,8 @@ public class WrapperAdapter implements WrapperListAdapter {
             sdMainLayout = (SDMainLayout) convertView;
             View contentView = mAdapter.getView(position, sdMainLayout.getSDCustomLayout().getCustomView(), parent);
         }
-
-        sdMainLayout.getSDCustomLayout().getCustomView().scrollTo(0, 0);
+        //归位
+        sdMainLayout.getSDCustomLayout().getRealView().scrollTo(0, 0);
         return sdMainLayout;
     }
 
@@ -137,4 +144,35 @@ public class WrapperAdapter implements WrapperListAdapter {
         return mAdapter.isEmpty();
     }
 
+    /**
+     * 设置监听器
+     *
+     * @param onAdapterSlideListenerProxy
+     */
+    public void setOnAdapterSlideListenerProxy(OnAdapterSlideListenerProxy onAdapterSlideListenerProxy) {
+        mOnAdapterSlideListenerProxy = onAdapterSlideListenerProxy;
+    }
+
+    /**
+     * 设置slide滑开的item的位置
+     *
+     * @param position
+     */
+    protected void setSlideItemPosition(int position) {
+        mSlideItemPosition = position;
+    }
+
+    @Override
+    public void onSlideOpen(View view) {
+        if (mOnAdapterSlideListenerProxy != null) {
+            mOnAdapterSlideListenerProxy.onSlideOpen(view, mSlideItemPosition);
+        }
+    }
+
+    @Override
+    public void onSlideClose(View view) {
+        if (mOnAdapterSlideListenerProxy != null) {
+            mOnAdapterSlideListenerProxy.onSlideClose(view, mSlideItemPosition);
+        }
+    }
 }

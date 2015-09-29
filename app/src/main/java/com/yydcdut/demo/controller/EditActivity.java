@@ -24,7 +24,7 @@ import com.yydcdut.sdlv.SlideAndDragListView1;
  * Created by yuyidong on 15/7/31.
  */
 public class EditActivity extends AppCompatActivity implements SlideAndDragListView.OnListItemLongClickListener, SlideAndDragListView.OnDragListener,
-        SlideAndDragListView.OnSlideListener, SlideAndDragListView.OnListItemClickListener, SlideAndDragListView.OnButtonClickListenerProxy {
+        SlideAndDragListView1.OnSlideListener, SlideAndDragListView.OnListItemClickListener, SlideAndDragListView.OnButtonClickListenerProxy {
 
     private RandomColor mColor = RandomColor.MATERIAL;
 
@@ -41,7 +41,7 @@ public class EditActivity extends AppCompatActivity implements SlideAndDragListV
 //        listView.setOnListItemLongClickListener(this);
 //        listView.setOnDragListener(this);
 //        listView.setOnListItemClickListener(this);
-//        listView.setOnSlideListener(this);
+        listView.setOnSlideListener(this);
 //        listView.setOnButtonClickListenerProxy(this);
     }
 
@@ -141,15 +141,15 @@ public class EditActivity extends AppCompatActivity implements SlideAndDragListV
 //        Toast.makeText(EditActivity.this, "onDragViewDown   position--->" + position, Toast.LENGTH_SHORT).show();
     }
 
-    @Override
-    public void onSlideOpen(View view, int position) {
-//        Toast.makeText(EditActivity.this, "onSlideOpen   position--->" + position, Toast.LENGTH_SHORT).show();
-    }
-
-    @Override
-    public void onSlideClose(View view, int position) {
-//        Toast.makeText(EditActivity.this, "onSlideClose   position--->" + position, Toast.LENGTH_SHORT).show();
-    }
+//    @Override
+//    public void onSlideOpen(View view, int position) {
+////        Toast.makeText(EditActivity.this, "onSlideOpen   position--->" + position, Toast.LENGTH_SHORT).show();
+//    }
+//
+//    @Override
+//    public void onSlideClose(View view, int position) {
+////        Toast.makeText(EditActivity.this, "onSlideClose   position--->" + position, Toast.LENGTH_SHORT).show();
+//    }
 
     @Override
     public void onClick(View v, int position, int number) {
@@ -159,5 +159,15 @@ public class EditActivity extends AppCompatActivity implements SlideAndDragListV
     @Override
     public void onListItemClick(View v, int position) {
         Toast.makeText(EditActivity.this, "onItemClick   position--->" + position, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onSlideOpen(View view, View parentView, int position) {
+        Toast.makeText(EditActivity.this, "onSlideOpen   position--->" + position, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onSlideClose(View view, View parentView, int position) {
+        Toast.makeText(EditActivity.this, "onSlideClose   position--->" + position, Toast.LENGTH_SHORT).show();
     }
 }

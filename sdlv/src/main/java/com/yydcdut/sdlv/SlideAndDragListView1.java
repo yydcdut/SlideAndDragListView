@@ -4,17 +4,19 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.text.TextUtils;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.MotionEvent;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 
 import com.yydcdut.sdlv.utils.AttrsHolder;
+import com.yydcdut.sdlv.utils.OnAdapterSlideListenerProxy;
 
 /**
  * Created by yuyidong on 15/9/28.
  */
-public class SlideAndDragListView1 extends ListView {
+public class SlideAndDragListView1 extends ListView implements OnAdapterSlideListenerProxy {
     /* item的btn的最大个数 */
     private static final int ITEM_BTN_NUMBER_MAX = 2;
     /* onTouch里面的状态 */
@@ -31,6 +33,8 @@ public class SlideAndDragListView1 extends ListView {
     private AttrsHolder mAttrsHolder;
     /* WrapperAdapter */
     private WrapperAdapter mWrapperAdapter;
+    /* 滑动的监听器 */
+    private OnSlideListener mOnSlideListener;
 
 
     public SlideAndDragListView1(Context context) {
@@ -79,10 +83,13 @@ public class SlideAndDragListView1 extends ListView {
                 break;
             case MotionEvent.ACTION_MOVE:
                 if (fingerNotMove(ev)) {//手指的范围在50以内
-                    Log.i("yuyidong", "1111111111");
                 } else if (fingerLeftAndRightMove(ev)) {//上下范围在50，主要检测左右滑动
-                    Log.i("yuyidong", "2222222222");
+                    int position = pointToPosition(mXDown, mYDown);
+                    if (position != AdapterView.INVALID_POSITION) {
+                        mWrapperAdapter.setSlideItemPosition(position);
+                    }
                     return super.dispatchTouchEvent(ev);
+                } else {
                 }
                 break;
             case MotionEvent.ACTION_UP:
@@ -119,6 +126,53 @@ public class SlideAndDragListView1 extends ListView {
     @Override
     public void setAdapter(ListAdapter adapter) {
         mWrapperAdapter = new WrapperAdapter(getContext(), adapter, mAttrsHolder);
+        mWrapperAdapter.setOnAdapterSlideListenerProxy(this);
         super.setAdapter(mWrapperAdapter);
+    }
+
+    /**
+     * 设置滑动监听器
+     *
+     * @param listener
+     */
+    public void setOnSlideListener(OnSlideListener listener) {
+        mOnSlideListener = listener;
+    }
+
+    /**
+     * item的滑动的监听器
+     */
+    public interface OnSlideListener {
+        /**
+         * 当滑动开的时候触发
+         *
+         * @param view
+         * @param parentView
+         * @param position
+         */
+        void onSlideOpen(View view, View parentView, int position);
+
+        /**
+         * 当滑动归位的时候触发
+         *
+         * @param view
+         * @param parentView
+         * @param position
+         */
+        void onSlideClose(View view, View parentView, int position);
+    }
+
+    @Override
+    public void onSlideOpen(View view, int position) {
+        if (mOnSlideListener != null) {
+            mOnSlideListener.onSlideOpen(view, this, position);
+        }
+    }
+
+    @Override
+    public void onSlideClose(View view, int position) {
+        if (mOnSlideListener != null) {
+            mOnSlideListener.onSlideClose(view, this, position);
+        }
     }
 }
