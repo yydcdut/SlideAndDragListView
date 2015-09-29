@@ -5,6 +5,8 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -16,6 +18,7 @@ import com.yydcdut.demo.utils.RandomColor;
 import com.yydcdut.demo.view.TextDrawable;
 import com.yydcdut.sdlv.SDAdapter;
 import com.yydcdut.sdlv.SlideAndDragListView;
+import com.yydcdut.sdlv.SlideAndDragListView1;
 
 /**
  * Created by yuyidong on 15/7/31.
@@ -33,13 +36,13 @@ public class EditActivity extends AppCompatActivity implements SlideAndDragListV
     }
 
     public void initUiAndListener() {
-        SlideAndDragListView listView = (SlideAndDragListView) findViewById(R.id.lv_edit);
-        listView.setAdapter(mBaseAdapter);
-        listView.setOnListItemLongClickListener(this);
-        listView.setOnDragListener(this);
-        listView.setOnListItemClickListener(this);
-        listView.setOnSlideListener(this);
-        listView.setOnButtonClickListenerProxy(this);
+        SlideAndDragListView1 listView = (SlideAndDragListView1) findViewById(R.id.lv_edit);
+        listView.setAdapter(mAdapter);
+//        listView.setOnListItemLongClickListener(this);
+//        listView.setOnDragListener(this);
+//        listView.setOnListItemClickListener(this);
+//        listView.setOnSlideListener(this);
+//        listView.setOnButtonClickListenerProxy(this);
     }
 
     private SDAdapter mBaseAdapter = new SDAdapter(this, DemoModel.getInstance().getData()) {
@@ -74,6 +77,53 @@ public class EditActivity extends AppCompatActivity implements SlideAndDragListV
             public TextView txtName;
         }
 
+    };
+
+    private BaseAdapter mAdapter = new BaseAdapter() {
+        @Override
+        public int getCount() {
+            return DemoModel.getInstance().getData().size();
+        }
+
+        @Override
+        public Object getItem(int position) {
+            return DemoModel.getInstance().getData().get(position);
+        }
+
+        @Override
+        public long getItemId(int position) {
+            return position;
+        }
+
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent) {
+            CustomViewHolder cvh;
+            if (convertView == null) {
+                cvh = new CustomViewHolder();
+                convertView = LayoutInflater.from(EditActivity.this).inflate(R.layout.item_custom, null);
+                cvh.imgLogo = (ImageView) convertView.findViewById(R.id.img_item_edit);
+                cvh.txtName = (TextView) convertView.findViewById(R.id.txt_item_edit);
+                convertView.setTag(cvh);
+            } else {
+                cvh = (CustomViewHolder) convertView.getTag();
+            }
+            Bean bean = (Bean) this.getItem(position);
+            cvh.txtName.setText(bean.name);
+            //把当前选中的颜色变为红色
+//            if (dragPosition == position) {
+//                cvh.imgLogo.setImageDrawable(TextDrawable.builder().buildRound(bean.name, EditActivity.this.getResources().getColor(R.color.red_colorPrimary)));
+//                cvh.txtName.setTextColor(EditActivity.this.getResources().getColor(R.color.red_colorPrimary));
+//            } else {
+            cvh.imgLogo.setImageDrawable(TextDrawable.builder().buildRound(bean.name, mColor.getColor(bean.name)));
+            cvh.txtName.setTextColor(EditActivity.this.getResources().getColor(R.color.txt_gray));
+//            }
+            return convertView;
+        }
+
+        class CustomViewHolder {
+            public ImageView imgLogo;
+            public TextView txtName;
+        }
     };
 
     @Override

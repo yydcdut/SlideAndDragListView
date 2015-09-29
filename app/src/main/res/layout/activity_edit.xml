@@ -6,7 +6,7 @@
                 android:background="@android:color/white"
                 android:orientation="vertical">
 
-    <com.yydcdut.sdlv.SlideAndDragListView
+    <com.yydcdut.sdlv.SlideAndDragListView1
         android:id="@+id/lv_edit"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
@@ -24,6 +24,6 @@
         sdlv:item_btn_text_size="8sp"
         sdlv:item_btn_width="70dip"
         sdlv:item_height="80dip">
-    </com.yydcdut.sdlv.SlideAndDragListView>
+    </com.yydcdut.sdlv.SlideAndDragListView1>
 
 </RelativeLayout>

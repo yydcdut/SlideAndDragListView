@@ -3,6 +3,7 @@ package com.yydcdut.sdlv.view;
 import android.content.Context;
 import android.graphics.Color;
 import android.util.AttributeSet;
+import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -38,18 +39,21 @@ public class SDBGLayout extends ViewGroup {
 
         mLeftView = new TextView(context);
         mLeftView.setBackgroundColor(Color.RED);
+        mLeftView.setGravity(Gravity.CENTER);
         mLeftView.setTag(TAG_ONE);
         mLeftView.setText(TAG_ONE);
         addView(mLeftView, new LayoutParams(LayoutParams.MATCH_PARENT, 100));
 
         mMiddleView = new TextView(context);
         mMiddleView.setBackgroundColor(Color.GREEN);
+        mMiddleView.setGravity(Gravity.CENTER);
         mMiddleView.setTag(TAG_TWO);
         mMiddleView.setText(TAG_TWO);
         addView(mMiddleView, new LayoutParams(LayoutParams.MATCH_PARENT, 100));
 
         mRightView = new TextView(context);
         mRightView.setBackgroundColor(Color.BLUE);
+        mRightView.setGravity(Gravity.CENTER);
         mRightView.setTag(TAG_THREE);
         mRightView.setText(TAG_THREE);
         addView(mRightView, new LayoutParams(LayoutParams.MATCH_PARENT, 100));
