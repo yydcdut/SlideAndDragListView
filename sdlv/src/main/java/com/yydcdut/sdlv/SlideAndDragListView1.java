@@ -11,12 +11,13 @@ import android.widget.ListAdapter;
 import android.widget.ListView;
 
 import com.yydcdut.sdlv.utils.AttrsHolder;
+import com.yydcdut.sdlv.utils.OnAdapterButtonClickListenerProxy;
 import com.yydcdut.sdlv.utils.OnAdapterSlideListenerProxy;
 
 /**
  * Created by yuyidong on 15/9/28.
  */
-public class SlideAndDragListView1 extends ListView implements OnAdapterSlideListenerProxy {
+public class SlideAndDragListView1 extends ListView implements OnAdapterSlideListenerProxy, OnAdapterButtonClickListenerProxy {
     /* item的btn的最大个数 */
     private static final int ITEM_BTN_NUMBER_MAX = 2;
     /* onTouch里面的状态 */
@@ -33,8 +34,9 @@ public class SlideAndDragListView1 extends ListView implements OnAdapterSlideLis
     private AttrsHolder mAttrsHolder;
     /* WrapperAdapter */
     private WrapperAdapter mWrapperAdapter;
-    /* 滑动的监听器 */
+    /* 监听器 */
     private OnSlideListener mOnSlideListener;
+    private OnButtonClickListener mOnButtonClickListener;
 
 
     public SlideAndDragListView1(Context context) {
@@ -125,13 +127,14 @@ public class SlideAndDragListView1 extends ListView implements OnAdapterSlideLis
 
     @Override
     public void setAdapter(ListAdapter adapter) {
-        mWrapperAdapter = new WrapperAdapter(getContext(), adapter, mAttrsHolder);
+        mWrapperAdapter = new WrapperAdapter(getContext(), this, adapter, mAttrsHolder);
         mWrapperAdapter.setOnAdapterSlideListenerProxy(this);
+        mWrapperAdapter.setOnAdapterButtonClickListenerProxy(this);
         super.setAdapter(mWrapperAdapter);
     }
 
     /**
-     * 设置滑动监听器
+     * 设置item滑动监听器
      *
      * @param listener
      */
@@ -173,6 +176,36 @@ public class SlideAndDragListView1 extends ListView implements OnAdapterSlideLis
     public void onSlideClose(View view, int position) {
         if (mOnSlideListener != null) {
             mOnSlideListener.onSlideClose(view, this, position);
+        }
+    }
+
+    /**
+     * 设置item中的button点击事件的监听器
+     *
+     * @param onButtonClickListener
+     */
+    public void setOnButtonClickListener(OnButtonClickListener onButtonClickListener) {
+        mOnButtonClickListener = onButtonClickListener;
+    }
+
+    /**
+     * item中的button监听器
+     */
+    public interface OnButtonClickListener {
+        /**
+         * 点击事件
+         *
+         * @param v
+         * @param itemPosition   第几个item
+         * @param buttonPosition 第几个button
+         */
+        void onClick(View v, int itemPosition, int buttonPosition);
+    }
+
+    @Override
+    public void onClick(View v, int itemPosition, int buttonPosition) {
+        if (mOnButtonClickListener != null) {
+            mOnButtonClickListener.onClick(v, itemPosition, buttonPosition);
         }
     }
 }

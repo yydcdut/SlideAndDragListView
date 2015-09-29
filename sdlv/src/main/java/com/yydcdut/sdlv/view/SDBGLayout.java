@@ -13,14 +13,16 @@ import android.widget.TextView;
  * Created by yuyidong on 15/9/24.
  */
 public class SDBGLayout extends ViewGroup {
-    private static final String TAG_ONE = "one";
-    private static final String TAG_TWO = "two";
-    private static final String TAG_THREE = "three";
+    public static final String TAG_ONE = "one";
+    public static final String TAG_TWO = "two";
+    public static final String TAG_THREE = "three";
+    /* 单个button的宽度 */
     private int mBtnWidth;
 
     private TextView mLeftView;
     private TextView mMiddleView;
     private TextView mRightView;
+    /* 背景的颜色 */
     private ImageView mBGImage;
 
     public SDBGLayout(Context context) {

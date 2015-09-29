@@ -4,28 +4,40 @@ import android.content.Context;
 import android.database.DataSetObserver;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
 import android.widget.ListAdapter;
+import android.widget.ListView;
 import android.widget.WrapperListAdapter;
 
 import com.yydcdut.sdlv.utils.AttrsHolder;
+import com.yydcdut.sdlv.utils.OnAdapterButtonClickListenerProxy;
 import com.yydcdut.sdlv.utils.OnAdapterSlideListenerProxy;
 import com.yydcdut.sdlv.utils.OnItemSlideListenerProxy;
+import com.yydcdut.sdlv.view.SDBGLayout;
 import com.yydcdut.sdlv.view.SDMainLayout;
 
 /**
  * Created by yuyidong on 15/9/28.
  */
-public class WrapperAdapter implements WrapperListAdapter, OnItemSlideListenerProxy {
+public class WrapperAdapter implements WrapperListAdapter, OnItemSlideListenerProxy, View.OnClickListener, AbsListView.OnScrollListener {
+    /* 上下文 */
     private Context mContext;
+    /* 适配器 */
     private ListAdapter mAdapter;
+    /* 用户自定义参数 */
     private AttrsHolder mAttrsHolder;
+    /* SDLV */
+    private ListView mListView;
     /* 当前滑动的item的位置 */
-    private int mSlideItemPosition;
+    private int mSlideItemPosition = -1;
     /* 监听器 */
     private OnAdapterSlideListenerProxy mOnAdapterSlideListenerProxy;
+    private OnAdapterButtonClickListenerProxy mOnAdapterButtonClickListenerProxy;
 
-    public WrapperAdapter(Context context, ListAdapter adapter, AttrsHolder attrsHolder) {
+    public WrapperAdapter(Context context, ListView listView, ListAdapter adapter, AttrsHolder attrsHolder) {
         mContext = context;
+        mListView = listView;
+        mListView.setOnScrollListener(this);
         mAdapter = adapter;
         mAttrsHolder = attrsHolder;
     }
@@ -82,18 +94,19 @@ public class WrapperAdapter implements WrapperListAdapter, OnItemSlideListenerPr
         if (convertView == null) {
             View contentView = mAdapter.getView(position, convertView, parent);
             sdMainLayout = new SDMainLayout(mContext);
-            sdMainLayout.setLayoutHeight((int) mAttrsHolder.itemHeight, (int) mAttrsHolder.btnWidth);
+            sdMainLayout.setLayoutHeight((int) mAttrsHolder.itemHeight, (int) mAttrsHolder.btnWidth, (int) (mAttrsHolder.btnWidth * mAttrsHolder.btnNumber));
             sdMainLayout.getSDBGLayout().getBackGroundImage().setBackgroundDrawable(mAttrsHolder.itemBackGroundDrawable);
             sdMainLayout.getSDCustomLayout().getBackGroundImage().setBackgroundDrawable(mAttrsHolder.itemBackGroundDrawable);
-            sdMainLayout.setBtnTotalWidth((int) (mAttrsHolder.btnWidth * mAttrsHolder.btnNumber));
             sdMainLayout.getSDBGLayout().getLeftView().setBackgroundDrawable(mAttrsHolder.btn1Drawable);
             sdMainLayout.getSDBGLayout().getLeftView().setText(mAttrsHolder.btn1Text);
             sdMainLayout.getSDBGLayout().getLeftView().setTextSize(mAttrsHolder.btnTextSize);
             sdMainLayout.getSDBGLayout().getLeftView().setTextColor(mAttrsHolder.btnTextColor);
+            sdMainLayout.getSDBGLayout().getLeftView().setOnClickListener(this);
             sdMainLayout.getSDBGLayout().getMiddleView().setBackgroundDrawable(mAttrsHolder.btn2Drawable);
             sdMainLayout.getSDBGLayout().getMiddleView().setText(mAttrsHolder.btn2Text);
             sdMainLayout.getSDBGLayout().getMiddleView().setTextSize(mAttrsHolder.btnTextSize);
             sdMainLayout.getSDBGLayout().getMiddleView().setTextColor(mAttrsHolder.btnTextColor);
+            sdMainLayout.getSDBGLayout().getMiddleView().setOnClickListener(this);
             sdMainLayout.setOnItemSlideListenerProxy(this);
             //判断哪些隐藏哪些显示
             checkVisible(sdMainLayout.getSDBGLayout().getLeftView(), sdMainLayout.getSDBGLayout().getMiddleView());
@@ -102,8 +115,6 @@ public class WrapperAdapter implements WrapperListAdapter, OnItemSlideListenerPr
             sdMainLayout = (SDMainLayout) convertView;
             View contentView = mAdapter.getView(position, sdMainLayout.getSDCustomLayout().getCustomView(), parent);
         }
-        //归位
-        sdMainLayout.getSDCustomLayout().getRealView().scrollTo(0, 0);
         return sdMainLayout;
     }
 
@@ -145,21 +156,30 @@ public class WrapperAdapter implements WrapperListAdapter, OnItemSlideListenerPr
     }
 
     /**
+     * 设置slide滑开的item的位置
+     *
+     * @param position
+     */
+    protected void setSlideItemPosition(int position) {
+        if (mSlideItemPosition != -1 && mSlideItemPosition != position) {
+            returnSlideItemPosition();
+        }
+        if (mSlideItemPosition == position) {//已经执行过下面的操作了，就不要再去操作了。
+            return;
+        }
+        mSlideItemPosition = position;
+        SDMainLayout sdMainLayout = (SDMainLayout) mListView.getChildAt(mSlideItemPosition - mListView.getFirstVisiblePosition());
+        sdMainLayout.getSDBGLayout().getLeftView().setClickable(true);
+        sdMainLayout.getSDBGLayout().getMiddleView().setClickable(true);
+    }
+
+    /**
      * 设置监听器
      *
      * @param onAdapterSlideListenerProxy
      */
     public void setOnAdapterSlideListenerProxy(OnAdapterSlideListenerProxy onAdapterSlideListenerProxy) {
         mOnAdapterSlideListenerProxy = onAdapterSlideListenerProxy;
-    }
-
-    /**
-     * 设置slide滑开的item的位置
-     *
-     * @param position
-     */
-    protected void setSlideItemPosition(int position) {
-        mSlideItemPosition = position;
     }
 
     @Override
@@ -174,5 +194,63 @@ public class WrapperAdapter implements WrapperListAdapter, OnItemSlideListenerPr
         if (mOnAdapterSlideListenerProxy != null) {
             mOnAdapterSlideListenerProxy.onSlideClose(view, mSlideItemPosition);
         }
+        returnSlideItemPosition();
+    }
+
+    /**
+     * 设置监听器
+     *
+     * @param onAdapterButtonClickListenerProxy
+     */
+    public void setOnAdapterButtonClickListenerProxy(OnAdapterButtonClickListenerProxy onAdapterButtonClickListenerProxy) {
+        mOnAdapterButtonClickListenerProxy = onAdapterButtonClickListenerProxy;
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch ((String) v.getTag()) {
+            case SDBGLayout.TAG_ONE:
+                if (mOnAdapterButtonClickListenerProxy != null) {
+                    mOnAdapterButtonClickListenerProxy.onClick(v, mSlideItemPosition, 0);
+                }
+                break;
+            case SDBGLayout.TAG_TWO:
+                if (mOnAdapterButtonClickListenerProxy != null) {
+                    mOnAdapterButtonClickListenerProxy.onClick(v, mSlideItemPosition, 1);
+                }
+                break;
+            case SDBGLayout.TAG_THREE:
+                if (mOnAdapterButtonClickListenerProxy != null) {
+                    mOnAdapterButtonClickListenerProxy.onClick(v, mSlideItemPosition, 3);
+                }
+                break;
+        }
+    }
+
+    @Override
+    public void onScrollStateChanged(AbsListView view, int scrollState) {
+        if (scrollState != 0) {
+            returnSlideItemPosition();
+        }
+    }
+
+    /**
+     * 复原mSlideItemPosition，button不可点击
+     */
+    private void returnSlideItemPosition() {
+        if (mSlideItemPosition != -1) {
+            SDMainLayout sdMainLayout = (SDMainLayout) mListView.getChildAt(mSlideItemPosition - mListView.getFirstVisiblePosition());
+            if (sdMainLayout != null) {
+                sdMainLayout.scrollBack();
+                sdMainLayout.getSDBGLayout().getLeftView().setClickable(false);
+                sdMainLayout.getSDBGLayout().getMiddleView().setClickable(false);
+            }
+            mSlideItemPosition = -1;
+        }
+    }
+
+    @Override
+    public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+
     }
 }

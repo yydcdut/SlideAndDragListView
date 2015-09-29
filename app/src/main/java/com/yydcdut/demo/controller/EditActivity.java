@@ -24,7 +24,8 @@ import com.yydcdut.sdlv.SlideAndDragListView1;
  * Created by yuyidong on 15/7/31.
  */
 public class EditActivity extends AppCompatActivity implements SlideAndDragListView.OnListItemLongClickListener, SlideAndDragListView.OnDragListener,
-        SlideAndDragListView1.OnSlideListener, SlideAndDragListView.OnListItemClickListener, SlideAndDragListView.OnButtonClickListenerProxy {
+        SlideAndDragListView1.OnSlideListener, SlideAndDragListView.OnListItemClickListener, SlideAndDragListView.OnButtonClickListenerProxy,
+        SlideAndDragListView1.OnButtonClickListener {
 
     private RandomColor mColor = RandomColor.MATERIAL;
 
@@ -43,6 +44,7 @@ public class EditActivity extends AppCompatActivity implements SlideAndDragListV
 //        listView.setOnListItemClickListener(this);
         listView.setOnSlideListener(this);
 //        listView.setOnButtonClickListenerProxy(this);
+        listView.setOnButtonClickListener(this);
     }
 
     private SDAdapter mBaseAdapter = new SDAdapter(this, DemoModel.getInstance().getData()) {

@@ -12,6 +12,9 @@ import com.yydcdut.sdlv.utils.OnItemSlideListenerProxy;
  * Created by yuyidong on 15/9/24.
  */
 public class SDMainLayout extends FrameLayout {
+    private static final int SCROLL_STATE_OPEN = 1;
+    private static final int SCROLL_STATE_CLOSE = 0;
+    private int mScrollState = SCROLL_STATE_CLOSE;
     /* 时间 */
     private static final int SCROLL_TIME = 500;//500ms
     private static final int SCROLL_QUICK_TIME = 200;//200ms
@@ -52,9 +55,34 @@ public class SDMainLayout extends FrameLayout {
         addView(mSDCustomLayout, new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
     }
 
-    public void setLayoutHeight(int height, int btnWidth) {
+    /**
+     * 得到CustomView
+     *
+     * @return
+     */
+    public SDCustomLayout getSDCustomLayout() {
+        return mSDCustomLayout;
+    }
+
+    /**
+     * 得到背景View
+     *
+     * @return
+     */
+    public SDBGLayout getSDBGLayout() {
+        return mSDBGLayout;
+    }
+
+    /**
+     * 设置item的高度,button的宽度,button总宽度
+     *
+     * @param height
+     * @param btnWidth
+     */
+    public void setLayoutHeight(int height, int btnWidth, int btnTotalWidth) {
         mHeight = height;
         mSDBGLayout.setBtnWidth(btnWidth);
+        mBGWidth = btnTotalWidth;
         requestLayout();
     }
 
@@ -68,18 +96,6 @@ public class SDMainLayout extends FrameLayout {
         } else {
             super.onMeasure(widthMeasureSpec, heightMeasureSpec);
         }
-    }
-
-    public SDCustomLayout getSDCustomLayout() {
-        return mSDCustomLayout;
-    }
-
-    public SDBGLayout getSDBGLayout() {
-        return mSDBGLayout;
-    }
-
-    public void setBtnTotalWidth(int width) {
-        mBGWidth = width;
     }
 
     @Override
@@ -116,15 +132,17 @@ public class SDMainLayout extends FrameLayout {
                     } else {
                         mScroller.startScroll(mSDCustomLayout.getScrollX(), 0, -delta, 0, SCROLL_TIME);
                     }
-                    if (mOnItemSlideListenerProxy != null) {
+                    if (mOnItemSlideListenerProxy != null && mScrollState != SCROLL_STATE_OPEN) {
                         mOnItemSlideListenerProxy.onSlideOpen(this);
                     }
+                    mScrollState = SCROLL_STATE_OPEN;
                 } else {
                     mScroller.startScroll(mSDCustomLayout.getScrollX(), 0, -mSDCustomLayout.getScrollX(), 0, SCROLL_TIME);
                     //滑回去,归位
-                    if (mOnItemSlideListenerProxy != null) {
+                    if (mOnItemSlideListenerProxy != null && mScrollState != SCROLL_STATE_CLOSE) {
                         mOnItemSlideListenerProxy.onSlideClose(this);
                     }
+                    mScrollState = SCROLL_STATE_CLOSE;
                 }
                 postInvalidate();
                 mIsMoving = false;
@@ -166,6 +184,19 @@ public class SDMainLayout extends FrameLayout {
         super.computeScroll();
     }
 
+    /**
+     * 归位
+     */
+    public void scrollBack() {
+        mScroller.startScroll(mSDCustomLayout.getScrollX(), 0, -mSDCustomLayout.getScrollX(), 0, SCROLL_TIME);
+        postInvalidate();
+    }
+
+    /**
+     * 设置item滑动的监听器
+     *
+     * @param onItemSlideListenerProxy
+     */
     public void setOnItemSlideListenerProxy(OnItemSlideListenerProxy onItemSlideListenerProxy) {
         mOnItemSlideListenerProxy = onItemSlideListenerProxy;
     }
