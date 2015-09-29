@@ -105,7 +105,9 @@ public class SDMainLayout extends FrameLayout {
             case MotionEvent.ACTION_DOWN:
                 mXDown = ev.getX();
                 mYDown = ev.getY();
+                //控件初始距离
                 mXScrollDistance = mSDCustomLayout.getScrollX();
+                //是否有要scroll的动向，目前没有
                 mIsMoving = false;
                 break;
             case MotionEvent.ACTION_MOVE:
@@ -113,11 +115,14 @@ public class SDMainLayout extends FrameLayout {
                     //执行ListView的手势操作
                     getParent().requestDisallowInterceptTouchEvent(false);
                 } else if (fingerLeftAndRightMove(ev) || mIsMoving) {//上下范围在50，主要检测左右滑动
-                    //执行控件的手势操作
+                    //是否有要scroll的动向，是
                     mIsMoving = true;
+                    //执行控件的手势操作
                     getParent().requestDisallowInterceptTouchEvent(true);
                     float moveDistance = ev.getX() - mXDown;//这个往右是正，往左是负
+                    //计算出距离
                     float distance = mXScrollDistance - moveDistance < 0 ? mXScrollDistance - moveDistance : 0;
+                    //滑动
                     mSDCustomLayout.scrollTo((int) distance, 0);
                 }
                 break;

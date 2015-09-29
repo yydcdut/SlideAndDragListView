@@ -6,20 +6,21 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.ListAdapter;
-import android.widget.ListView;
 import android.widget.WrapperListAdapter;
 
 import com.yydcdut.sdlv.utils.AttrsHolder;
 import com.yydcdut.sdlv.utils.OnAdapterButtonClickListenerProxy;
 import com.yydcdut.sdlv.utils.OnAdapterSlideListenerProxy;
 import com.yydcdut.sdlv.utils.OnItemSlideListenerProxy;
+import com.yydcdut.sdlv.utils.OnScrollListenerProxy;
 import com.yydcdut.sdlv.view.SDBGLayout;
 import com.yydcdut.sdlv.view.SDMainLayout;
 
 /**
  * Created by yuyidong on 15/9/28.
  */
-public class WrapperAdapter implements WrapperListAdapter, OnItemSlideListenerProxy, View.OnClickListener, AbsListView.OnScrollListener {
+public class WrapperAdapter implements WrapperListAdapter, OnItemSlideListenerProxy, View.OnClickListener,
+        OnScrollListenerProxy {
     /* 上下文 */
     private Context mContext;
     /* 适配器 */
@@ -27,17 +28,17 @@ public class WrapperAdapter implements WrapperListAdapter, OnItemSlideListenerPr
     /* 用户自定义参数 */
     private AttrsHolder mAttrsHolder;
     /* SDLV */
-    private ListView mListView;
+    private SlideAndDragListView1 mListView;
     /* 当前滑动的item的位置 */
     private int mSlideItemPosition = -1;
     /* 监听器 */
     private OnAdapterSlideListenerProxy mOnAdapterSlideListenerProxy;
     private OnAdapterButtonClickListenerProxy mOnAdapterButtonClickListenerProxy;
 
-    public WrapperAdapter(Context context, ListView listView, ListAdapter adapter, AttrsHolder attrsHolder) {
+    public WrapperAdapter(Context context, SlideAndDragListView1 listView, ListAdapter adapter, AttrsHolder attrsHolder) {
         mContext = context;
         mListView = listView;
-        mListView.setOnScrollListener(this);
+        mListView.setOnScrollListenerProxy(this);
         mAdapter = adapter;
         mAttrsHolder = attrsHolder;
     }
@@ -118,6 +119,12 @@ public class WrapperAdapter implements WrapperListAdapter, OnItemSlideListenerPr
         return sdMainLayout;
     }
 
+    /**
+     * 设置哪些button显示哪些button不显示
+     *
+     * @param left
+     * @param middle
+     */
     private void checkVisible(View left, View middle) {
         switch (mAttrsHolder.btnNumber) {
             case 0:
@@ -174,6 +181,47 @@ public class WrapperAdapter implements WrapperListAdapter, OnItemSlideListenerPr
     }
 
     /**
+     * 得到当前滑开的item的位置
+     *
+     * @return
+     */
+    protected int getSlideItemPosition() {
+        return mSlideItemPosition;
+    }
+
+    /**
+     * 归位mSlideItemPosition，button不可点击
+     */
+    public void returnSlideItemPosition() {
+        if (mSlideItemPosition != -1) {
+            SDMainLayout sdMainLayout = (SDMainLayout) mListView.getChildAt(mSlideItemPosition - mListView.getFirstVisiblePosition());
+            if (sdMainLayout != null) {
+                sdMainLayout.scrollBack();
+                sdMainLayout.getSDBGLayout().getLeftView().setClickable(false);
+                sdMainLayout.getSDBGLayout().getMiddleView().setClickable(false);
+            }
+            mSlideItemPosition = -1;
+        }
+    }
+
+    /**
+     * 通过点击位置来判断是点击到的哪个位置
+     *
+     * @param x
+     * @return
+     */
+    public boolean isTriggerButtonClick(float x) {
+        if (mSlideItemPosition != -1) {
+            SDMainLayout sdMainLayout = (SDMainLayout) mListView.getChildAt(mSlideItemPosition - mListView.getFirstVisiblePosition());
+            if (sdMainLayout != null) {
+                int scrollX = -sdMainLayout.getSDCustomLayout().getScrollX();
+                return x < scrollX ? true : false;
+            }
+        }
+        return false;
+    }
+
+    /**
      * 设置监听器
      *
      * @param onAdapterSlideListenerProxy
@@ -194,6 +242,7 @@ public class WrapperAdapter implements WrapperListAdapter, OnItemSlideListenerPr
         if (mOnAdapterSlideListenerProxy != null) {
             mOnAdapterSlideListenerProxy.onSlideClose(view, mSlideItemPosition);
         }
+        //归位
         returnSlideItemPosition();
     }
 
@@ -229,23 +278,9 @@ public class WrapperAdapter implements WrapperListAdapter, OnItemSlideListenerPr
 
     @Override
     public void onScrollStateChanged(AbsListView view, int scrollState) {
-        if (scrollState != 0) {
+        //当发生滑动的时候归位
+        if (scrollState != AbsListView.OnScrollListener.SCROLL_STATE_IDLE) {
             returnSlideItemPosition();
-        }
-    }
-
-    /**
-     * 复原mSlideItemPosition，button不可点击
-     */
-    private void returnSlideItemPosition() {
-        if (mSlideItemPosition != -1) {
-            SDMainLayout sdMainLayout = (SDMainLayout) mListView.getChildAt(mSlideItemPosition - mListView.getFirstVisiblePosition());
-            if (sdMainLayout != null) {
-                sdMainLayout.scrollBack();
-                sdMainLayout.getSDBGLayout().getLeftView().setClickable(false);
-                sdMainLayout.getSDBGLayout().getMiddleView().setClickable(false);
-            }
-            mSlideItemPosition = -1;
         }
     }
 

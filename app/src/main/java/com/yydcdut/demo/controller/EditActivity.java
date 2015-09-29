@@ -23,8 +23,8 @@ import com.yydcdut.sdlv.SlideAndDragListView1;
 /**
  * Created by yuyidong on 15/7/31.
  */
-public class EditActivity extends AppCompatActivity implements SlideAndDragListView.OnListItemLongClickListener, SlideAndDragListView.OnDragListener,
-        SlideAndDragListView1.OnSlideListener, SlideAndDragListView.OnListItemClickListener, SlideAndDragListView.OnButtonClickListenerProxy,
+public class EditActivity extends AppCompatActivity implements SlideAndDragListView1.OnListItemLongClickListener, SlideAndDragListView.OnDragListener,
+        SlideAndDragListView1.OnSlideListener, SlideAndDragListView1.OnListItemClickListener,
         SlideAndDragListView1.OnButtonClickListener {
 
     private RandomColor mColor = RandomColor.MATERIAL;
@@ -39,11 +39,10 @@ public class EditActivity extends AppCompatActivity implements SlideAndDragListV
     public void initUiAndListener() {
         SlideAndDragListView1 listView = (SlideAndDragListView1) findViewById(R.id.lv_edit);
         listView.setAdapter(mAdapter);
-//        listView.setOnListItemLongClickListener(this);
+        listView.setOnListItemLongClickListener(this);
 //        listView.setOnDragListener(this);
-//        listView.setOnListItemClickListener(this);
+        listView.setOnListItemClickListener(this);
         listView.setOnSlideListener(this);
-//        listView.setOnButtonClickListenerProxy(this);
         listView.setOnButtonClickListener(this);
     }
 
@@ -130,7 +129,7 @@ public class EditActivity extends AppCompatActivity implements SlideAndDragListV
 
     @Override
     public void onListItemLongClick(View view, int position) {
-//        Toast.makeText(EditActivity.this, "onItemLongClick   position--->" + position, Toast.LENGTH_SHORT).show();
+        Toast.makeText(EditActivity.this, "onItemLongClick   position--->" + position, Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -142,16 +141,6 @@ public class EditActivity extends AppCompatActivity implements SlideAndDragListV
     public void onDragViewDown(int position) {
 //        Toast.makeText(EditActivity.this, "onDragViewDown   position--->" + position, Toast.LENGTH_SHORT).show();
     }
-
-//    @Override
-//    public void onSlideOpen(View view, int position) {
-////        Toast.makeText(EditActivity.this, "onSlideOpen   position--->" + position, Toast.LENGTH_SHORT).show();
-//    }
-//
-//    @Override
-//    public void onSlideClose(View view, int position) {
-////        Toast.makeText(EditActivity.this, "onSlideClose   position--->" + position, Toast.LENGTH_SHORT).show();
-//    }
 
     @Override
     public void onClick(View v, int position, int number) {
