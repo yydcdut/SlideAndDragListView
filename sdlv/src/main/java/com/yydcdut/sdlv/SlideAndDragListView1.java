@@ -109,7 +109,7 @@ public class SlideAndDragListView1 extends ListView implements OnAdapterSlideLis
 //                    mSDAdapter.setDragPosition(position);
                     //如果设置了监听器的话，就触发
                     if (mOnListItemLongClickListener != null) {
-//                        scrollBack();
+                        scrollBack(position);
                         mVibrator.vibrate(100);
                         mOnListItemLongClickListener.onListItemLongClick(view, position);
                     }
@@ -165,15 +165,14 @@ public class SlideAndDragListView1 extends ListView implements OnAdapterSlideLis
             case MotionEvent.ACTION_CANCEL:
                 if (mState == STATE_DOWN || mState == STATE_LONG_CLICK) {
                     int position = pointToPosition(mXDown, mYDown);
-                    //当前点击item是否是滑开的item
-                    if (mWrapperAdapter.getSlideItemPosition() == position) {
-                        //点击的button还是非button部分
-                        if (!mWrapperAdapter.isTriggerButtonClick(mXDown)) {
-                            mWrapperAdapter.returnSlideItemPosition();
-                        }
-                    } else if (mWrapperAdapter.getSlideItemPosition() != -1) {
-                        mWrapperAdapter.returnSlideItemPosition();
-                    } else if (mOnListItemClickListener != null && mIsWannaTriggerClick) {
+                    //是否ScrollBack了，是的话就不去执行onListItemClick操作了
+                    boolean bool = scrollBack(position);
+                    if (bool) {
+                        removeLongClickMessage();
+                        mState = STATE_NOTHING;
+                        break;
+                    }
+                    if (mOnListItemClickListener != null && mIsWannaTriggerClick) {
                         View v = getChildAt(position - getFirstVisiblePosition());
                         mOnListItemClickListener.onListItemClick(v, position);
                     }
@@ -185,6 +184,23 @@ public class SlideAndDragListView1 extends ListView implements OnAdapterSlideLis
                 break;
         }
         return super.dispatchTouchEvent(ev);
+    }
+
+    /**
+     * 将滑开的item归位
+     *
+     * @param position
+     * @return true--->有归位操作，false--->没有归位操作，也就是没有滑开的item
+     */
+    private boolean scrollBack(int position) {
+        //是不是当前滑开的这个
+        if (mWrapperAdapter.getSlideItemPosition() == position) {
+            return true;
+        } else if (mWrapperAdapter.getSlideItemPosition() != -1) {
+            mWrapperAdapter.returnSlideItemPosition();
+            return true;
+        }
+        return false;
     }
 
     /**
@@ -388,6 +404,4 @@ public class SlideAndDragListView1 extends ListView implements OnAdapterSlideLis
             mOnScrollListenerProxy.onScroll(view, firstVisibleItem, visibleItemCount, totalItemCount);
         }
     }
-
-
 }
