@@ -6,7 +6,7 @@
                 android:background="@android:color/white"
                 android:orientation="vertical">
 
-    <com.yydcdut.sdlv.SlideAndDragListView1
+    <com.yydcdut.sdlv.SlideAndDragListView
         android:id="@+id/lv_edit"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
@@ -19,11 +19,11 @@
         sdlv:item_btn1_text="Delete1"
         sdlv:item_btn2_background="@drawable/btn2_drawable"
         sdlv:item_btn2_text="Rename1"
-        sdlv:item_btn_number="2"
+        sdlv:item_btn_number="3"
         sdlv:item_btn_text_color="#ffffff"
         sdlv:item_btn_text_size="8sp"
         sdlv:item_btn_width="70dip"
         sdlv:item_height="80dip">
-    </com.yydcdut.sdlv.SlideAndDragListView1>
+    </com.yydcdut.sdlv.SlideAndDragListView>
 
 </RelativeLayout>

@@ -1,4 +1,4 @@
-package com.yydcdut.sdlv.view;
+package com.yydcdut.sdlv;
 
 import android.content.Context;
 import android.util.AttributeSet;
@@ -6,12 +6,10 @@ import android.view.MotionEvent;
 import android.widget.FrameLayout;
 import android.widget.Scroller;
 
-import com.yydcdut.sdlv.utils.OnItemSlideListenerProxy;
-
 /**
  * Created by yuyidong on 15/9/24.
  */
-public class SDMainLayout extends FrameLayout {
+class ItemMainLayout extends FrameLayout {
     private static final int SCROLL_STATE_OPEN = 1;
     private static final int SCROLL_STATE_CLOSE = 0;
     private int mScrollState = SCROLL_STATE_CLOSE;
@@ -23,8 +21,8 @@ public class SDMainLayout extends FrameLayout {
     /* 子控件中button的宽度 */
     private int mBGWidth;
     /* 子view */
-    private SDBGLayout mSDBGLayout;
-    private SDCustomLayout mSDCustomLayout;
+    private ItemBackGroundLayout mItemBackGroundLayout;
+    private ItemCustomLayout mItemCustomLayout;
     /* Scroller */
     private Scroller mScroller;
     /* 控件是否滑动 */
@@ -38,21 +36,21 @@ public class SDMainLayout extends FrameLayout {
     private OnItemSlideListenerProxy mOnItemSlideListenerProxy;
 
 
-    public SDMainLayout(Context context) {
+    public ItemMainLayout(Context context) {
         this(context, null);
     }
 
-    public SDMainLayout(Context context, AttributeSet attrs) {
+    public ItemMainLayout(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
     }
 
-    public SDMainLayout(Context context, AttributeSet attrs, int defStyleAttr) {
+    public ItemMainLayout(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         mScroller = new Scroller(context);
-        mSDBGLayout = new SDBGLayout(context);
-        addView(mSDBGLayout, new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
-        mSDCustomLayout = new SDCustomLayout(context);
-        addView(mSDCustomLayout, new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
+        mItemBackGroundLayout = new ItemBackGroundLayout(context);
+        addView(mItemBackGroundLayout, new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
+        mItemCustomLayout = new ItemCustomLayout(context);
+        addView(mItemCustomLayout, new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
     }
 
     /**
@@ -60,8 +58,8 @@ public class SDMainLayout extends FrameLayout {
      *
      * @return
      */
-    public SDCustomLayout getSDCustomLayout() {
-        return mSDCustomLayout;
+    public ItemCustomLayout getItemCustomLayout() {
+        return mItemCustomLayout;
     }
 
     /**
@@ -69,8 +67,8 @@ public class SDMainLayout extends FrameLayout {
      *
      * @return
      */
-    public SDBGLayout getSDBGLayout() {
-        return mSDBGLayout;
+    public ItemBackGroundLayout getItemBackGroundLayout() {
+        return mItemBackGroundLayout;
     }
 
     /**
@@ -81,7 +79,7 @@ public class SDMainLayout extends FrameLayout {
      */
     public void setLayoutHeight(int height, int btnWidth, int btnTotalWidth) {
         mHeight = height;
-        mSDBGLayout.setBtnWidth(btnWidth);
+        mItemBackGroundLayout.setBtnWidth(btnWidth);
         mBGWidth = btnTotalWidth;
         requestLayout();
     }
@@ -106,7 +104,7 @@ public class SDMainLayout extends FrameLayout {
                 mXDown = ev.getX();
                 mYDown = ev.getY();
                 //控件初始距离
-                mXScrollDistance = mSDCustomLayout.getScrollX();
+                mXScrollDistance = mItemCustomLayout.getScrollX();
                 //是否有要scroll的动向，目前没有
                 mIsMoving = false;
                 break;
@@ -123,26 +121,26 @@ public class SDMainLayout extends FrameLayout {
                     //计算出距离
                     float distance = mXScrollDistance - moveDistance < 0 ? mXScrollDistance - moveDistance : 0;
                     //滑动
-                    mSDCustomLayout.scrollTo((int) distance, 0);
+                    mItemCustomLayout.scrollTo((int) distance, 0);
                 }
                 break;
             case MotionEvent.ACTION_UP:
             case MotionEvent.ACTION_CANCEL:
                 //如果滑出的话，那么就滑到固定位置(只要滑出了 mBGWidth / 2 ，就算滑出去了)
-                if (Math.abs(mSDCustomLayout.getScrollX()) > mBGWidth / 2) {
+                if (Math.abs(mItemCustomLayout.getScrollX()) > mBGWidth / 2) {
                     //滑出
-                    int delta = mBGWidth - Math.abs(mSDCustomLayout.getScrollX());
-                    if (Math.abs(mSDCustomLayout.getScrollX()) < mBGWidth) {
-                        mScroller.startScroll(mSDCustomLayout.getScrollX(), 0, -delta, 0, SCROLL_QUICK_TIME);
+                    int delta = mBGWidth - Math.abs(mItemCustomLayout.getScrollX());
+                    if (Math.abs(mItemCustomLayout.getScrollX()) < mBGWidth) {
+                        mScroller.startScroll(mItemCustomLayout.getScrollX(), 0, -delta, 0, SCROLL_QUICK_TIME);
                     } else {
-                        mScroller.startScroll(mSDCustomLayout.getScrollX(), 0, -delta, 0, SCROLL_TIME);
+                        mScroller.startScroll(mItemCustomLayout.getScrollX(), 0, -delta, 0, SCROLL_TIME);
                     }
                     if (mOnItemSlideListenerProxy != null && mScrollState != SCROLL_STATE_OPEN) {
                         mOnItemSlideListenerProxy.onSlideOpen(this);
                     }
                     mScrollState = SCROLL_STATE_OPEN;
                 } else {
-                    mScroller.startScroll(mSDCustomLayout.getScrollX(), 0, -mSDCustomLayout.getScrollX(), 0, SCROLL_TIME);
+                    mScroller.startScroll(mItemCustomLayout.getScrollX(), 0, -mItemCustomLayout.getScrollX(), 0, SCROLL_TIME);
                     //滑回去,归位
                     if (mOnItemSlideListenerProxy != null && mScrollState != SCROLL_STATE_CLOSE) {
                         mOnItemSlideListenerProxy.onSlideClose(this);
@@ -183,7 +181,7 @@ public class SDMainLayout extends FrameLayout {
     @Override
     public void computeScroll() {
         if (mScroller.computeScrollOffset()) {
-            mSDCustomLayout.scrollTo(mScroller.getCurrX(), mScroller.getCurrY());
+            mItemCustomLayout.scrollTo(mScroller.getCurrX(), mScroller.getCurrY());
             postInvalidate();
         }
         super.computeScroll();
@@ -193,7 +191,7 @@ public class SDMainLayout extends FrameLayout {
      * 归位
      */
     public void scrollBack() {
-        mScroller.startScroll(mSDCustomLayout.getScrollX(), 0, -mSDCustomLayout.getScrollX(), 0, SCROLL_TIME);
+        mScroller.startScroll(mItemCustomLayout.getScrollX(), 0, -mItemCustomLayout.getScrollX(), 0, SCROLL_TIME);
         postInvalidate();
     }
 

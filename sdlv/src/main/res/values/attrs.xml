@@ -8,9 +8,11 @@
         <attr name="item_btn_number" format="integer"/>
         <attr name="item_btn1_text" format="string"/>
         <attr name="item_btn2_text" format="string"/>
+        <attr name="item_btn3_text" format="string"/>
         <attr name="item_btn_text_color" format="color"/>
         <attr name="item_btn1_background" format="reference|color"/>
         <attr name="item_btn2_background" format="reference|color"/>
+        <attr name="item_btn3_background" format="reference|color"/>
         <attr name="item_btn_text_size" format="dimension"/>
 
     </declare-styleable>

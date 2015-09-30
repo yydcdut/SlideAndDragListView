@@ -1,5 +1,7 @@
 package com.yydcdut.sdlv;
 
+import android.content.ClipData;
+import android.content.ClipDescription;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.DragEvent;
@@ -101,8 +103,6 @@ class DragListView<T> extends ListView implements View.OnDragListener {
                         mCurrentPosition = position;
                     }
                 }
-                //通知adapter
-//                mSDAdapter.setDragPosition(position);
                 if (mOnDragListener != null) {
                     mOnDragListener.onDragViewMoving(mCurrentPosition);
                 }
@@ -111,8 +111,6 @@ class DragListView<T> extends ListView implements View.OnDragListener {
                 return true;
             case DragEvent.ACTION_DROP:
                 mSDAdapter.notifyDataSetChanged();
-                //通知adapter
-//                mSDAdapter.setDragPosition(-1);
                 if (mOnDragListener != null) {
                     mOnDragListener.onDragViewDown(mCurrentPosition);
                 }
@@ -147,6 +145,18 @@ class DragListView<T> extends ListView implements View.OnDragListener {
 
     protected void setRawAdapter(ListAdapter adapter) {
         mSDAdapter = (BaseAdapter) adapter;
+    }
+
+    protected void setDragPosition(int position) {
+        mCurrentPosition = position;
+        mBeforeCurrentPosition = position;
+        mBeforeBeforePosition = position;
+        if (mOnDragListener != null) {
+            View view = getChildAt(position - getFirstVisiblePosition());
+            ClipData.Item item = new ClipData.Item("1");
+            ClipData data = new ClipData("1", new String[]{ClipDescription.MIMETYPE_TEXT_PLAIN}, item);
+            view.startDrag(data, new View.DragShadowBuilder(view), null, 0);
+        }
     }
 
     @Deprecated

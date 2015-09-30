@@ -1,6 +1,5 @@
 package com.yydcdut.demo.controller;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
@@ -16,15 +15,14 @@ import com.yydcdut.demo.model.Bean;
 import com.yydcdut.demo.model.DemoModel;
 import com.yydcdut.demo.utils.RandomColor;
 import com.yydcdut.demo.view.TextDrawable;
-import com.yydcdut.sdlv.SDAdapter;
-import com.yydcdut.sdlv.SlideAndDragListView1;
+import com.yydcdut.sdlv.SlideAndDragListView;
 
 /**
  * Created by yuyidong on 15/7/31.
  */
-public class EditActivity extends AppCompatActivity implements SlideAndDragListView1.OnListItemLongClickListener,
-        SlideAndDragListView1.OnDragListener, SlideAndDragListView1.OnSlideListener,
-        SlideAndDragListView1.OnListItemClickListener, SlideAndDragListView1.OnButtonClickListener {
+public class EditActivity extends AppCompatActivity implements SlideAndDragListView.OnListItemLongClickListener,
+        SlideAndDragListView.OnDragListener, SlideAndDragListView.OnSlideListener,
+        SlideAndDragListView.OnListItemClickListener, SlideAndDragListView.OnButtonClickListener {
 
     private RandomColor mColor = RandomColor.MATERIAL;
 
@@ -36,48 +34,14 @@ public class EditActivity extends AppCompatActivity implements SlideAndDragListV
     }
 
     public void initUiAndListener() {
-        SlideAndDragListView1 listView = (SlideAndDragListView1) findViewById(R.id.lv_edit);
+        SlideAndDragListView listView = (SlideAndDragListView) findViewById(R.id.lv_edit);
         listView.setAdapter(mAdapter);
-        listView.setOnListItemLongClickListener(this);
-        listView.setOnDragListener(this, DemoModel.getInstance().getData());
-        listView.setOnListItemClickListener(this);
-        listView.setOnSlideListener(this);
-        listView.setOnButtonClickListener(this);
+//        listView.setOnListItemLongClickListener(this);
+//        listView.setOnDragListener(this, DemoModel.getInstance().getData());
+//        listView.setOnListItemClickListener(this);
+//        listView.setOnSlideListener(this);
+//        listView.setOnButtonClickListener(this);
     }
-
-    private SDAdapter mBaseAdapter = new SDAdapter(this, DemoModel.getInstance().getData()) {
-
-        @Override
-        public View getView(Context context, View convertView, int position, int dragPosition) {
-            CustomViewHolder cvh;
-            if (convertView == null) {
-                cvh = new CustomViewHolder();
-                convertView = LayoutInflater.from(context).inflate(R.layout.item_custom, null);
-                cvh.imgLogo = (ImageView) convertView.findViewById(R.id.img_item_edit);
-                cvh.txtName = (TextView) convertView.findViewById(R.id.txt_item_edit);
-                convertView.setTag(cvh);
-            } else {
-                cvh = (CustomViewHolder) convertView.getTag();
-            }
-            Bean bean = (Bean) this.getItem(position);
-            cvh.txtName.setText(bean.name);
-            //把当前选中的颜色变为红色
-            if (dragPosition == position) {
-                cvh.imgLogo.setImageDrawable(TextDrawable.builder().buildRound(bean.name, context.getResources().getColor(R.color.red_colorPrimary)));
-                cvh.txtName.setTextColor(context.getResources().getColor(R.color.red_colorPrimary));
-            } else {
-                cvh.imgLogo.setImageDrawable(TextDrawable.builder().buildRound(bean.name, mColor.getColor(bean.name)));
-                cvh.txtName.setTextColor(context.getResources().getColor(R.color.txt_gray));
-            }
-            return convertView;
-        }
-
-        class CustomViewHolder {
-            public ImageView imgLogo;
-            public TextView txtName;
-        }
-
-    };
 
     private BaseAdapter mAdapter = new BaseAdapter() {
         @Override

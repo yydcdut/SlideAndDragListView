@@ -1,11 +1,11 @@
-package com.yydcdut.sdlv.utils;
+package com.yydcdut.sdlv;
 
 import android.widget.AbsListView;
 
 /**
  * Created by yuyidong on 15/9/29.
  */
-public interface OnScrollListenerProxy {
+interface OnScrollListenerProxy {
 
     void onScrollStateChanged(AbsListView view, int scrollState);
 

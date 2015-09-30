@@ -1,4 +1,4 @@
-package com.yydcdut.sdlv.view;
+package com.yydcdut.sdlv;
 
 import android.content.Context;
 import android.graphics.Color;
@@ -11,18 +11,18 @@ import android.widget.ImageView;
 /**
  * Created by yuyidong on 15/9/25.
  */
-public class SDCustomLayout extends FrameLayout {
+class ItemCustomLayout extends FrameLayout {
     private ImageView mBGImage;
 
-    public SDCustomLayout(Context context) {
+    public ItemCustomLayout(Context context) {
         this(context, null);
     }
 
-    public SDCustomLayout(Context context, AttributeSet attrs) {
+    public ItemCustomLayout(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
     }
 
-    public SDCustomLayout(Context context, AttributeSet attrs, int defStyleAttr) {
+    public ItemCustomLayout(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         mBGImage = new ImageView(context);
         mBGImage.setBackgroundColor(Color.TRANSPARENT);

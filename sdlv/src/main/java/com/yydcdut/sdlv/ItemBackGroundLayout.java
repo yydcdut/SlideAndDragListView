@@ -1,4 +1,4 @@
-package com.yydcdut.sdlv.view;
+package com.yydcdut.sdlv;
 
 import android.content.Context;
 import android.graphics.Color;
@@ -12,7 +12,7 @@ import android.widget.TextView;
 /**
  * Created by yuyidong on 15/9/24.
  */
-public class SDBGLayout extends ViewGroup {
+class ItemBackGroundLayout extends ViewGroup {
     public static final String TAG_ONE = "one";
     public static final String TAG_TWO = "two";
     public static final String TAG_THREE = "three";
@@ -25,15 +25,15 @@ public class SDBGLayout extends ViewGroup {
     /* 背景的颜色 */
     private ImageView mBGImage;
 
-    public SDBGLayout(Context context) {
+    public ItemBackGroundLayout(Context context) {
         this(context, null);
     }
 
-    public SDBGLayout(Context context, AttributeSet attrs) {
+    public ItemBackGroundLayout(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
     }
 
-    public SDBGLayout(Context context, AttributeSet attrs, int defStyleAttr) {
+    public ItemBackGroundLayout(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         mBGImage = new ImageView(context);
         mBGImage.setBackgroundColor(Color.TRANSPARENT);
