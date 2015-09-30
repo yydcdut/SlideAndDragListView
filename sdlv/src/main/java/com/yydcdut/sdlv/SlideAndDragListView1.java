@@ -1,5 +1,7 @@
 package com.yydcdut.sdlv;
 
+import android.content.ClipData;
+import android.content.ClipDescription;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.os.Handler;
@@ -7,13 +9,11 @@ import android.os.Message;
 import android.os.Vibrator;
 import android.text.TextUtils;
 import android.util.AttributeSet;
-import android.view.DragEvent;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ListAdapter;
-import android.widget.ListView;
 
 import com.yydcdut.sdlv.utils.AttrsHolder;
 import com.yydcdut.sdlv.utils.OnAdapterButtonClickListenerProxy;
@@ -23,8 +23,8 @@ import com.yydcdut.sdlv.utils.OnScrollListenerProxy;
 /**
  * Created by yuyidong on 15/9/28.
  */
-public class SlideAndDragListView1 extends ListView implements OnAdapterSlideListenerProxy,
-        OnAdapterButtonClickListenerProxy, AbsListView.OnScrollListener, View.OnDragListener, Handler.Callback {
+public class SlideAndDragListView1<T> extends DragListView<T> implements OnAdapterSlideListenerProxy,
+        OnAdapterButtonClickListenerProxy, AbsListView.OnScrollListener, Handler.Callback {
     /* item的btn的最大个数 */
     private static final int ITEM_BTN_NUMBER_MAX = 2;
     /* Handler 的 Message 信息 */
@@ -117,15 +117,15 @@ public class SlideAndDragListView1 extends ListView implements OnAdapterSlideLis
 //                    mBeforeCurrentPosition = position;
 //                    mBeforeBeforePosition = position;
 //                    if (mOnDragListener != null) {
-//                        //把背景给弄透明，这样drag的时候要好看些
+                    //把背景给弄透明，这样drag的时候要好看些
 //                        view.findViewById(R.id.layout_item_bg).setVisibility(INVISIBLE);
 //                        view.findViewById(R.id.img_item_scroll_bg).setVisibility(INVISIBLE);
-//                        //drag
-//                        ClipData.Item item = new ClipData.Item("1");
-//                        ClipData data = new ClipData("1", new String[]{ClipDescription.MIMETYPE_TEXT_PLAIN}, item);
-//                        view.startDrag(data, new View.DragShadowBuilder(view), null, 0);
-//                        //通知adapter变颜色
-//                        mSDAdapter.notifyDataSetChanged();
+//                    //drag
+                    ClipData.Item item = new ClipData.Item("1");
+                    ClipData data = new ClipData("1", new String[]{ClipDescription.MIMETYPE_TEXT_PLAIN}, item);
+                    view.startDrag(data, new View.DragShadowBuilder(view), null, 0);
+                    //通知adapter变颜色
+//                    mSDAdapter.notifyDataSetChanged();
 //                    }
 
                 }
@@ -133,7 +133,6 @@ public class SlideAndDragListView1 extends ListView implements OnAdapterSlideLis
         }
         return true;
     }
-
 
     @Override
     public boolean dispatchTouchEvent(MotionEvent ev) {
@@ -247,15 +246,11 @@ public class SlideAndDragListView1 extends ListView implements OnAdapterSlideLis
     }
 
     @Override
-    public boolean onDrag(View v, DragEvent event) {
-        return false;
-    }
-
-    @Override
     public void setAdapter(ListAdapter adapter) {
         mWrapperAdapter = new WrapperAdapter(getContext(), this, adapter, mAttrsHolder);
         mWrapperAdapter.setOnAdapterSlideListenerProxy(this);
         mWrapperAdapter.setOnAdapterButtonClickListenerProxy(this);
+        setRawAdapter(adapter);
         super.setAdapter(mWrapperAdapter);
     }
 

@@ -17,15 +17,14 @@ import com.yydcdut.demo.model.DemoModel;
 import com.yydcdut.demo.utils.RandomColor;
 import com.yydcdut.demo.view.TextDrawable;
 import com.yydcdut.sdlv.SDAdapter;
-import com.yydcdut.sdlv.SlideAndDragListView;
 import com.yydcdut.sdlv.SlideAndDragListView1;
 
 /**
  * Created by yuyidong on 15/7/31.
  */
-public class EditActivity extends AppCompatActivity implements SlideAndDragListView1.OnListItemLongClickListener, SlideAndDragListView.OnDragListener,
-        SlideAndDragListView1.OnSlideListener, SlideAndDragListView1.OnListItemClickListener,
-        SlideAndDragListView1.OnButtonClickListener {
+public class EditActivity extends AppCompatActivity implements SlideAndDragListView1.OnListItemLongClickListener,
+        SlideAndDragListView1.OnDragListener, SlideAndDragListView1.OnSlideListener,
+        SlideAndDragListView1.OnListItemClickListener, SlideAndDragListView1.OnButtonClickListener {
 
     private RandomColor mColor = RandomColor.MATERIAL;
 
@@ -40,7 +39,7 @@ public class EditActivity extends AppCompatActivity implements SlideAndDragListV
         SlideAndDragListView1 listView = (SlideAndDragListView1) findViewById(R.id.lv_edit);
         listView.setAdapter(mAdapter);
         listView.setOnListItemLongClickListener(this);
-//        listView.setOnDragListener(this);
+        listView.setOnDragListener(this, DemoModel.getInstance().getData());
         listView.setOnListItemClickListener(this);
         listView.setOnSlideListener(this);
         listView.setOnButtonClickListener(this);
