@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                xmlns:sdlv="http://schemas.android.com/apk/res-auto"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:background="@android:color/white"
@@ -8,6 +7,7 @@
 
     <com.yydcdut.sdlv.SlideAndDragListView
         android:id="@+id/lv_edit"
+        xmlns:sdlv="http://schemas.android.com/apk/res-auto"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:divider="@android:color/black"
@@ -16,9 +16,11 @@
         android:paddingRight="8dip"
         sdlv:item_background="@android:color/white"
         sdlv:item_btn1_background="@drawable/btn1_drawable"
-        sdlv:item_btn1_text="Delete1"
+        sdlv:item_btn1_text="Delete"
         sdlv:item_btn2_background="@drawable/btn2_drawable"
-        sdlv:item_btn2_text="Rename1"
+        sdlv:item_btn2_text="Rename"
+        sdlv:item_btn3_background="@color/holo_blue_dark"
+        sdlv:item_btn3_text="Test"
         sdlv:item_btn_number="3"
         sdlv:item_btn_text_color="#ffffff"
         sdlv:item_btn_text_size="8sp"

@@ -36,11 +36,11 @@ public class EditActivity extends AppCompatActivity implements SlideAndDragListV
     public void initUiAndListener() {
         SlideAndDragListView listView = (SlideAndDragListView) findViewById(R.id.lv_edit);
         listView.setAdapter(mAdapter);
-//        listView.setOnListItemLongClickListener(this);
-//        listView.setOnDragListener(this, DemoModel.getInstance().getData());
-//        listView.setOnListItemClickListener(this);
-//        listView.setOnSlideListener(this);
-//        listView.setOnButtonClickListener(this);
+        listView.setOnListItemLongClickListener(this);
+        listView.setOnDragListener(this, DemoModel.getInstance().getData());
+        listView.setOnListItemClickListener(this);
+        listView.setOnSlideListener(this);
+        listView.setOnButtonClickListener(this);
     }
 
     private BaseAdapter mAdapter = new BaseAdapter() {
