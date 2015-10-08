@@ -36,7 +36,6 @@ class ItemMainLayout extends FrameLayout {
     /* 滑动的监听器 */
     private OnItemSlideListenerProxy mOnItemSlideListenerProxy;
 
-
     public ItemMainLayout(Context context) {
         this(context, null);
     }
@@ -73,14 +72,13 @@ class ItemMainLayout extends FrameLayout {
     }
 
     /**
-     * 设置item的高度,button的宽度,button总宽度
+     * 设置item的高度,button总宽度
      *
      * @param height
-     * @param btnWidth
+     * @param btnTotalWidth
      */
-    public void setLayoutHeight(int height, int btnWidth, int btnTotalWidth) {
+    public void setLayoutHeight(int height, int btnTotalWidth) {
         mHeight = height;
-        mItemBackGroundLayout.setBtnWidth(btnWidth);
         mBGWidth = btnTotalWidth;
         requestLayout();
     }

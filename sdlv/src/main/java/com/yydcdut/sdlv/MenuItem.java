@@ -6,12 +6,23 @@ import android.graphics.drawable.Drawable;
  * Created by yuyidong on 15/10/8.
  */
 public class MenuItem {
+    public final int width;
+    public final String text;
+    public final int textSize;
+    public final int textColor;
+    public final Drawable icon;
+    public final Drawable background;
 
-    private MenuItem(int width, String text, int textSize, int textColor, Drawable icon, Drawable background) {
+    public MenuItem(int width, String text, int textSize, int textColor, Drawable icon, Drawable background) {
+        this.width = width;
+        this.text = text;
+        this.textSize = textSize;
+        this.textColor = textColor;
+        this.icon = icon;
+        this.background = background;
     }
 
     public static class Builder {
-        //todo 默认值
         private int width;
         private String text;
         private int textSize;
@@ -77,6 +88,5 @@ public class MenuItem {
             return new MenuItem(width, text, textSize, textColor, icon, background);
         }
     }
-
 
 }

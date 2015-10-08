@@ -9,21 +9,19 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Created by yuyidong on 15/9/24.
  */
 class ItemBackGroundLayout extends ViewGroup {
-    public static final String TAG_ONE = "one";
-    public static final String TAG_TWO = "two";
-    public static final String TAG_THREE = "three";
-    /* 单个button的宽度 */
-    private int mBtnWidth;
-
-    private TextView mLeftView;
-    private TextView mMiddleView;
-    private TextView mRightView;
     /* 背景的颜色 */
     private ImageView mBGImage;
+    /* 下一个View距离左边的距离 */
+    private int mNextViewLeft;
+    private List<View> mBtnViews;
+
 
     public ItemBackGroundLayout(Context context) {
         this(context, null);
@@ -35,50 +33,43 @@ class ItemBackGroundLayout extends ViewGroup {
 
     public ItemBackGroundLayout(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
+        Holder holder = new Holder(-1, null);
         mBGImage = new ImageView(context);
+        mBGImage.setTag(holder);
         mBGImage.setBackgroundColor(Color.TRANSPARENT);
-        addView(mBGImage, new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
-
-        mLeftView = new TextView(context);
-        mLeftView.setBackgroundColor(Color.RED);
-        mLeftView.setGravity(Gravity.CENTER);
-        mLeftView.setTag(TAG_ONE);
-        mLeftView.setText(TAG_ONE);
-        addView(mLeftView, new LayoutParams(LayoutParams.MATCH_PARENT, 100));
-
-        mMiddleView = new TextView(context);
-        mMiddleView.setBackgroundColor(Color.GREEN);
-        mMiddleView.setGravity(Gravity.CENTER);
-        mMiddleView.setTag(TAG_TWO);
-        mMiddleView.setText(TAG_TWO);
-        addView(mMiddleView, new LayoutParams(LayoutParams.MATCH_PARENT, 100));
-
-        mRightView = new TextView(context);
-        mRightView.setBackgroundColor(Color.BLUE);
-        mRightView.setGravity(Gravity.CENTER);
-        mRightView.setTag(TAG_THREE);
-        mRightView.setText(TAG_THREE);
-        addView(mRightView, new LayoutParams(LayoutParams.MATCH_PARENT, 100));
+        addView(mBGImage, 0, new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
+        mBtnViews = new ArrayList<>();
     }
 
-    public void setBtnWidth(int btnWidth) {
-        mBtnWidth = btnWidth;
+    public View addMenuItem(MenuItem menuItem) {
+        int count = getChildCount();
+        Holder holder = new Holder(mNextViewLeft, menuItem);
+        TextView textView = new TextView(getContext());
+        textView.setBackgroundDrawable(menuItem.background);
+        textView.setText(menuItem.text);
+        textView.setTextSize(menuItem.textSize);
+        textView.setTextColor(menuItem.textColor);
+        textView.setGravity(Gravity.CENTER);
+        textView.setTag(holder);
+        addView(textView, count, new LayoutParams(LayoutParams.MATCH_PARENT, menuItem.width));
         requestLayout();
+        mNextViewLeft += menuItem.width;
+        mBtnViews.add(textView);
+        return textView;
     }
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-        if (mBtnWidth > 0) {
-            int total = getChildCount();
-            for (int i = 0; i < total; i++) {
-                View view = getChildAt(i);
-                if (view instanceof ImageView) {
-                    measureChild(view, widthMeasureSpec, heightMeasureSpec);
-                } else {
-                    measureChild(view, MeasureSpec.makeMeasureSpec(mBtnWidth, MeasureSpec.EXACTLY),
-                            heightMeasureSpec);
-                }
+        int total = getChildCount();
+        for (int i = 0; i < total; i++) {
+            View view = getChildAt(i);
+            if (view == mBGImage) {
+                measureChild(view, widthMeasureSpec, heightMeasureSpec);
+            } else {
+                Holder holder = (Holder) view.getTag();
+                measureChild(view, MeasureSpec.makeMeasureSpec(holder.menuItem.width, MeasureSpec.EXACTLY),
+                        heightMeasureSpec);
             }
         }
     }
@@ -88,38 +79,30 @@ class ItemBackGroundLayout extends ViewGroup {
         int total = getChildCount();
         for (int i = 0; i < total; i++) {
             View view = getChildAt(i);
-            if (view instanceof ImageView) {
+            if (view == mBGImage) {
                 view.layout(l, t, r, b);
             } else {
-                String tag = (String) view.getTag();
-                switch (tag) {
-                    case TAG_ONE:
-                        view.layout(l, t, l + mBtnWidth, b);
-                        break;
-                    case TAG_TWO:
-                        view.layout(l + mBtnWidth, t, l + mBtnWidth * 2, b);
-                        break;
-                    case TAG_THREE:
-                        view.layout(l + mBtnWidth * 2, t, l + mBtnWidth * 3, b);
-                        break;
-                }
+                Holder holder = (Holder) view.getTag();
+                view.layout(l + holder.left, t, l + holder.menuItem.width + holder.left, b);
             }
         }
     }
 
-    public TextView getLeftView() {
-        return mLeftView;
-    }
-
-    public TextView getMiddleView() {
-        return mMiddleView;
-    }
-
-    public TextView getRightView() {
-        return mRightView;
-    }
-
     public ImageView getBackGroundImage() {
         return mBGImage;
+    }
+
+    public List<View> getBtnViews() {
+        return mBtnViews;
+    }
+
+    class Holder {
+        public final int left;
+        public final MenuItem menuItem;
+
+        public Holder(int left, MenuItem menuItem) {
+            this.left = left;
+            this.menuItem = menuItem;
+        }
     }
 }

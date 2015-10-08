@@ -7,25 +7,12 @@
 
     <com.yydcdut.sdlv.SlideAndDragListView
         android:id="@+id/lv_edit"
-        xmlns:sdlv="http://schemas.android.com/apk/res-auto"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:divider="@android:color/black"
         android:dividerHeight="0.5dip"
         android:paddingLeft="8dip"
-        android:paddingRight="8dip"
-        sdlv:item_background="@android:color/white"
-        sdlv:item_btn1_background="@drawable/btn1_drawable"
-        sdlv:item_btn1_text="Delete"
-        sdlv:item_btn2_background="@drawable/btn2_drawable"
-        sdlv:item_btn2_text="Rename"
-        sdlv:item_btn3_background="@color/holo_blue_dark"
-        sdlv:item_btn3_text="Test"
-        sdlv:item_btn_number="3"
-        sdlv:item_btn_text_color="#ffffff"
-        sdlv:item_btn_text_size="8sp"
-        sdlv:item_btn_width="70dip"
-        sdlv:item_height="80dip">
+        android:paddingRight="8dip">
     </com.yydcdut.sdlv.SlideAndDragListView>
 
 </RelativeLayout>

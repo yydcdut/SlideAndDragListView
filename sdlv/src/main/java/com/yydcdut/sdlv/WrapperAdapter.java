@@ -13,12 +13,13 @@ import android.widget.WrapperListAdapter;
  */
 abstract class WrapperAdapter implements WrapperListAdapter, ItemMainLayout.OnItemSlideListenerProxy, View.OnClickListener,
         AbsListView.OnScrollListener {
+    private static final int TAG = 3 << 24;
     /* 上下文 */
     private Context mContext;
     /* 适配器 */
     private ListAdapter mAdapter;
     /* 用户自定义参数 */
-    private AttrsHolder mAttrsHolder;
+    private Menu mMenu;
     /* SDLV */
     private SlideAndDragListView mListView;
     /* 当前滑动的item的位置 */
@@ -27,12 +28,12 @@ abstract class WrapperAdapter implements WrapperListAdapter, ItemMainLayout.OnIt
     private OnAdapterSlideListenerProxy mOnAdapterSlideListenerProxy;
     private OnAdapterButtonClickListenerProxy mOnAdapterButtonClickListenerProxy;
 
-    public WrapperAdapter(Context context, SlideAndDragListView listView, ListAdapter adapter, AttrsHolder attrsHolder) {
+    public WrapperAdapter(Context context, SlideAndDragListView listView, ListAdapter adapter, Menu menu) {
         mContext = context;
         mListView = listView;
         mListView.setOnScrollListener(this);
         mAdapter = adapter;
-        mAttrsHolder = attrsHolder;
+        mMenu = menu;
     }
 
     @Override
@@ -86,71 +87,21 @@ abstract class WrapperAdapter implements WrapperListAdapter, ItemMainLayout.OnIt
         if (convertView == null) {
             View contentView = mAdapter.getView(position, convertView, parent);
             itemMainLayout = new ItemMainLayout(mContext);
-            itemMainLayout.setLayoutHeight((int) mAttrsHolder.itemHeight, (int) mAttrsHolder.btnWidth, (int) (mAttrsHolder.btnWidth * mAttrsHolder.btnNumber));
-            itemMainLayout.getItemBackGroundLayout().getBackGroundImage().setBackgroundDrawable(mAttrsHolder.itemBackGroundDrawable);
-            itemMainLayout.getItemCustomLayout().getBackGroundImage().setBackgroundDrawable(mAttrsHolder.itemBackGroundDrawable);
-            //setBackgroundDrawable setText 有容错处理
-            itemMainLayout.getItemBackGroundLayout().getLeftView().setBackgroundDrawable(mAttrsHolder.btn1Drawable);
-            itemMainLayout.getItemBackGroundLayout().getLeftView().setText(mAttrsHolder.btn1Text);
-            itemMainLayout.getItemBackGroundLayout().getLeftView().setTextSize(mAttrsHolder.btnTextSize);
-            itemMainLayout.getItemBackGroundLayout().getLeftView().setTextColor(mAttrsHolder.btnTextColor);
-            itemMainLayout.getItemBackGroundLayout().getLeftView().setOnClickListener(this);
-            itemMainLayout.getItemBackGroundLayout().getMiddleView().setBackgroundDrawable(mAttrsHolder.btn2Drawable);
-            itemMainLayout.getItemBackGroundLayout().getMiddleView().setText(mAttrsHolder.btn2Text);
-            itemMainLayout.getItemBackGroundLayout().getMiddleView().setTextSize(mAttrsHolder.btnTextSize);
-            itemMainLayout.getItemBackGroundLayout().getMiddleView().setTextColor(mAttrsHolder.btnTextColor);
-            itemMainLayout.getItemBackGroundLayout().getMiddleView().setOnClickListener(this);
-            itemMainLayout.getItemBackGroundLayout().getRightView().setBackgroundDrawable(mAttrsHolder.btn3Drawable);
-            itemMainLayout.getItemBackGroundLayout().getRightView().setText(mAttrsHolder.btn3Text);
-            itemMainLayout.getItemBackGroundLayout().getRightView().setTextSize(mAttrsHolder.btnTextSize);
-            itemMainLayout.getItemBackGroundLayout().getRightView().setTextColor(mAttrsHolder.btnTextColor);
-            itemMainLayout.getItemBackGroundLayout().getRightView().setOnClickListener(this);
+            itemMainLayout.setLayoutHeight(mMenu.getItemHeight(), mMenu.getTotalBtnLength());
+            itemMainLayout.getItemBackGroundLayout().getBackGroundImage().setBackgroundDrawable(mMenu.getItemBackGroundDrawable());
+            itemMainLayout.getItemCustomLayout().getBackGroundImage().setBackgroundDrawable(mMenu.getItemBackGroundDrawable());
+            for (int i = 0; i < mMenu.getMenuItems().size(); i++) {
+                View v = itemMainLayout.getItemBackGroundLayout().addMenuItem(mMenu.getMenuItems().get(i));
+                v.setOnClickListener(this);
+                v.setTag(TAG, i);
+            }
             itemMainLayout.setOnItemSlideListenerProxy(this);
-            //判断哪些隐藏哪些显示
-            checkVisible(itemMainLayout.getItemBackGroundLayout().getLeftView(), itemMainLayout.getItemBackGroundLayout().getMiddleView(),
-                    itemMainLayout.getItemBackGroundLayout().getRightView());
             itemMainLayout.getItemCustomLayout().addCustomView(contentView);
         } else {
             itemMainLayout = (ItemMainLayout) convertView;
             View contentView = mAdapter.getView(position, itemMainLayout.getItemCustomLayout().getCustomView(), parent);
         }
         return itemMainLayout;
-    }
-
-    /**
-     * 设置哪些button显示哪些button不显示
-     *
-     * @param left
-     * @param middle
-     * @param right
-     */
-    private void checkVisible(View left, View middle, View right) {
-        switch (mAttrsHolder.btnNumber) {
-            case 0:
-                left.setVisibility(View.GONE);
-                middle.setVisibility(View.GONE);
-                right.setVisibility(View.GONE);
-                break;
-            case 1:
-                left.setVisibility(View.VISIBLE);
-                middle.setVisibility(View.GONE);
-                right.setVisibility(View.GONE);
-                break;
-            case 2:
-                left.setVisibility(View.VISIBLE);
-                middle.setVisibility(View.VISIBLE);
-                right.setVisibility(View.GONE);
-                break;
-            case 3:
-                left.setVisibility(View.VISIBLE);
-                middle.setVisibility(View.VISIBLE);
-                right.setVisibility(View.VISIBLE);
-                break;
-            default:
-                throw new IllegalArgumentException("");
-        }
-        left.setClickable(false);
-        middle.setClickable(false);
     }
 
 
@@ -183,8 +134,9 @@ abstract class WrapperAdapter implements WrapperListAdapter, ItemMainLayout.OnIt
         }
         mSlideItemPosition = position;
         ItemMainLayout itemMainLayout = (ItemMainLayout) mListView.getChildAt(mSlideItemPosition - mListView.getFirstVisiblePosition());
-        itemMainLayout.getItemBackGroundLayout().getLeftView().setClickable(true);
-        itemMainLayout.getItemBackGroundLayout().getMiddleView().setClickable(true);
+        for (View v : itemMainLayout.getItemBackGroundLayout().getBtnViews()) {
+            v.setClickable(true);
+        }
     }
 
     /**
@@ -204,8 +156,9 @@ abstract class WrapperAdapter implements WrapperListAdapter, ItemMainLayout.OnIt
             ItemMainLayout itemMainLayout = (ItemMainLayout) mListView.getChildAt(mSlideItemPosition - mListView.getFirstVisiblePosition());
             if (itemMainLayout != null) {
                 itemMainLayout.scrollBack();
-                itemMainLayout.getItemBackGroundLayout().getLeftView().setClickable(false);
-                itemMainLayout.getItemBackGroundLayout().getMiddleView().setClickable(false);
+                for (View v : itemMainLayout.getItemBackGroundLayout().getBtnViews()) {
+                    v.setClickable(false);
+                }
             }
             mSlideItemPosition = -1;
         }
@@ -264,22 +217,8 @@ abstract class WrapperAdapter implements WrapperListAdapter, ItemMainLayout.OnIt
 
     @Override
     public void onClick(View v) {
-        switch ((String) v.getTag()) {
-            case ItemBackGroundLayout.TAG_ONE:
-                if (mOnAdapterButtonClickListenerProxy != null) {
-                    mOnAdapterButtonClickListenerProxy.onClick(v, mSlideItemPosition, 0);
-                }
-                break;
-            case ItemBackGroundLayout.TAG_TWO:
-                if (mOnAdapterButtonClickListenerProxy != null) {
-                    mOnAdapterButtonClickListenerProxy.onClick(v, mSlideItemPosition, 1);
-                }
-                break;
-            case ItemBackGroundLayout.TAG_THREE:
-                if (mOnAdapterButtonClickListenerProxy != null) {
-                    mOnAdapterButtonClickListenerProxy.onClick(v, mSlideItemPosition, 3);
-                }
-                break;
+        if (mOnAdapterButtonClickListenerProxy != null) {
+            mOnAdapterButtonClickListenerProxy.onClick(v, mSlideItemPosition, (Integer) v.getTag(TAG));
         }
     }
 

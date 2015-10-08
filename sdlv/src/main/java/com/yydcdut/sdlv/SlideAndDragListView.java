@@ -1,11 +1,11 @@
 package com.yydcdut.sdlv;
 
 import android.content.Context;
-import android.content.res.TypedArray;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Handler;
 import android.os.Message;
 import android.os.Vibrator;
-import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
@@ -18,8 +18,6 @@ import android.widget.ListAdapter;
  */
 public class SlideAndDragListView<T> extends DragListView<T> implements WrapperAdapter.OnAdapterSlideListenerProxy,
         WrapperAdapter.OnAdapterButtonClickListenerProxy, Handler.Callback {
-    /* item的btn的最大个数 */
-    private static final int ITEM_BTN_NUMBER_MAX = 3;
     /* Handler 的 Message 信息 */
     private static final int MSG_WHAT_LONG_CLICK = 1;
     /* Handler 发送message需要延迟的时间 */
@@ -40,8 +38,8 @@ public class SlideAndDragListView<T> extends DragListView<T> implements WrapperA
     /* 手指放下的坐标 */
     private int mXDown;
     private int mYDown;
-    /* Attrs */
-    private AttrsHolder mAttrsHolder;
+    /* Menu */
+    private Menu mMenu;
     /* WrapperAdapter */
     private WrapperAdapter mWrapperAdapter;
     /* 监听器 */
@@ -60,46 +58,36 @@ public class SlideAndDragListView<T> extends DragListView<T> implements WrapperA
 
     public SlideAndDragListView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        //-------------------------- attrs --------------------------
-        mAttrsHolder = new AttrsHolder();
-        TypedArray a = context.getTheme().obtainStyledAttributes(attrs, R.styleable.sdlv, defStyleAttr, 0);
-        mAttrsHolder.itemHeight = a.getDimension(R.styleable.sdlv_item_height, getContext().getResources().getDimension(R.dimen.slv_item_height));
-        mAttrsHolder.itemBackGroundDrawable = a.getDrawable(R.styleable.sdlv_item_background);
-        mAttrsHolder.btnWidth = a.getDimension(R.styleable.sdlv_item_btn_width, getContext().getResources().getDimension(R.dimen.slv_item_bg_btn_width));
-        mAttrsHolder.btnNumber = a.getInt(R.styleable.sdlv_item_btn_number, 3);
-        if (mAttrsHolder.btnNumber > ITEM_BTN_NUMBER_MAX || mAttrsHolder.btnNumber < 0) {
-            throw new IllegalArgumentException("The number of Item buttons should be in between 0 and 3 !");
-        }
-        //如果btn的宽度超过了屏幕的宽度，则bug
-        int screenWidth = context.getResources().getDisplayMetrics().widthPixels;
-        if (screenWidth < mAttrsHolder.btnWidth * mAttrsHolder.btnNumber) {
-            throw new IllegalArgumentException("The total width of Item buttons is longer than screen's width !");
-        }
-        mAttrsHolder.btn1Text = a.getString(R.styleable.sdlv_item_btn1_text);
-        mAttrsHolder.btn2Text = a.getString(R.styleable.sdlv_item_btn2_text);
-        mAttrsHolder.btn3Text = a.getString(R.styleable.sdlv_item_btn3_text);
-        checkBtnText();
-        mAttrsHolder.btn1Drawable = a.getDrawable(R.styleable.sdlv_item_btn1_background);
-        mAttrsHolder.btn2Drawable = a.getDrawable(R.styleable.sdlv_item_btn2_background);
-        mAttrsHolder.btn3Drawable = a.getDrawable(R.styleable.sdlv_item_btn3_background);
-        mAttrsHolder.btnTextSize = a.getDimension(R.styleable.sdlv_item_btn_text_size, getContext().getResources().getDimension(R.dimen.txt_size));
-        mAttrsHolder.btnTextColor = a.getColor(R.styleable.sdlv_item_btn_text_color, getContext().getResources().getColor(android.R.color.white));
-        a.recycle();
-        //-------------------------- attrs --------------------------
+        //-------------------------- menu Test --------------------------
+        mMenu = new Menu((int) getContext().getResources().getDimension(R.dimen.slv_item_height) * 2,
+                new ColorDrawable(Color.WHITE));
+        mMenu.addItem(new MenuItem.Builder().setWidth((int) getContext().getResources().getDimension(R.dimen.slv_item_bg_btn_width))
+                .setBackground(new ColorDrawable(Color.RED))
+                .setText("One")
+                .setTextColor(Color.GRAY)
+                .setTextSize((int) getContext().getResources().getDimension(R.dimen.txt_size))
+                .build());
+        mMenu.addItem(new MenuItem.Builder().setWidth((int) getContext().getResources().getDimension(R.dimen.slv_item_bg_btn_width))
+                .setBackground(new ColorDrawable(Color.GREEN))
+                .setText("Two")
+                .setTextColor(Color.BLACK)
+                .setTextSize((int) getContext().getResources().getDimension(R.dimen.txt_size))
+                .build());
+        mMenu.addItem(new MenuItem.Builder().setWidth((int) getContext().getResources().getDimension(R.dimen.slv_item_bg_btn_width))
+                .setBackground(new ColorDrawable(Color.BLUE))
+                .setText("Three")
+                .setTextColor(Color.BLACK)
+                .setTextSize((int) getContext().getResources().getDimension(R.dimen.txt_size))
+                .build());
+        mMenu.addItem(new MenuItem.Builder().setWidth((int) getContext().getResources().getDimension(R.dimen.slv_item_bg_btn_width))
+                .setBackground(new ColorDrawable(Color.BLACK))
+                .setText("Four")
+                .setTextColor(Color.WHITE)
+                .setTextSize((int) getContext().getResources().getDimension(R.dimen.txt_size))
+                .build());
+        //-------------------------- menu Test --------------------------
         mVibrator = (Vibrator) getContext().getSystemService(Context.VIBRATOR_SERVICE);
         mHandler = new Handler(this);
-    }
-
-    /**
-     * 显示的text数据应该依次的，而不是跳级的
-     */
-    public void checkBtnText() {
-        if (!TextUtils.isEmpty(mAttrsHolder.btn2Text) && TextUtils.isEmpty(mAttrsHolder.btn1Text)) {
-            throw new IllegalArgumentException("The \'item_btn2_text\' has value, but \'item_btn1_text\' dose not have value!");
-        }
-        if (!TextUtils.isEmpty(mAttrsHolder.btn3Text) && TextUtils.isEmpty(mAttrsHolder.btn2Text)) {
-            throw new IllegalArgumentException("The \'item_btn3_text\' has value, but \'item_btn2_text\' dose not have value!");
-        }
     }
 
     @Override
@@ -258,10 +246,10 @@ public class SlideAndDragListView<T> extends DragListView<T> implements WrapperA
 
     @Override
     public void setAdapter(ListAdapter adapter) {
-        mWrapperAdapter = new WrapperAdapter(getContext(), this, adapter, mAttrsHolder) {
+        mWrapperAdapter = new WrapperAdapter(getContext(), this, adapter, mMenu) {
             @Override
             public void onScrollStateChangedProxy(AbsListView view, int scrollState) {
-                if (scrollState == OnScrollListener.SCROLL_STATE_IDLE) {
+                if (scrollState == WrapperAdapter.SCROLL_STATE_IDLE) {
                     mIsWannaTriggerClick = true;
                 } else {
                     mIsWannaTriggerClick = false;
