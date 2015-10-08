@@ -3,6 +3,7 @@ package com.yydcdut.sdlv;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
+import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.Scroller;
 
@@ -202,5 +203,11 @@ class ItemMainLayout extends FrameLayout {
      */
     public void setOnItemSlideListenerProxy(OnItemSlideListenerProxy onItemSlideListenerProxy) {
         mOnItemSlideListenerProxy = onItemSlideListenerProxy;
+    }
+
+    public interface OnItemSlideListenerProxy {
+        void onSlideOpen(View view);
+
+        void onSlideClose(View view);
     }
 }

@@ -11,8 +11,8 @@ import android.widget.WrapperListAdapter;
 /**
  * Created by yuyidong on 15/9/28.
  */
-class WrapperAdapter implements WrapperListAdapter, OnItemSlideListenerProxy, View.OnClickListener,
-        OnScrollListenerProxy {
+abstract class WrapperAdapter implements WrapperListAdapter, ItemMainLayout.OnItemSlideListenerProxy, View.OnClickListener,
+        AbsListView.OnScrollListener {
     /* 上下文 */
     private Context mContext;
     /* 适配器 */
@@ -30,7 +30,7 @@ class WrapperAdapter implements WrapperListAdapter, OnItemSlideListenerProxy, Vi
     public WrapperAdapter(Context context, SlideAndDragListView listView, ListAdapter adapter, AttrsHolder attrsHolder) {
         mContext = context;
         mListView = listView;
-        mListView.setOnScrollListenerProxy(this);
+        mListView.setOnScrollListener(this);
         mAdapter = adapter;
         mAttrsHolder = attrsHolder;
     }
@@ -80,7 +80,6 @@ class WrapperAdapter implements WrapperListAdapter, OnItemSlideListenerProxy, Vi
         return mAdapter.hasStableIds();
     }
 
-    //todo 容错处理
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         ItemMainLayout itemMainLayout = null;
@@ -290,10 +289,26 @@ class WrapperAdapter implements WrapperListAdapter, OnItemSlideListenerProxy, Vi
         if (scrollState != AbsListView.OnScrollListener.SCROLL_STATE_IDLE) {
             returnSlideItemPosition();
         }
+        onScrollStateChangedProxy(view, scrollState);
     }
 
     @Override
     public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
-
+        onScrollProxy(view, firstVisibleItem, visibleItemCount, totalItemCount);
     }
+
+    public interface OnAdapterButtonClickListenerProxy {
+        void onClick(View v, int itemPosition, int buttonPosition);
+    }
+
+    public interface OnAdapterSlideListenerProxy {
+        void onSlideOpen(View view, int position);
+
+        void onSlideClose(View view, int position);
+    }
+
+    public abstract void onScrollStateChangedProxy(AbsListView view, int scrollState);
+
+    public abstract void onScrollProxy(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount);
+
 }

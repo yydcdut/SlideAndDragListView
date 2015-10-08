@@ -16,8 +16,8 @@ import android.widget.ListAdapter;
 /**
  * Created by yuyidong on 15/9/28.
  */
-public class SlideAndDragListView<T> extends DragListView<T> implements OnAdapterSlideListenerProxy,
-        OnAdapterButtonClickListenerProxy, AbsListView.OnScrollListener, Handler.Callback {
+public class SlideAndDragListView<T> extends DragListView<T> implements WrapperAdapter.OnAdapterSlideListenerProxy,
+        WrapperAdapter.OnAdapterButtonClickListenerProxy, Handler.Callback {
     /* item的btn的最大个数 */
     private static final int ITEM_BTN_NUMBER_MAX = 3;
     /* Handler 的 Message 信息 */
@@ -49,7 +49,6 @@ public class SlideAndDragListView<T> extends DragListView<T> implements OnAdapte
     private OnButtonClickListener mOnButtonClickListener;
     private OnListItemLongClickListener mOnListItemLongClickListener;
     private OnListItemClickListener mOnListItemClickListener;
-    private OnScrollListenerProxy mOnScrollListenerProxy;
 
     public SlideAndDragListView(Context context) {
         this(context, null);
@@ -89,7 +88,6 @@ public class SlideAndDragListView<T> extends DragListView<T> implements OnAdapte
         //-------------------------- attrs --------------------------
         mVibrator = (Vibrator) getContext().getSystemService(Context.VIBRATOR_SERVICE);
         mHandler = new Handler(this);
-        setOnScrollListener(this);
     }
 
     /**
@@ -260,7 +258,21 @@ public class SlideAndDragListView<T> extends DragListView<T> implements OnAdapte
 
     @Override
     public void setAdapter(ListAdapter adapter) {
-        mWrapperAdapter = new WrapperAdapter(getContext(), this, adapter, mAttrsHolder);
+        mWrapperAdapter = new WrapperAdapter(getContext(), this, adapter, mAttrsHolder) {
+            @Override
+            public void onScrollStateChangedProxy(AbsListView view, int scrollState) {
+                if (scrollState == OnScrollListener.SCROLL_STATE_IDLE) {
+                    mIsWannaTriggerClick = true;
+                } else {
+                    mIsWannaTriggerClick = false;
+                }
+            }
+
+            @Override
+            public void onScrollProxy(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+
+            }
+        };
         mWrapperAdapter.setOnAdapterSlideListenerProxy(this);
         mWrapperAdapter.setOnAdapterButtonClickListenerProxy(this);
         setRawAdapter(adapter);
@@ -385,31 +397,4 @@ public class SlideAndDragListView<T> extends DragListView<T> implements OnAdapte
         void onListItemLongClick(View view, int position);
     }
 
-    /**
-     * 设置滑动的监听器
-     *
-     * @param onScrollListenerProxy
-     */
-    public void setOnScrollListenerProxy(OnScrollListenerProxy onScrollListenerProxy) {
-        mOnScrollListenerProxy = onScrollListenerProxy;
-    }
-
-    @Override
-    public void onScrollStateChanged(AbsListView view, int scrollState) {
-        if (mOnScrollListenerProxy != null) {
-            mOnScrollListenerProxy.onScrollStateChanged(view, scrollState);
-        }
-        if (scrollState == SCROLL_STATE_IDLE) {
-            mIsWannaTriggerClick = true;
-        } else {
-            mIsWannaTriggerClick = false;
-        }
-    }
-
-    @Override
-    public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
-        if (mOnScrollListenerProxy != null) {
-            mOnScrollListenerProxy.onScroll(view, firstVisibleItem, visibleItemCount, totalItemCount);
-        }
-    }
 }
