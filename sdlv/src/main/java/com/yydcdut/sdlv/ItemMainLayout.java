@@ -13,8 +13,10 @@ import android.widget.Scroller;
 class ItemMainLayout extends FrameLayout {
     private static final int INTENTION_LEFT_OPEN = 1;
     private static final int INTENTION_LEFT_CLOSE = 2;
+    private static final int INTENTION_LEFT_ALREADY_OPEN = 3;
     private static final int INTENTION_RIGHT_OPEN = -1;
     private static final int INTENTION_RIGHT_CLOSE = -2;
+    private static final int INTENTION_RIGHT_ALREADY_OPEN = -3;
     private static final int INTENTION_ZERO = 0;
     private int mIntention = INTENTION_ZERO;
 
@@ -121,11 +123,9 @@ class ItemMainLayout extends FrameLayout {
 
     @Override
     public boolean onTouchEvent(MotionEvent ev) {
-//        Log.i("yuyidong","onTouchEvent   onTouchEvent");
         getParent().requestDisallowInterceptTouchEvent(false);
         switch (ev.getAction()) {
             case MotionEvent.ACTION_DOWN:
-//                Log.i("yuyidong","ACTION_DOWN   ACTION_DOWN");
                 mXDown = ev.getX();
                 mYDown = ev.getY();
                 //控件初始距离
@@ -134,13 +134,10 @@ class ItemMainLayout extends FrameLayout {
                 mIsMoving = false;
                 break;
             case MotionEvent.ACTION_MOVE:
-//                Log.i("yuyidong","ACTION_MOVE   ACTION_MOVE");
                 if (fingerNotMove(ev) && !mIsMoving) {//手指的范围在50以内
                     //执行ListView的手势操作
                     getParent().requestDisallowInterceptTouchEvent(false);
-//                    Log.i("yuyidong", "ACTION_MOVE   111111111111");
                 } else if (fingerLeftAndRightMove(ev) || mIsMoving) {//上下范围在50，主要检测左右滑动
-//                    Log.i("yuyidong", "ACTION_MOVE   2222222222");
                     //是否有要scroll的动向
                     mIsMoving = true;
                     //执行控件的手势操作
@@ -154,13 +151,14 @@ class ItemMainLayout extends FrameLayout {
                         } else if (mXScrollDistance > 0) {//右边的btn显示出来的
                             mIntention = INTENTION_RIGHT_CLOSE;
                         } else if (mXScrollDistance < 0) {//左边的btn显示出来的
-
+                            mIntention = INTENTION_LEFT_ALREADY_OPEN;
                         }
                     } else if (moveDistance < 0) {//往左
                         if (mXScrollDistance == 0) {//关闭状态
                             mIntention = INTENTION_RIGHT_OPEN;
                             setBackGroundVisible(false, true);
                         } else if (mXScrollDistance > 0) {//右边的btn显示出来的
+                            mIntention = INTENTION_RIGHT_ALREADY_OPEN;
                         } else if (mXScrollDistance < 0) {//左边的btn显示出来的
                             mIntention = INTENTION_LEFT_CLOSE;
                         }
@@ -169,6 +167,7 @@ class ItemMainLayout extends FrameLayout {
                     switch (mIntention) {
                         case INTENTION_LEFT_CLOSE:
                         case INTENTION_LEFT_OPEN:
+                        case INTENTION_LEFT_ALREADY_OPEN:
                             float distanceLeft = mXScrollDistance - moveDistance < 0 ? mXScrollDistance - moveDistance : 0;
                             if (!mWannaOver) {
                                 distanceLeft = distanceLeft < -mBtnLeftTotalWidth ? -mBtnLeftTotalWidth : distanceLeft;
@@ -178,6 +177,7 @@ class ItemMainLayout extends FrameLayout {
                             break;
                         case INTENTION_RIGHT_CLOSE:
                         case INTENTION_RIGHT_OPEN:
+                        case INTENTION_RIGHT_ALREADY_OPEN:
                             float distanceRight = mXScrollDistance - moveDistance > 0 ? mXScrollDistance - moveDistance : 0;
                             if (!mWannaOver) {
                                 distanceRight = distanceRight < mBtnRightTotalWidth ? distanceRight : mBtnRightTotalWidth;
@@ -193,6 +193,7 @@ class ItemMainLayout extends FrameLayout {
                 switch (mIntention) {
                     case INTENTION_LEFT_CLOSE:
                     case INTENTION_LEFT_OPEN:
+                    case INTENTION_LEFT_ALREADY_OPEN:
                         //如果滑出的话，那么就滑到固定位置(只要滑出了 mBtnLeftTotalWidth / 2 ，就算滑出去了)
                         if (Math.abs(mItemCustomLayout.getScrollX()) > mBtnLeftTotalWidth / 2) {
                             //滑出
@@ -217,13 +218,14 @@ class ItemMainLayout extends FrameLayout {
                         break;
                     case INTENTION_RIGHT_CLOSE:
                     case INTENTION_RIGHT_OPEN:
+                    case INTENTION_RIGHT_ALREADY_OPEN:
                         if (Math.abs(mItemCustomLayout.getScrollX()) > mBtnRightTotalWidth / 2) {
                             //滑出
                             int delta = mBtnRightTotalWidth - Math.abs(mItemCustomLayout.getScrollX());
                             if (Math.abs(mItemCustomLayout.getScrollX()) < mBtnRightTotalWidth) {
-                                mScroller.startScroll(mItemCustomLayout.getScrollX(), 0, -delta, 0, SCROLL_QUICK_TIME);
+                                mScroller.startScroll(mItemCustomLayout.getScrollX(), 0, delta, 0, SCROLL_QUICK_TIME);
                             } else {
-                                mScroller.startScroll(mItemCustomLayout.getScrollX(), 0, -delta, 0, SCROLL_TIME);
+                                mScroller.startScroll(mItemCustomLayout.getScrollX(), 0, delta, 0, SCROLL_TIME);
                             }
                             if (mOnItemSlideListenerProxy != null && mScrollState != SCROLL_STATE_OPEN) {
                                 mOnItemSlideListenerProxy.onSlideOpen(this, MenuItem.DIRECTION_RIGHT);
