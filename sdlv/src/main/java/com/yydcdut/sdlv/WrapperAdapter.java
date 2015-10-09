@@ -88,12 +88,12 @@ abstract class WrapperAdapter implements WrapperListAdapter, ItemMainLayout.OnIt
         if (convertView == null) {
             View contentView = mAdapter.getView(position, convertView, parent);
             itemMainLayout = new ItemMainLayout(mContext);
-            itemMainLayout.setParams(mMenu.getItemHeight(), mMenu.getTotalBtnLength(MenuItem.DERACTION_LEFT),
-                    mMenu.getTotalBtnLength(MenuItem.DERACTION_RIGHT), mMenu.isWannaOver());
-            if (mMenu.getTotalBtnLength(MenuItem.DERACTION_LEFT) > 0) {
+            itemMainLayout.setParams(mMenu.getItemHeight(), mMenu.getTotalBtnLength(MenuItem.DIRECTION_LEFT),
+                    mMenu.getTotalBtnLength(MenuItem.DIRECTION_RIGHT), mMenu.isWannaOver());
+            if (mMenu.getTotalBtnLength(MenuItem.DIRECTION_LEFT) > 0) {
                 itemMainLayout.getItemLeftBackGroundLayout().getBackGroundImage().setBackgroundDrawable(mMenu.getItemBackGroundDrawable());
-                for (int i = 0; i < mMenu.getMenuItems(MenuItem.DERACTION_LEFT).size(); i++) {
-                    View v = itemMainLayout.getItemLeftBackGroundLayout().addMenuItem(mMenu.getMenuItems(MenuItem.DERACTION_LEFT).get(i));
+                for (int i = 0; i < mMenu.getMenuItems(MenuItem.DIRECTION_LEFT).size(); i++) {
+                    View v = itemMainLayout.getItemLeftBackGroundLayout().addMenuItem(mMenu.getMenuItems(MenuItem.DIRECTION_LEFT).get(i));
                     v.setOnClickListener(this);
                     v.setClickable(false);
                     v.setTag(TAG_LEFT, i);
@@ -101,10 +101,10 @@ abstract class WrapperAdapter implements WrapperListAdapter, ItemMainLayout.OnIt
             } else {
                 itemMainLayout.getItemLeftBackGroundLayout().setVisibility(View.GONE);
             }
-            if (mMenu.getTotalBtnLength(MenuItem.DERACTION_RIGHT) > 0) {
+            if (mMenu.getTotalBtnLength(MenuItem.DIRECTION_RIGHT) > 0) {
                 itemMainLayout.getItemRightBackGroundLayout().getBackGroundImage().setBackgroundDrawable(mMenu.getItemBackGroundDrawable());
-                for (int i = 0; i < mMenu.getMenuItems(MenuItem.DERACTION_RIGHT).size(); i++) {
-                    View v = itemMainLayout.getItemRightBackGroundLayout().addMenuItem(mMenu.getMenuItems(MenuItem.DERACTION_RIGHT).get(i));
+                for (int i = 0; i < mMenu.getMenuItems(MenuItem.DIRECTION_RIGHT).size(); i++) {
+                    View v = itemMainLayout.getItemRightBackGroundLayout().addMenuItem(mMenu.getMenuItems(MenuItem.DIRECTION_RIGHT).get(i));
                     v.setOnClickListener(this);
                     v.setClickable(false);
                     v.setTag(TAG_RIGHT, i);
@@ -155,6 +155,9 @@ abstract class WrapperAdapter implements WrapperListAdapter, ItemMainLayout.OnIt
         for (View v : itemMainLayout.getItemLeftBackGroundLayout().getBtnViews()) {
             v.setClickable(true);
         }
+        for (View v : itemMainLayout.getItemRightBackGroundLayout().getBtnViews()) {
+            v.setClickable(true);
+        }
     }
 
     /**
@@ -175,6 +178,9 @@ abstract class WrapperAdapter implements WrapperListAdapter, ItemMainLayout.OnIt
             if (itemMainLayout != null) {
                 itemMainLayout.scrollBack();
                 for (View v : itemMainLayout.getItemLeftBackGroundLayout().getBtnViews()) {
+                    v.setClickable(false);
+                }
+                for (View v : itemMainLayout.getItemRightBackGroundLayout().getBtnViews()) {
                     v.setClickable(false);
                 }
             }
@@ -238,7 +244,7 @@ abstract class WrapperAdapter implements WrapperListAdapter, ItemMainLayout.OnIt
         if (mOnAdapterButtonClickListenerProxy != null) {
             mOnAdapterButtonClickListenerProxy.onClick(v, mSlideItemPosition,
                     (Integer) (v.getTag(TAG_LEFT) != null ? v.getTag(TAG_LEFT) : v.getTag(TAG_RIGHT)),
-                    v.getTag(TAG_LEFT) != null ? MenuItem.DERACTION_LEFT : MenuItem.DERACTION_RIGHT);
+                    v.getTag(TAG_LEFT) != null ? MenuItem.DIRECTION_LEFT : MenuItem.DIRECTION_RIGHT);
         }
     }
 

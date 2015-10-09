@@ -6,8 +6,8 @@ import android.graphics.drawable.Drawable;
  * Created by yuyidong on 15/10/8.
  */
 public class MenuItem {
-    public static final int DERACTION_LEFT = 1;
-    public static final int DERACTION_RIGHT = -1;
+    public static final int DIRECTION_LEFT = 1;
+    public static final int DIRECTION_RIGHT = -1;
 
     public final int width;
     public final String text;

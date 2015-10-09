@@ -43,7 +43,7 @@ public final class Menu {
     }
 
     public void addItem(MenuItem menuItem) {
-        if (menuItem.direction == MenuItem.DERACTION_LEFT) {
+        if (menuItem.direction == MenuItem.DIRECTION_LEFT) {
             mTotalLeftBtnLength += menuItem.width;
             mLeftMenuItems.add(menuItem);
         } else {
@@ -53,7 +53,7 @@ public final class Menu {
     }
 
     public void addItem(MenuItem menuItem, int position) {
-        if (menuItem.direction == MenuItem.DERACTION_LEFT) {
+        if (menuItem.direction == MenuItem.DIRECTION_LEFT) {
             mTotalLeftBtnLength += menuItem.width;
             mLeftMenuItems.add(position, menuItem);
         } else {
@@ -63,7 +63,7 @@ public final class Menu {
     }
 
     public boolean removeItem(MenuItem menuItem) {
-        if (menuItem.direction == MenuItem.DERACTION_LEFT) {
+        if (menuItem.direction == MenuItem.DIRECTION_LEFT) {
             mTotalLeftBtnLength -= menuItem.width;
             return mLeftMenuItems.remove(menuItem);
         } else {
@@ -73,7 +73,7 @@ public final class Menu {
     }
 
     protected int getTotalBtnLength(int direction) {
-        if (direction == MenuItem.DERACTION_LEFT) {
+        if (direction == MenuItem.DIRECTION_LEFT) {
             return mTotalLeftBtnLength;
         } else {
             return mTotalRightBtnLength;
@@ -87,7 +87,7 @@ public final class Menu {
      * @return
      */
     protected List<MenuItem> getMenuItems(int direction) {
-        if (direction == MenuItem.DERACTION_LEFT) {
+        if (direction == MenuItem.DIRECTION_LEFT) {
             return mLeftMenuItems;
         } else {
             return mRightMenuItems;

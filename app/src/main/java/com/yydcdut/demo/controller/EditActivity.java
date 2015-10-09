@@ -57,16 +57,14 @@ public class EditActivity extends AppCompatActivity implements SlideAndDragListV
         mMenu.addItem(new MenuItem.Builder().setWidth((int) getResources().getDimension(R.dimen.slv_item_bg_btn_width))
                 .setBackground(new ColorDrawable(Color.BLUE))
                 .setText("Three")
-                .setDirection(MenuItem.DERACTION_RIGHT)
+                .setDirection(MenuItem.DIRECTION_RIGHT)
                 .setTextColor(Color.BLACK)
                 .setTextSize((int) getResources().getDimension(R.dimen.txt_size))
                 .build());
         mMenu.addItem(new MenuItem.Builder().setWidth((int) getResources().getDimension(R.dimen.slv_item_bg_btn_width))
                 .setBackground(new ColorDrawable(Color.BLACK))
-                .setText("Four")
-                .setDirection(MenuItem.DERACTION_RIGHT)
-                .setTextColor(Color.WHITE)
-                .setTextSize((int) getResources().getDimension(R.dimen.txt_size))
+                .setDirection(MenuItem.DIRECTION_RIGHT)
+                .setIcon(getResources().getDrawable(R.drawable.ic_launcher))
                 .build());
     }
 

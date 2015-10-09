@@ -203,14 +203,14 @@ class ItemMainLayout extends FrameLayout {
                                 mScroller.startScroll(mItemCustomLayout.getScrollX(), 0, -delta, 0, SCROLL_TIME);
                             }
                             if (mOnItemSlideListenerProxy != null && mScrollState != SCROLL_STATE_OPEN) {
-                                mOnItemSlideListenerProxy.onSlideOpen(this, MenuItem.DERACTION_LEFT);
+                                mOnItemSlideListenerProxy.onSlideOpen(this, MenuItem.DIRECTION_LEFT);
                             }
                             mScrollState = SCROLL_STATE_OPEN;
                         } else {
                             mScroller.startScroll(mItemCustomLayout.getScrollX(), 0, -mItemCustomLayout.getScrollX(), 0, SCROLL_TIME);
                             //滑回去,归位
                             if (mOnItemSlideListenerProxy != null && mScrollState != SCROLL_STATE_CLOSE) {
-                                mOnItemSlideListenerProxy.onSlideClose(this, MenuItem.DERACTION_LEFT);
+                                mOnItemSlideListenerProxy.onSlideClose(this, MenuItem.DIRECTION_LEFT);
                             }
                             mScrollState = SCROLL_STATE_CLOSE;
                         }
@@ -226,14 +226,14 @@ class ItemMainLayout extends FrameLayout {
                                 mScroller.startScroll(mItemCustomLayout.getScrollX(), 0, -delta, 0, SCROLL_TIME);
                             }
                             if (mOnItemSlideListenerProxy != null && mScrollState != SCROLL_STATE_OPEN) {
-                                mOnItemSlideListenerProxy.onSlideOpen(this, MenuItem.DERACTION_RIGHT);
+                                mOnItemSlideListenerProxy.onSlideOpen(this, MenuItem.DIRECTION_RIGHT);
                             }
                             mScrollState = SCROLL_STATE_OPEN;
                         } else {
                             mScroller.startScroll(mItemCustomLayout.getScrollX(), 0, -mItemCustomLayout.getScrollX(), 0, SCROLL_TIME);
                             //滑回去,归位
                             if (mOnItemSlideListenerProxy != null && mScrollState != SCROLL_STATE_CLOSE) {
-                                mOnItemSlideListenerProxy.onSlideClose(this, MenuItem.DERACTION_RIGHT);
+                                mOnItemSlideListenerProxy.onSlideClose(this, MenuItem.DIRECTION_RIGHT);
                             }
                             mScrollState = SCROLL_STATE_CLOSE;
                         }

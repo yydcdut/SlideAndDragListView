@@ -2,6 +2,7 @@ package com.yydcdut.sdlv;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.Gravity;
 import android.view.View;
@@ -43,17 +44,31 @@ class ItemBackGroundLayout extends ViewGroup {
 
     public View addMenuItem(MenuItem menuItem) {
         int count = getChildCount();
-        TextView textView = new TextView(getContext());
-        textView.setBackgroundDrawable(menuItem.background);
-        textView.setText(menuItem.text);
-        textView.setTextSize(menuItem.textSize);
-        textView.setTextColor(menuItem.textColor);
-        textView.setGravity(Gravity.CENTER);
-        textView.setTag(menuItem);
-        addView(textView, count, new LayoutParams(LayoutParams.MATCH_PARENT, menuItem.width));
-        requestLayout();
-        mBtnViews.add(textView);
-        return textView;
+        if (!TextUtils.isEmpty(menuItem.text)) {
+            TextView textView = new TextView(getContext());
+            textView.setBackgroundDrawable(menuItem.background);
+            textView.setText(menuItem.text);
+            textView.setTextSize(menuItem.textSize);
+            textView.setTextColor(menuItem.textColor);
+            textView.setGravity(Gravity.CENTER);
+            textView.setTag(menuItem);
+            addView(textView, count, new LayoutParams(LayoutParams.MATCH_PARENT, menuItem.width));
+            requestLayout();
+            mBtnViews.add(textView);
+            return textView;
+        } else if (menuItem.icon != null) {
+            ImageView imageView = new ImageView(getContext());
+            imageView.setBackgroundDrawable(menuItem.background);
+            imageView.setImageDrawable(menuItem.icon);
+            imageView.setScaleType(ImageView.ScaleType.CENTER);
+            imageView.setTag(menuItem);
+            addView(imageView, count, new LayoutParams(LayoutParams.MATCH_PARENT, menuItem.width));
+            requestLayout();
+            mBtnViews.add(imageView);
+            return imageView;
+        } else {
+            throw new IllegalArgumentException("必须得有一个!");
+        }
     }
 
     @Override
@@ -83,7 +98,7 @@ class ItemBackGroundLayout extends ViewGroup {
                 view.layout(l, t, r, b);
             } else {
                 MenuItem menuItem = (MenuItem) view.getTag();
-                if (menuItem.direction == MenuItem.DERACTION_LEFT) {
+                if (menuItem.direction == MenuItem.DIRECTION_LEFT) {
                     view.layout(mMarginLeft, t, menuItem.width + mMarginLeft, b);
                     mMarginLeft += menuItem.width;
                 } else {
