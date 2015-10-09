@@ -42,14 +42,6 @@ public final class Menu {
         return mWannaOver;
     }
 
-    public int getTotalBtnLength(int direction) {
-        if (direction == MenuItem.DERACTION_LEFT) {
-            return mTotalLeftBtnLength;
-        } else {
-            return mTotalRightBtnLength;
-        }
-    }
-
     public void addItem(MenuItem menuItem) {
         if (menuItem.direction == MenuItem.DERACTION_LEFT) {
             mTotalLeftBtnLength += menuItem.width;
@@ -80,8 +72,21 @@ public final class Menu {
         }
     }
 
-    public List<MenuItem> getMenuItems(int direction) {
-        //todo 获取到List之后自己操作add或者remove的话btn总长度不会有操作变化
+    protected int getTotalBtnLength(int direction) {
+        if (direction == MenuItem.DERACTION_LEFT) {
+            return mTotalLeftBtnLength;
+        } else {
+            return mTotalRightBtnLength;
+        }
+    }
+
+    /**
+     * 这个函数并不是十分安全，因为获取到List之后自己操作add或者remove的话btn总长度不会有操作变化
+     *
+     * @param direction
+     * @return
+     */
+    protected List<MenuItem> getMenuItems(int direction) {
         if (direction == MenuItem.DERACTION_LEFT) {
             return mLeftMenuItems;
         } else {

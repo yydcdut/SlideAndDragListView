@@ -141,7 +141,7 @@ class ItemMainLayout extends FrameLayout {
 //                    Log.i("yuyidong", "ACTION_MOVE   111111111111");
                 } else if (fingerLeftAndRightMove(ev) || mIsMoving) {//上下范围在50，主要检测左右滑动
 //                    Log.i("yuyidong", "ACTION_MOVE   2222222222");
-                    //是否有要scroll的动向，是
+                    //是否有要scroll的动向
                     mIsMoving = true;
                     //执行控件的手势操作
                     getParent().requestDisallowInterceptTouchEvent(true);
@@ -165,7 +165,6 @@ class ItemMainLayout extends FrameLayout {
                             mIntention = INTENTION_LEFT_CLOSE;
                         }
                     }
-//                    Log.i("yuyidong", "mIntention---->" + mIntention);
                     //计算出距离
                     switch (mIntention) {
                         case INTENTION_LEFT_CLOSE:
@@ -190,6 +189,7 @@ class ItemMainLayout extends FrameLayout {
                 break;
             case MotionEvent.ACTION_UP:
             case MotionEvent.ACTION_CANCEL:
+                //todo 有待优化这里的代码
                 switch (mIntention) {
                     case INTENTION_LEFT_CLOSE:
                     case INTENTION_LEFT_OPEN:
@@ -249,6 +249,12 @@ class ItemMainLayout extends FrameLayout {
         return true;
     }
 
+    /**
+     * 设置哪边显示哪边不显示
+     *
+     * @param leftVisible
+     * @param rightVisible
+     */
     private void setBackGroundVisible(boolean leftVisible, boolean rightVisible) {
         if (leftVisible) {
             if (mItemLeftBackGroundLayout.getVisibility() != VISIBLE) {
@@ -304,7 +310,7 @@ class ItemMainLayout extends FrameLayout {
     /**
      * 归位
      */
-    public void scrollBack() {
+    protected void scrollBack() {
         mScroller.startScroll(mItemCustomLayout.getScrollX(), 0, -mItemCustomLayout.getScrollX(), 0, SCROLL_TIME);
         postInvalidate();
     }
@@ -314,11 +320,11 @@ class ItemMainLayout extends FrameLayout {
      *
      * @param onItemSlideListenerProxy
      */
-    public void setOnItemSlideListenerProxy(OnItemSlideListenerProxy onItemSlideListenerProxy) {
+    protected void setOnItemSlideListenerProxy(OnItemSlideListenerProxy onItemSlideListenerProxy) {
         mOnItemSlideListenerProxy = onItemSlideListenerProxy;
     }
 
-    public interface OnItemSlideListenerProxy {
+    protected interface OnItemSlideListenerProxy {
         void onSlideOpen(View view, int direction);
 
         void onSlideClose(View view, int direction);
