@@ -18,8 +18,10 @@ import java.util.List;
 class ItemBackGroundLayout extends ViewGroup {
     /* 背景的颜色 */
     private ImageView mBGImage;
-    /* 下一个View距离左边的距离 */
-    private int mNextViewLeft;
+    /* 下一个View的距离 */
+    private int mMarginLeft = 0;
+    private int mMarginRight = 0;
+    /* 添加的子View */
     private List<View> mBtnViews;
 
 
@@ -33,9 +35,7 @@ class ItemBackGroundLayout extends ViewGroup {
 
     public ItemBackGroundLayout(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        Holder holder = new Holder(-1, null);
         mBGImage = new ImageView(context);
-        mBGImage.setTag(holder);
         mBGImage.setBackgroundColor(Color.TRANSPARENT);
         addView(mBGImage, 0, new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
         mBtnViews = new ArrayList<>();
@@ -43,17 +43,15 @@ class ItemBackGroundLayout extends ViewGroup {
 
     public View addMenuItem(MenuItem menuItem) {
         int count = getChildCount();
-        Holder holder = new Holder(mNextViewLeft, menuItem);
         TextView textView = new TextView(getContext());
         textView.setBackgroundDrawable(menuItem.background);
         textView.setText(menuItem.text);
         textView.setTextSize(menuItem.textSize);
         textView.setTextColor(menuItem.textColor);
         textView.setGravity(Gravity.CENTER);
-        textView.setTag(holder);
+        textView.setTag(menuItem);
         addView(textView, count, new LayoutParams(LayoutParams.MATCH_PARENT, menuItem.width));
         requestLayout();
-        mNextViewLeft += menuItem.width;
         mBtnViews.add(textView);
         return textView;
     }
@@ -67,8 +65,8 @@ class ItemBackGroundLayout extends ViewGroup {
             if (view == mBGImage) {
                 measureChild(view, widthMeasureSpec, heightMeasureSpec);
             } else {
-                Holder holder = (Holder) view.getTag();
-                measureChild(view, MeasureSpec.makeMeasureSpec(holder.menuItem.width, MeasureSpec.EXACTLY),
+                MenuItem menuItem = (MenuItem) view.getTag();
+                measureChild(view, MeasureSpec.makeMeasureSpec(menuItem.width, MeasureSpec.EXACTLY),
                         heightMeasureSpec);
             }
         }
@@ -77,13 +75,21 @@ class ItemBackGroundLayout extends ViewGroup {
     @Override
     protected void onLayout(boolean changed, int l, int t, int r, int b) {
         int total = getChildCount();
+        mMarginLeft = 0;
+        mMarginRight = getMeasuredWidth();
         for (int i = 0; i < total; i++) {
             View view = getChildAt(i);
             if (view == mBGImage) {
                 view.layout(l, t, r, b);
             } else {
-                Holder holder = (Holder) view.getTag();
-                view.layout(l + holder.left, t, l + holder.menuItem.width + holder.left, b);
+                MenuItem menuItem = (MenuItem) view.getTag();
+                if (menuItem.direction == MenuItem.DERACTION_LEFT) {
+                    view.layout(mMarginLeft, t, menuItem.width + mMarginLeft, b);
+                    mMarginLeft += menuItem.width;
+                } else {
+                    view.layout(mMarginRight - menuItem.width, t, mMarginRight, b);
+                    mMarginRight -= menuItem.width;
+                }
             }
         }
     }
@@ -94,15 +100,5 @@ class ItemBackGroundLayout extends ViewGroup {
 
     public List<View> getBtnViews() {
         return mBtnViews;
-    }
-
-    class Holder {
-        public final int left;
-        public final MenuItem menuItem;
-
-        public Holder(int left, MenuItem menuItem) {
-            this.left = left;
-            this.menuItem = menuItem;
-        }
     }
 }

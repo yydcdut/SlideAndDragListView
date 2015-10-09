@@ -314,14 +314,15 @@ public class SlideAndDragListView<T> extends DragListView<T> implements WrapperA
          * @param v
          * @param itemPosition   第几个item
          * @param buttonPosition 第几个button
+         * @param direction      方向
          */
-        void onClick(View v, int itemPosition, int buttonPosition);
+        void onClick(View v, int itemPosition, int buttonPosition, int direction);
     }
 
     @Override
-    public void onClick(View v, int itemPosition, int buttonPosition) {
+    public void onClick(View v, int itemPosition, int buttonPosition, int direction) {
         if (mOnButtonClickListener != null) {
-            mOnButtonClickListener.onClick(v, itemPosition, buttonPosition);
+            mOnButtonClickListener.onClick(v, itemPosition, buttonPosition, direction);
         }
     }
 

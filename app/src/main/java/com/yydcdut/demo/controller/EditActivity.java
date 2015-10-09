@@ -41,8 +41,7 @@ public class EditActivity extends AppCompatActivity implements SlideAndDragListV
     Menu mMenu;
 
     public void initData() {
-        mMenu = new Menu((int) getResources().getDimension(R.dimen.slv_item_height) * 2,
-                new ColorDrawable(Color.WHITE));
+        mMenu = new Menu((int) getResources().getDimension(R.dimen.slv_item_height) * 2, new ColorDrawable(Color.WHITE), true);
         mMenu.addItem(new MenuItem.Builder().setWidth((int) getResources().getDimension(R.dimen.slv_item_bg_btn_width))
                 .setBackground(new ColorDrawable(Color.RED))
                 .setText("One")
@@ -58,12 +57,14 @@ public class EditActivity extends AppCompatActivity implements SlideAndDragListV
         mMenu.addItem(new MenuItem.Builder().setWidth((int) getResources().getDimension(R.dimen.slv_item_bg_btn_width))
                 .setBackground(new ColorDrawable(Color.BLUE))
                 .setText("Three")
+                .setDirection(MenuItem.DERACTION_RIGHT)
                 .setTextColor(Color.BLACK)
                 .setTextSize((int) getResources().getDimension(R.dimen.txt_size))
                 .build());
         mMenu.addItem(new MenuItem.Builder().setWidth((int) getResources().getDimension(R.dimen.slv_item_bg_btn_width))
                 .setBackground(new ColorDrawable(Color.BLACK))
                 .setText("Four")
+                .setDirection(MenuItem.DERACTION_RIGHT)
                 .setTextColor(Color.WHITE)
                 .setTextSize((int) getResources().getDimension(R.dimen.txt_size))
                 .build());
@@ -143,8 +144,8 @@ public class EditActivity extends AppCompatActivity implements SlideAndDragListV
     }
 
     @Override
-    public void onClick(View v, int position, int number) {
-        Toast.makeText(EditActivity.this, "onClick   position--->" + position + "   number--->" + number, Toast.LENGTH_SHORT).show();
+    public void onClick(View v, int position, int number, int direction) {
+        Toast.makeText(EditActivity.this, "onClick   position--->" + position + "   number--->" + number + "  direction--->" + direction, Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -161,4 +162,5 @@ public class EditActivity extends AppCompatActivity implements SlideAndDragListV
     public void onSlideClose(View view, View parentView, int position) {
         Toast.makeText(EditActivity.this, "onSlideClose   position--->" + position, Toast.LENGTH_SHORT).show();
     }
+
 }

@@ -13,7 +13,13 @@ public class DemoModel {
     private DemoModel() {
         mList = new ArrayList<Bean>();
         for (int i = 0; i < 30; i++) {
-            mList.add(new Bean(i + ""));
+            mList.add(new Bean(i + "" + i + "" + i + "" + i + "" + i + "" + i + "" + i + "" + i + "" + i + "" +
+                    i + "" + i + "" + i + "" + i + "" + i + "" + i + "" + i + "" + i + "" + i + "" +
+                    i + "" + i + "" + i + "" + i + "" + i + "" + i + "" + i + "" + i + "" + i + "" +
+                    i + "" + i + "" + i + "" + i + "" + i + "" + i + "" + i + "" + i + "" + i + "" +
+                    i + "" + i + "" + i + "" + i + "" + i + "" + i + "" + i + "" + i + "" + i + "" +
+                    i + "" + i + "" + i + "" + i + "" + i + "" + i + "" + i + "" + i + "" + i + "" +
+                    i + "" + i + "" + i + "" + i + "" + i + "" + i + "" + i + "" + i + "" + i + ""));
         }
     }
 

@@ -11,6 +11,13 @@ import android.widget.Scroller;
  * Created by yuyidong on 15/9/24.
  */
 class ItemMainLayout extends FrameLayout {
+    private static final int INTENTION_LEFT_OPEN = 1;
+    private static final int INTENTION_LEFT_CLOSE = 2;
+    private static final int INTENTION_RIGHT_OPEN = -1;
+    private static final int INTENTION_RIGHT_CLOSE = -2;
+    private static final int INTENTION_ZERO = 0;
+    private int mIntention = INTENTION_ZERO;
+
     private static final int SCROLL_STATE_OPEN = 1;
     private static final int SCROLL_STATE_CLOSE = 0;
     private int mScrollState = SCROLL_STATE_CLOSE;
@@ -19,15 +26,19 @@ class ItemMainLayout extends FrameLayout {
     private static final int SCROLL_QUICK_TIME = 200;//200ms
     /* 控件高度 */
     private int mHeight;
-    /* 子控件中button的宽度 */
-    private int mBGWidth;
+    /* 子控件中button的总宽度 */
+    private int mBtnLeftTotalWidth;
+    private int mBtnRightTotalWidth;
     /* 子view */
-    private ItemBackGroundLayout mItemBackGroundLayout;
+    private ItemBackGroundLayout mItemLeftBackGroundLayout;
+    private ItemBackGroundLayout mItemRightBackGroundLayout;
     private ItemCustomLayout mItemCustomLayout;
     /* Scroller */
     private Scroller mScroller;
     /* 控件是否滑动 */
     private boolean mIsMoving = false;
+    /* 是不是要滑过(over) */
+    private boolean mWannaOver = true;
     /* 坐标 */
     private float mXDown;
     private float mYDown;
@@ -47,8 +58,10 @@ class ItemMainLayout extends FrameLayout {
     public ItemMainLayout(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         mScroller = new Scroller(context);
-        mItemBackGroundLayout = new ItemBackGroundLayout(context);
-        addView(mItemBackGroundLayout, new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
+        mItemRightBackGroundLayout = new ItemBackGroundLayout(context);
+        addView(mItemRightBackGroundLayout, new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
+        mItemLeftBackGroundLayout = new ItemBackGroundLayout(context);
+        addView(mItemLeftBackGroundLayout, new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
         mItemCustomLayout = new ItemCustomLayout(context);
         addView(mItemCustomLayout, new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
     }
@@ -63,23 +76,34 @@ class ItemMainLayout extends FrameLayout {
     }
 
     /**
-     * 得到背景View
+     * 得到左边的背景View
      *
      * @return
      */
-    public ItemBackGroundLayout getItemBackGroundLayout() {
-        return mItemBackGroundLayout;
+    public ItemBackGroundLayout getItemLeftBackGroundLayout() {
+        return mItemLeftBackGroundLayout;
     }
 
     /**
-     * 设置item的高度,button总宽度
+     * 得到右边的背景View
      *
-     * @param height
-     * @param btnTotalWidth
+     * @return
      */
-    public void setLayoutHeight(int height, int btnTotalWidth) {
+    public ItemBackGroundLayout getItemRightBackGroundLayout() {
+        return mItemRightBackGroundLayout;
+    }
+
+    /**
+     * @param height
+     * @param btnLeftTotalWidth
+     * @param btnRightTotalWidth
+     * @param wannaOver
+     */
+    public void setParams(int height, int btnLeftTotalWidth, int btnRightTotalWidth, boolean wannaOver) {
         mHeight = height;
-        mBGWidth = btnTotalWidth;
+        mBtnLeftTotalWidth = btnLeftTotalWidth;
+        mBtnRightTotalWidth = btnRightTotalWidth;
+        mWannaOver = wannaOver;
         requestLayout();
     }
 
@@ -97,9 +121,11 @@ class ItemMainLayout extends FrameLayout {
 
     @Override
     public boolean onTouchEvent(MotionEvent ev) {
+//        Log.i("yuyidong","onTouchEvent   onTouchEvent");
         getParent().requestDisallowInterceptTouchEvent(false);
         switch (ev.getAction()) {
             case MotionEvent.ACTION_DOWN:
+//                Log.i("yuyidong","ACTION_DOWN   ACTION_DOWN");
                 mXDown = ev.getX();
                 mYDown = ev.getY();
                 //控件初始距离
@@ -108,43 +134,110 @@ class ItemMainLayout extends FrameLayout {
                 mIsMoving = false;
                 break;
             case MotionEvent.ACTION_MOVE:
+//                Log.i("yuyidong","ACTION_MOVE   ACTION_MOVE");
                 if (fingerNotMove(ev) && !mIsMoving) {//手指的范围在50以内
                     //执行ListView的手势操作
                     getParent().requestDisallowInterceptTouchEvent(false);
+//                    Log.i("yuyidong", "ACTION_MOVE   111111111111");
                 } else if (fingerLeftAndRightMove(ev) || mIsMoving) {//上下范围在50，主要检测左右滑动
+//                    Log.i("yuyidong", "ACTION_MOVE   2222222222");
                     //是否有要scroll的动向，是
                     mIsMoving = true;
                     //执行控件的手势操作
                     getParent().requestDisallowInterceptTouchEvent(true);
                     float moveDistance = ev.getX() - mXDown;//这个往右是正，往左是负
+                    //判断意图
+                    if (moveDistance > 0) {//往右
+                        if (mXScrollDistance == 0) {//关闭状态
+                            mIntention = INTENTION_LEFT_OPEN;
+                            setBackGroundVisible(true, false);
+                        } else if (mXScrollDistance > 0) {//右边的btn显示出来的
+                            mIntention = INTENTION_RIGHT_CLOSE;
+                        } else if (mXScrollDistance < 0) {//左边的btn显示出来的
+
+                        }
+                    } else if (moveDistance < 0) {//往左
+                        if (mXScrollDistance == 0) {//关闭状态
+                            mIntention = INTENTION_RIGHT_OPEN;
+                            setBackGroundVisible(false, true);
+                        } else if (mXScrollDistance > 0) {//右边的btn显示出来的
+                        } else if (mXScrollDistance < 0) {//左边的btn显示出来的
+                            mIntention = INTENTION_LEFT_CLOSE;
+                        }
+                    }
+//                    Log.i("yuyidong", "mIntention---->" + mIntention);
                     //计算出距离
-                    float distance = mXScrollDistance - moveDistance < 0 ? mXScrollDistance - moveDistance : 0;
-                    //滑动
-                    mItemCustomLayout.scrollTo((int) distance, 0);
+                    switch (mIntention) {
+                        case INTENTION_LEFT_CLOSE:
+                        case INTENTION_LEFT_OPEN:
+                            float distanceLeft = mXScrollDistance - moveDistance < 0 ? mXScrollDistance - moveDistance : 0;
+                            if (!mWannaOver) {
+                                distanceLeft = distanceLeft < -mBtnLeftTotalWidth ? -mBtnLeftTotalWidth : distanceLeft;
+                            }
+                            //滑动
+                            mItemCustomLayout.scrollTo((int) distanceLeft, 0);
+                            break;
+                        case INTENTION_RIGHT_CLOSE:
+                        case INTENTION_RIGHT_OPEN:
+                            float distanceRight = mXScrollDistance - moveDistance > 0 ? mXScrollDistance - moveDistance : 0;
+                            if (!mWannaOver) {
+                                distanceRight = distanceRight < mBtnRightTotalWidth ? distanceRight : mBtnRightTotalWidth;
+                            }
+                            mItemCustomLayout.scrollTo((int) distanceRight, 0);
+                            break;
+                    }
                 }
                 break;
             case MotionEvent.ACTION_UP:
             case MotionEvent.ACTION_CANCEL:
-                //如果滑出的话，那么就滑到固定位置(只要滑出了 mBGWidth / 2 ，就算滑出去了)
-                if (Math.abs(mItemCustomLayout.getScrollX()) > mBGWidth / 2) {
-                    //滑出
-                    int delta = mBGWidth - Math.abs(mItemCustomLayout.getScrollX());
-                    if (Math.abs(mItemCustomLayout.getScrollX()) < mBGWidth) {
-                        mScroller.startScroll(mItemCustomLayout.getScrollX(), 0, -delta, 0, SCROLL_QUICK_TIME);
-                    } else {
-                        mScroller.startScroll(mItemCustomLayout.getScrollX(), 0, -delta, 0, SCROLL_TIME);
-                    }
-                    if (mOnItemSlideListenerProxy != null && mScrollState != SCROLL_STATE_OPEN) {
-                        mOnItemSlideListenerProxy.onSlideOpen(this);
-                    }
-                    mScrollState = SCROLL_STATE_OPEN;
-                } else {
-                    mScroller.startScroll(mItemCustomLayout.getScrollX(), 0, -mItemCustomLayout.getScrollX(), 0, SCROLL_TIME);
-                    //滑回去,归位
-                    if (mOnItemSlideListenerProxy != null && mScrollState != SCROLL_STATE_CLOSE) {
-                        mOnItemSlideListenerProxy.onSlideClose(this);
-                    }
-                    mScrollState = SCROLL_STATE_CLOSE;
+                switch (mIntention) {
+                    case INTENTION_LEFT_CLOSE:
+                    case INTENTION_LEFT_OPEN:
+                        //如果滑出的话，那么就滑到固定位置(只要滑出了 mBtnLeftTotalWidth / 2 ，就算滑出去了)
+                        if (Math.abs(mItemCustomLayout.getScrollX()) > mBtnLeftTotalWidth / 2) {
+                            //滑出
+                            int delta = mBtnLeftTotalWidth - Math.abs(mItemCustomLayout.getScrollX());
+                            if (Math.abs(mItemCustomLayout.getScrollX()) < mBtnLeftTotalWidth) {
+                                mScroller.startScroll(mItemCustomLayout.getScrollX(), 0, -delta, 0, SCROLL_QUICK_TIME);
+                            } else {
+                                mScroller.startScroll(mItemCustomLayout.getScrollX(), 0, -delta, 0, SCROLL_TIME);
+                            }
+                            if (mOnItemSlideListenerProxy != null && mScrollState != SCROLL_STATE_OPEN) {
+                                mOnItemSlideListenerProxy.onSlideOpen(this);
+                            }
+                            mScrollState = SCROLL_STATE_OPEN;
+                        } else {
+                            mScroller.startScroll(mItemCustomLayout.getScrollX(), 0, -mItemCustomLayout.getScrollX(), 0, SCROLL_TIME);
+                            //滑回去,归位
+                            if (mOnItemSlideListenerProxy != null && mScrollState != SCROLL_STATE_CLOSE) {
+                                mOnItemSlideListenerProxy.onSlideClose(this);
+                            }
+                            mScrollState = SCROLL_STATE_CLOSE;
+                        }
+                        break;
+                    case INTENTION_RIGHT_CLOSE:
+                    case INTENTION_RIGHT_OPEN:
+                        if (Math.abs(mItemCustomLayout.getScrollX()) > mBtnRightTotalWidth / 2) {
+                            //滑出
+                            int delta = mBtnLeftTotalWidth - Math.abs(mItemCustomLayout.getScrollX());
+                            if (Math.abs(mItemCustomLayout.getScrollX()) < mBtnRightTotalWidth) {
+                                mScroller.startScroll(mItemCustomLayout.getScrollX(), 0, -delta, 0, SCROLL_QUICK_TIME);
+                            } else {
+                                mScroller.startScroll(mItemCustomLayout.getScrollX(), 0, -delta, 0, SCROLL_TIME);
+                            }
+                            if (mOnItemSlideListenerProxy != null && mScrollState != SCROLL_STATE_OPEN) {
+                                mOnItemSlideListenerProxy.onSlideOpen(this);
+                            }
+                            mScrollState = SCROLL_STATE_OPEN;
+                        } else {
+                            mScroller.startScroll(mItemCustomLayout.getScrollX(), 0, -mItemCustomLayout.getScrollX(), 0, SCROLL_TIME);
+                            //滑回去,归位
+                            if (mOnItemSlideListenerProxy != null && mScrollState != SCROLL_STATE_CLOSE) {
+                                mOnItemSlideListenerProxy.onSlideClose(this);
+                            }
+                            mScrollState = SCROLL_STATE_CLOSE;
+                        }
+                        break;
                 }
                 postInvalidate();
                 mIsMoving = false;
@@ -153,6 +246,27 @@ class ItemMainLayout extends FrameLayout {
                 break;
         }
         return true;
+    }
+
+    private void setBackGroundVisible(boolean leftVisible, boolean rightVisible) {
+        if (leftVisible) {
+            if (mItemLeftBackGroundLayout.getVisibility() != VISIBLE) {
+                mItemLeftBackGroundLayout.setVisibility(VISIBLE);
+            }
+        } else {
+            if (mItemLeftBackGroundLayout.getVisibility() == VISIBLE) {
+                mItemLeftBackGroundLayout.setVisibility(GONE);
+            }
+        }
+        if (rightVisible) {
+            if (mItemRightBackGroundLayout.getVisibility() != VISIBLE) {
+                mItemRightBackGroundLayout.setVisibility(VISIBLE);
+            }
+        } else {
+            if (mItemRightBackGroundLayout.getVisibility() == VISIBLE) {
+                mItemRightBackGroundLayout.setVisibility(GONE);
+            }
+        }
     }
 
     /**
