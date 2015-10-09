@@ -1,8 +1,6 @@
 package com.yydcdut.sdlv;
 
 import android.content.Context;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.os.Handler;
 import android.os.Message;
 import android.os.Vibrator;
@@ -58,34 +56,6 @@ public class SlideAndDragListView<T> extends DragListView<T> implements WrapperA
 
     public SlideAndDragListView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        //-------------------------- menu Test --------------------------
-        mMenu = new Menu((int) getContext().getResources().getDimension(R.dimen.slv_item_height) * 2,
-                new ColorDrawable(Color.WHITE));
-        mMenu.addItem(new MenuItem.Builder().setWidth((int) getContext().getResources().getDimension(R.dimen.slv_item_bg_btn_width))
-                .setBackground(new ColorDrawable(Color.RED))
-                .setText("One")
-                .setTextColor(Color.GRAY)
-                .setTextSize((int) getContext().getResources().getDimension(R.dimen.txt_size))
-                .build());
-        mMenu.addItem(new MenuItem.Builder().setWidth((int) getContext().getResources().getDimension(R.dimen.slv_item_bg_btn_width))
-                .setBackground(new ColorDrawable(Color.GREEN))
-                .setText("Two")
-                .setTextColor(Color.BLACK)
-                .setTextSize((int) getContext().getResources().getDimension(R.dimen.txt_size))
-                .build());
-        mMenu.addItem(new MenuItem.Builder().setWidth((int) getContext().getResources().getDimension(R.dimen.slv_item_bg_btn_width))
-                .setBackground(new ColorDrawable(Color.BLUE))
-                .setText("Three")
-                .setTextColor(Color.BLACK)
-                .setTextSize((int) getContext().getResources().getDimension(R.dimen.txt_size))
-                .build());
-        mMenu.addItem(new MenuItem.Builder().setWidth((int) getContext().getResources().getDimension(R.dimen.slv_item_bg_btn_width))
-                .setBackground(new ColorDrawable(Color.BLACK))
-                .setText("Four")
-                .setTextColor(Color.WHITE)
-                .setTextSize((int) getContext().getResources().getDimension(R.dimen.txt_size))
-                .build());
-        //-------------------------- menu Test --------------------------
         mVibrator = (Vibrator) getContext().getSystemService(Context.VIBRATOR_SERVICE);
         mHandler = new Handler(this);
     }
@@ -244,8 +214,20 @@ public class SlideAndDragListView<T> extends DragListView<T> implements WrapperA
                 ev.getY() - mYDown < 25 && ev.getY() - mYDown > -25);
     }
 
+    /**
+     * 设置Menu
+     *
+     * @param menu
+     */
+    public void setMenu(Menu menu) {
+        mMenu = menu;
+    }
+
     @Override
     public void setAdapter(ListAdapter adapter) {
+        if (mMenu == null) {
+            throw new IllegalArgumentException("先设置Menu");
+        }
         mWrapperAdapter = new WrapperAdapter(getContext(), this, adapter, mMenu) {
             @Override
             public void onScrollStateChangedProxy(AbsListView view, int scrollState) {

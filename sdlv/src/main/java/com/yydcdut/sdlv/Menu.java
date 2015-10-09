@@ -8,7 +8,7 @@ import java.util.List;
 /**
  * Created by yuyidong on 15/10/8.
  */
-public class Menu {
+public final class Menu {
     private List<MenuItem> mMenuItems;
 
     private int mItemHeight;

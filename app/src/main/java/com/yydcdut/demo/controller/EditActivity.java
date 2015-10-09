@@ -1,5 +1,7 @@
 package com.yydcdut.demo.controller;
 
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
@@ -15,6 +17,8 @@ import com.yydcdut.demo.model.Bean;
 import com.yydcdut.demo.model.DemoModel;
 import com.yydcdut.demo.utils.RandomColor;
 import com.yydcdut.demo.view.TextDrawable;
+import com.yydcdut.sdlv.Menu;
+import com.yydcdut.sdlv.MenuItem;
 import com.yydcdut.sdlv.SlideAndDragListView;
 
 /**
@@ -30,11 +34,44 @@ public class EditActivity extends AppCompatActivity implements SlideAndDragListV
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit);
+        initData();
         initUiAndListener();
+    }
+
+    Menu mMenu;
+
+    public void initData() {
+        mMenu = new Menu((int) getResources().getDimension(R.dimen.slv_item_height) * 2,
+                new ColorDrawable(Color.WHITE));
+        mMenu.addItem(new MenuItem.Builder().setWidth((int) getResources().getDimension(R.dimen.slv_item_bg_btn_width))
+                .setBackground(new ColorDrawable(Color.RED))
+                .setText("One")
+                .setTextColor(Color.GRAY)
+                .setTextSize((int) getResources().getDimension(R.dimen.txt_size))
+                .build());
+        mMenu.addItem(new MenuItem.Builder().setWidth((int) getResources().getDimension(R.dimen.slv_item_bg_btn_width))
+                .setBackground(new ColorDrawable(Color.GREEN))
+                .setText("Two")
+                .setTextColor(Color.BLACK)
+                .setTextSize((int) getResources().getDimension(R.dimen.txt_size))
+                .build());
+        mMenu.addItem(new MenuItem.Builder().setWidth((int) getResources().getDimension(R.dimen.slv_item_bg_btn_width))
+                .setBackground(new ColorDrawable(Color.BLUE))
+                .setText("Three")
+                .setTextColor(Color.BLACK)
+                .setTextSize((int) getResources().getDimension(R.dimen.txt_size))
+                .build());
+        mMenu.addItem(new MenuItem.Builder().setWidth((int) getResources().getDimension(R.dimen.slv_item_bg_btn_width))
+                .setBackground(new ColorDrawable(Color.BLACK))
+                .setText("Four")
+                .setTextColor(Color.WHITE)
+                .setTextSize((int) getResources().getDimension(R.dimen.txt_size))
+                .build());
     }
 
     public void initUiAndListener() {
         SlideAndDragListView listView = (SlideAndDragListView) findViewById(R.id.lv_edit);
+        listView.setMenu(mMenu);
         listView.setAdapter(mAdapter);
         listView.setOnListItemLongClickListener(this);
         listView.setOnDragListener(this, DemoModel.getInstance().getData());

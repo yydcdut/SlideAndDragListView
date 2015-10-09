@@ -23,6 +23,7 @@ public class MenuItem {
     }
 
     public static class Builder {
+        //todo 默认值
         private int width;
         private String text;
         private int textSize;

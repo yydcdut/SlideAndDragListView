@@ -8,4 +8,8 @@
     <dimen name="slv_item_bg_width">48dip</dimen>
 
     <dimen name="default_textSize">14sp</dimen>
+
+    <dimen name="slv_item_bg_btn_width">64dip</dimen>
+
+    <dimen name="txt_size">14sp</dimen>
 </resources>
