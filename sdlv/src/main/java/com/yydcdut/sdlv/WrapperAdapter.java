@@ -13,7 +13,7 @@ import android.widget.WrapperListAdapter;
  */
 abstract class WrapperAdapter implements WrapperListAdapter, ItemMainLayout.OnItemSlideListenerProxy, View.OnClickListener,
         AbsListView.OnScrollListener {
-    private static final int TAG_Left = 3 << 24;
+    private static final int TAG_LEFT = 3 << 24;
     private static final int TAG_RIGHT = 4 << 24;
     /* 上下文 */
     private Context mContext;
@@ -96,7 +96,7 @@ abstract class WrapperAdapter implements WrapperListAdapter, ItemMainLayout.OnIt
                     View v = itemMainLayout.getItemLeftBackGroundLayout().addMenuItem(mMenu.getMenuItems(MenuItem.DERACTION_LEFT).get(i));
                     v.setOnClickListener(this);
                     v.setClickable(false);
-                    v.setTag(TAG_Left, i);
+                    v.setTag(TAG_LEFT, i);
                 }
             } else {
                 itemMainLayout.getItemLeftBackGroundLayout().setVisibility(View.GONE);
@@ -209,16 +209,16 @@ abstract class WrapperAdapter implements WrapperListAdapter, ItemMainLayout.OnIt
     }
 
     @Override
-    public void onSlideOpen(View view) {
+    public void onSlideOpen(View view, int direction) {
         if (mOnAdapterSlideListenerProxy != null) {
-            mOnAdapterSlideListenerProxy.onSlideOpen(view, mSlideItemPosition);
+            mOnAdapterSlideListenerProxy.onSlideOpen(view, mSlideItemPosition, direction);
         }
     }
 
     @Override
-    public void onSlideClose(View view) {
+    public void onSlideClose(View view, int direction) {
         if (mOnAdapterSlideListenerProxy != null) {
-            mOnAdapterSlideListenerProxy.onSlideClose(view, mSlideItemPosition);
+            mOnAdapterSlideListenerProxy.onSlideClose(view, mSlideItemPosition, direction);
         }
         //归位
         returnSlideItemPosition();
@@ -237,8 +237,8 @@ abstract class WrapperAdapter implements WrapperListAdapter, ItemMainLayout.OnIt
     public void onClick(View v) {
         if (mOnAdapterButtonClickListenerProxy != null) {
             mOnAdapterButtonClickListenerProxy.onClick(v, mSlideItemPosition,
-                    (Integer) (v.getTag(TAG_Left) != null ? v.getTag(TAG_Left) : v.getTag(TAG_RIGHT)),
-                    v.getTag(TAG_Left) != null ? MenuItem.DERACTION_LEFT : MenuItem.DERACTION_RIGHT);
+                    (Integer) (v.getTag(TAG_LEFT) != null ? v.getTag(TAG_LEFT) : v.getTag(TAG_RIGHT)),
+                    v.getTag(TAG_LEFT) != null ? MenuItem.DERACTION_LEFT : MenuItem.DERACTION_RIGHT);
         }
     }
 
@@ -261,9 +261,9 @@ abstract class WrapperAdapter implements WrapperListAdapter, ItemMainLayout.OnIt
     }
 
     public interface OnAdapterSlideListenerProxy {
-        void onSlideOpen(View view, int position);
+        void onSlideOpen(View view, int position, int direction);
 
-        void onSlideClose(View view, int position);
+        void onSlideClose(View view, int position, int direction);
     }
 
     public abstract void onScrollStateChangedProxy(AbsListView view, int scrollState);

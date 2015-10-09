@@ -154,12 +154,12 @@ public class EditActivity extends AppCompatActivity implements SlideAndDragListV
     }
 
     @Override
-    public void onSlideOpen(View view, View parentView, int position) {
+    public void onSlideOpen(View view, View parentView, int position, int direction) {
         Toast.makeText(EditActivity.this, "onSlideOpen   position--->" + position, Toast.LENGTH_SHORT).show();
     }
 
     @Override
-    public void onSlideClose(View view, View parentView, int position) {
+    public void onSlideClose(View view, View parentView, int position, int direction) {
         Toast.makeText(EditActivity.this, "onSlideClose   position--->" + position, Toast.LENGTH_SHORT).show();
     }
 

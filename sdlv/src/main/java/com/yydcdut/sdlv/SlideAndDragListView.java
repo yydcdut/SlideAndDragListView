@@ -269,7 +269,7 @@ public class SlideAndDragListView<T> extends DragListView<T> implements WrapperA
          * @param parentView
          * @param position
          */
-        void onSlideOpen(View view, View parentView, int position);
+        void onSlideOpen(View view, View parentView, int position, int direction);
 
         /**
          * 当滑动归位的时候触发
@@ -278,20 +278,20 @@ public class SlideAndDragListView<T> extends DragListView<T> implements WrapperA
          * @param parentView
          * @param position
          */
-        void onSlideClose(View view, View parentView, int position);
+        void onSlideClose(View view, View parentView, int position, int direction);
     }
 
     @Override
-    public void onSlideOpen(View view, int position) {
+    public void onSlideOpen(View view, int position, int direction) {
         if (mOnSlideListener != null) {
-            mOnSlideListener.onSlideOpen(view, this, position);
+            mOnSlideListener.onSlideOpen(view, this, position, direction);
         }
     }
 
     @Override
-    public void onSlideClose(View view, int position) {
+    public void onSlideClose(View view, int position, int direction) {
         if (mOnSlideListener != null) {
-            mOnSlideListener.onSlideClose(view, this, position);
+            mOnSlideListener.onSlideClose(view, this, position, direction);
         }
     }
 

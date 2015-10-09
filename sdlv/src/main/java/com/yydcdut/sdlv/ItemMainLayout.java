@@ -203,14 +203,14 @@ class ItemMainLayout extends FrameLayout {
                                 mScroller.startScroll(mItemCustomLayout.getScrollX(), 0, -delta, 0, SCROLL_TIME);
                             }
                             if (mOnItemSlideListenerProxy != null && mScrollState != SCROLL_STATE_OPEN) {
-                                mOnItemSlideListenerProxy.onSlideOpen(this);
+                                mOnItemSlideListenerProxy.onSlideOpen(this, MenuItem.DERACTION_LEFT);
                             }
                             mScrollState = SCROLL_STATE_OPEN;
                         } else {
                             mScroller.startScroll(mItemCustomLayout.getScrollX(), 0, -mItemCustomLayout.getScrollX(), 0, SCROLL_TIME);
                             //滑回去,归位
                             if (mOnItemSlideListenerProxy != null && mScrollState != SCROLL_STATE_CLOSE) {
-                                mOnItemSlideListenerProxy.onSlideClose(this);
+                                mOnItemSlideListenerProxy.onSlideClose(this, MenuItem.DERACTION_LEFT);
                             }
                             mScrollState = SCROLL_STATE_CLOSE;
                         }
@@ -219,26 +219,27 @@ class ItemMainLayout extends FrameLayout {
                     case INTENTION_RIGHT_OPEN:
                         if (Math.abs(mItemCustomLayout.getScrollX()) > mBtnRightTotalWidth / 2) {
                             //滑出
-                            int delta = mBtnLeftTotalWidth - Math.abs(mItemCustomLayout.getScrollX());
+                            int delta = mBtnRightTotalWidth - Math.abs(mItemCustomLayout.getScrollX());
                             if (Math.abs(mItemCustomLayout.getScrollX()) < mBtnRightTotalWidth) {
                                 mScroller.startScroll(mItemCustomLayout.getScrollX(), 0, -delta, 0, SCROLL_QUICK_TIME);
                             } else {
                                 mScroller.startScroll(mItemCustomLayout.getScrollX(), 0, -delta, 0, SCROLL_TIME);
                             }
                             if (mOnItemSlideListenerProxy != null && mScrollState != SCROLL_STATE_OPEN) {
-                                mOnItemSlideListenerProxy.onSlideOpen(this);
+                                mOnItemSlideListenerProxy.onSlideOpen(this, MenuItem.DERACTION_RIGHT);
                             }
                             mScrollState = SCROLL_STATE_OPEN;
                         } else {
                             mScroller.startScroll(mItemCustomLayout.getScrollX(), 0, -mItemCustomLayout.getScrollX(), 0, SCROLL_TIME);
                             //滑回去,归位
                             if (mOnItemSlideListenerProxy != null && mScrollState != SCROLL_STATE_CLOSE) {
-                                mOnItemSlideListenerProxy.onSlideClose(this);
+                                mOnItemSlideListenerProxy.onSlideClose(this, MenuItem.DERACTION_RIGHT);
                             }
                             mScrollState = SCROLL_STATE_CLOSE;
                         }
                         break;
                 }
+                mIntention = INTENTION_ZERO;
                 postInvalidate();
                 mIsMoving = false;
                 break;
@@ -318,8 +319,8 @@ class ItemMainLayout extends FrameLayout {
     }
 
     public interface OnItemSlideListenerProxy {
-        void onSlideOpen(View view);
+        void onSlideOpen(View view, int direction);
 
-        void onSlideClose(View view);
+        void onSlideClose(View view, int direction);
     }
 }
