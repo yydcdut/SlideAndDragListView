@@ -129,13 +129,18 @@ public class DemoActivity extends AppCompatActivity implements SlideAndDragListV
     }
 
     @Override
+    public void onDragViewStart(int position) {
+//        Toast.makeText(DemoActivity.this, "onDragViewStart   position--->" + position, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
     public void onDragViewMoving(int position) {
-//        Toast.makeText(EditActivity.this, "onDragViewMoving   position--->" + position, Toast.LENGTH_SHORT).show();
+//        Toast.makeText(DemoActivity.this, "onDragViewMoving   position--->" + position, Toast.LENGTH_SHORT).show();
     }
 
     @Override
     public void onDragViewDown(int position) {
-//        Toast.makeText(EditActivity.this, "onDragViewDown   position--->" + position, Toast.LENGTH_SHORT).show();
+//        Toast.makeText(DemoActivity.this, "onDragViewDown   position--->" + position, Toast.LENGTH_SHORT).show();
     }
 
     @Override

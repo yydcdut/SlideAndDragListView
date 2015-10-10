@@ -111,6 +111,10 @@ class DragListView<T> extends ListView implements View.OnDragListener {
                 return true;
             case DragEvent.ACTION_DROP:
                 mSDAdapter.notifyDataSetChanged();
+                for (int i = 0; i < getLastVisiblePosition() - getFirstVisiblePosition(); i++) {
+                    ItemMainLayout view = (ItemMainLayout) getChildAt(i);
+                    setItemVisible(view);
+                }
                 if (mOnDragListener != null) {
                     mOnDragListener.onDragViewDown(mCurrentPosition);
                 }
@@ -122,6 +126,24 @@ class DragListView<T> extends ListView implements View.OnDragListener {
         }
         return false;
     }
+
+    /**
+     * 将透明的那部分变回来
+     *
+     * @param itemMainLayout
+     */
+    private void setItemVisible(ItemMainLayout itemMainLayout) {
+        if (itemMainLayout.getItemLeftBackGroundLayout().getVisibility() != View.VISIBLE) {
+            itemMainLayout.getItemLeftBackGroundLayout().setVisibility(View.VISIBLE);
+        }
+        if (itemMainLayout.getItemRightBackGroundLayout().getVisibility() != View.VISIBLE) {
+            itemMainLayout.getItemRightBackGroundLayout().setVisibility(View.VISIBLE);
+        }
+        if (itemMainLayout.getItemCustomLayout().getBackGroundImage().getVisibility() != View.VISIBLE) {
+            itemMainLayout.getItemCustomLayout().getBackGroundImage().setVisibility(View.VISIBLE);
+        }
+    }
+
 
     /**
      * 如果到了两端，判断ListView是往上滑动还是ListView往下滑动
@@ -152,10 +174,14 @@ class DragListView<T> extends ListView implements View.OnDragListener {
         mBeforeCurrentPosition = position;
         mBeforeBeforePosition = position;
         if (mOnDragListener != null) {
-            View view = getChildAt(position - getFirstVisiblePosition());
+            ItemMainLayout view = (ItemMainLayout) getChildAt(position - getFirstVisiblePosition());
+            view.getItemCustomLayout().getBackGroundImage().setVisibility(GONE);
+            view.getItemLeftBackGroundLayout().setVisibility(GONE);
+            view.getItemRightBackGroundLayout().setVisibility(GONE);
             ClipData.Item item = new ClipData.Item("1");
             ClipData data = new ClipData("1", new String[]{ClipDescription.MIMETYPE_TEXT_PLAIN}, item);
             view.startDrag(data, new View.DragShadowBuilder(view), null, 0);
+            mOnDragListener.onDragViewStart(position);
         }
     }
 
@@ -188,6 +214,13 @@ class DragListView<T> extends ListView implements View.OnDragListener {
      * 当发生drag的时候触发的监听器
      */
     public interface OnDragListener {
+        /**
+         * 开始drag
+         *
+         * @param position
+         */
+        void onDragViewStart(int position);
+
         /**
          * drag的正在移动
          *
