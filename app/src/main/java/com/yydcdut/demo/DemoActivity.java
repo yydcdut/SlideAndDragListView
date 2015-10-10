@@ -1,4 +1,4 @@
-package com.yydcdut.demo.controller;
+package com.yydcdut.demo;
 
 import android.content.pm.ApplicationInfo;
 import android.graphics.Color;
@@ -11,9 +11,7 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.yydcdut.demo.R;
 import com.yydcdut.sdlv.Menu;
 import com.yydcdut.sdlv.MenuItem;
 import com.yydcdut.sdlv.SlideAndDragListView;
@@ -44,7 +42,7 @@ public class DemoActivity extends AppCompatActivity implements SlideAndDragListV
     }
 
     public void initMenu() {
-        mMenu = new Menu((int) getResources().getDimension(R.dimen.slv_item_height) * 2, new ColorDrawable(Color.WHITE), true);
+        mMenu = new Menu((int) getResources().getDimension(R.dimen.slv_item_height), new ColorDrawable(Color.WHITE), true);
         mMenu.addItem(new MenuItem.Builder().setWidth((int) getResources().getDimension(R.dimen.slv_item_bg_btn_width))
                 .setBackground(new ColorDrawable(Color.RED))
                 .setText("One")
@@ -57,14 +55,14 @@ public class DemoActivity extends AppCompatActivity implements SlideAndDragListV
                 .setTextColor(Color.BLACK)
                 .setTextSize((int) getResources().getDimension(R.dimen.txt_size))
                 .build());
-        mMenu.addItem(new MenuItem.Builder().setWidth((int) getResources().getDimension(R.dimen.slv_item_bg_btn_width))
+        mMenu.addItem(new MenuItem.Builder().setWidth((int) getResources().getDimension(R.dimen.slv_item_bg_btn_width) + 30)
                 .setBackground(new ColorDrawable(Color.BLUE))
                 .setText("Three")
                 .setDirection(MenuItem.DIRECTION_RIGHT)
                 .setTextColor(Color.BLACK)
                 .setTextSize((int) getResources().getDimension(R.dimen.txt_size))
                 .build());
-        mMenu.addItem(new MenuItem.Builder().setWidth((int) getResources().getDimension(R.dimen.slv_item_bg_btn_width))
+        mMenu.addItem(new MenuItem.Builder().setWidth((int) getResources().getDimension(R.dimen.slv_item_bg_btn_width_img))
                 .setBackground(new ColorDrawable(Color.BLACK))
                 .setDirection(MenuItem.DIRECTION_RIGHT)
                 .setIcon(getResources().getDrawable(R.drawable.ic_launcher))
@@ -106,6 +104,7 @@ public class DemoActivity extends AppCompatActivity implements SlideAndDragListV
                 convertView = LayoutInflater.from(DemoActivity.this).inflate(R.layout.item_custom, null);
                 cvh.imgLogo = (ImageView) convertView.findViewById(R.id.img_item_edit);
                 cvh.txtName = (TextView) convertView.findViewById(R.id.txt_item_edit);
+                cvh.imgLogo2 = (ImageView) convertView.findViewById(R.id.img_item_edit2);
                 convertView.setTag(cvh);
             } else {
                 cvh = (CustomViewHolder) convertView.getTag();
@@ -113,18 +112,20 @@ public class DemoActivity extends AppCompatActivity implements SlideAndDragListV
             ApplicationInfo item = (ApplicationInfo) this.getItem(position);
             cvh.txtName.setText(item.loadLabel(getPackageManager()));
             cvh.imgLogo.setImageDrawable(item.loadIcon(getPackageManager()));
+            cvh.imgLogo2.setImageDrawable(item.loadIcon(getPackageManager()));
             return convertView;
         }
 
         class CustomViewHolder {
             public ImageView imgLogo;
             public TextView txtName;
+            public ImageView imgLogo2;
         }
     };
 
     @Override
     public void onListItemLongClick(View view, int position) {
-        Toast.makeText(DemoActivity.this, "onItemLongClick   position--->" + position, Toast.LENGTH_SHORT).show();
+//        Toast.makeText(DemoActivity.this, "onItemLongClick   position--->" + position, Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -139,22 +140,22 @@ public class DemoActivity extends AppCompatActivity implements SlideAndDragListV
 
     @Override
     public void onClick(View v, int position, int number, int direction) {
-        Toast.makeText(DemoActivity.this, "onClick   position--->" + position + "   number--->" + number + "  direction--->" + direction, Toast.LENGTH_SHORT).show();
+//        Toast.makeText(DemoActivity.this, "onClick   position--->" + position + "   number--->" + number + "  direction--->" + direction, Toast.LENGTH_SHORT).show();
     }
 
     @Override
     public void onListItemClick(View v, int position) {
-        Toast.makeText(DemoActivity.this, "onItemClick   position--->" + position, Toast.LENGTH_SHORT).show();
+//        Toast.makeText(DemoActivity.this, "onItemClick   position--->" + position, Toast.LENGTH_SHORT).show();
     }
 
     @Override
     public void onSlideOpen(View view, View parentView, int position, int direction) {
-        Toast.makeText(DemoActivity.this, "onSlideOpen   position--->" + position + "  direction--->" + direction, Toast.LENGTH_SHORT).show();
+//        Toast.makeText(DemoActivity.this, "onSlideOpen   position--->" + position + "  direction--->" + direction, Toast.LENGTH_SHORT).show();
     }
 
     @Override
     public void onSlideClose(View view, View parentView, int position, int direction) {
-        Toast.makeText(DemoActivity.this, "onSlideClose   position--->" + position + "  direction--->" + direction, Toast.LENGTH_SHORT).show();
+//        Toast.makeText(DemoActivity.this, "onSlideClose   position--->" + position + "  direction--->" + direction, Toast.LENGTH_SHORT).show();
     }
 
 }

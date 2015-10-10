@@ -1,15 +1,8 @@
 <resources>
-    <!-- Default screen margins, per the Android Design guidelines. -->
-    <dimen name="activity_horizontal_margin">16dp</dimen>
-    <dimen name="activity_vertical_margin">16dp</dimen>
+    <dimen name="slv_item_height">66dip</dimen>
 
-    <!-- swipe listview -->
-    <dimen name="slv_item_height">48dip</dimen>
-    <dimen name="slv_item_bg_width">48dip</dimen>
+    <dimen name="slv_item_bg_btn_width">48dip</dimen>
+    <dimen name="slv_item_bg_btn_width_img">100dip</dimen>
 
-    <dimen name="default_textSize">14sp</dimen>
-
-    <dimen name="slv_item_bg_btn_width">64dip</dimen>
-
-    <dimen name="txt_size">14sp</dimen>
+    <dimen name="txt_size">7sp</dimen>
 </resources>

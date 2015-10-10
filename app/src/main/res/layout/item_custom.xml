@@ -13,25 +13,28 @@
         android:layout_centerVertical="true"
         android:layout_marginLeft="16dp"
         android:layout_marginRight="16dp"
-        android:layout_marginStart="16dp"
-        android:alpha="0.54"/>
+        android:layout_marginStart="16dp"/>
 
     <TextView
         android:id="@+id/txt_item_edit"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="@dimen/slv_item_height"
+        android:layout_centerInParent="true"
         android:layout_centerVertical="true"
-        android:layout_marginEnd="8dp"
-        android:layout_marginLeft="16dp"
-        android:layout_marginRight="8dp"
-        android:layout_marginStart="16dp"
-        android:layout_toEndOf="@+id/img_item_edit"
-        android:layout_toRightOf="@+id/img_item_edit"
         android:alpha="0.87"
         android:gravity="center_vertical"
         android:lines="1"
-        android:maxLength="8"
         android:textColor="@android:color/black"
-        android:textSize="@dimen/txt_size"/>
+        android:textSize="14sp"/>
+
+    <ImageView
+        android:id="@+id/img_item_edit2"
+        android:layout_width="36dp"
+        android:layout_height="36dp"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginStart="16dp"/>
 
 </RelativeLayout>
