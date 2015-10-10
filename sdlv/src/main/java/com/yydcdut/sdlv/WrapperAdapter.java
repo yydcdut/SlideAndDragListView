@@ -90,36 +90,45 @@ abstract class WrapperAdapter implements WrapperListAdapter, ItemMainLayout.OnIt
             itemMainLayout = new ItemMainLayout(mContext);
             itemMainLayout.setParams(mMenu.getItemHeight(), mMenu.getTotalBtnLength(MenuItem.DIRECTION_LEFT),
                     mMenu.getTotalBtnLength(MenuItem.DIRECTION_RIGHT), mMenu.isWannaOver());
-            if (mMenu.getTotalBtnLength(MenuItem.DIRECTION_LEFT) > 0) {
-                itemMainLayout.getItemLeftBackGroundLayout().getBackGroundImage().setBackgroundDrawable(mMenu.getItemBackGroundDrawable());
-                for (int i = 0; i < mMenu.getMenuItems(MenuItem.DIRECTION_LEFT).size(); i++) {
-                    View v = itemMainLayout.getItemLeftBackGroundLayout().addMenuItem(mMenu.getMenuItems(MenuItem.DIRECTION_LEFT).get(i));
-                    v.setOnClickListener(this);
-                    v.setClickable(false);
-                    v.setTag(TAG_LEFT, i);
-                }
-            } else {
-                itemMainLayout.getItemLeftBackGroundLayout().setVisibility(View.GONE);
-            }
-            if (mMenu.getTotalBtnLength(MenuItem.DIRECTION_RIGHT) > 0) {
-                itemMainLayout.getItemRightBackGroundLayout().getBackGroundImage().setBackgroundDrawable(mMenu.getItemBackGroundDrawable());
-                for (int i = 0; i < mMenu.getMenuItems(MenuItem.DIRECTION_RIGHT).size(); i++) {
-                    View v = itemMainLayout.getItemRightBackGroundLayout().addMenuItem(mMenu.getMenuItems(MenuItem.DIRECTION_RIGHT).get(i));
-                    v.setOnClickListener(this);
-                    v.setClickable(false);
-                    v.setTag(TAG_RIGHT, i);
-                }
-            } else {
-                itemMainLayout.getItemRightBackGroundLayout().setVisibility(View.GONE);
-            }
+            createMenu(itemMainLayout);
             itemMainLayout.getItemCustomLayout().getBackGroundImage().setBackgroundDrawable(mMenu.getItemBackGroundDrawable());
             itemMainLayout.setOnItemSlideListenerProxy(this);
             itemMainLayout.getItemCustomLayout().addCustomView(contentView);
         } else {
             itemMainLayout = (ItemMainLayout) convertView;
-            View contentView = mAdapter.getView(position, itemMainLayout.getItemCustomLayout().getCustomView(), parent);
+            mAdapter.getView(position, itemMainLayout.getItemCustomLayout().getCustomView(), parent);
         }
         return itemMainLayout;
+    }
+
+    /**
+     * 创建Menu
+     *
+     * @param itemMainLayout
+     */
+    private void createMenu(ItemMainLayout itemMainLayout) {
+        if (mMenu.getTotalBtnLength(MenuItem.DIRECTION_LEFT) > 0) {
+            itemMainLayout.getItemLeftBackGroundLayout().getBackGroundImage().setBackgroundDrawable(mMenu.getItemBackGroundDrawable());
+            for (int i = 0; i < mMenu.getMenuItems(MenuItem.DIRECTION_LEFT).size(); i++) {
+                View v = itemMainLayout.getItemLeftBackGroundLayout().addMenuItem(mMenu.getMenuItems(MenuItem.DIRECTION_LEFT).get(i));
+                v.setOnClickListener(this);
+                v.setClickable(false);
+                v.setTag(TAG_LEFT, i);
+            }
+        } else {
+            itemMainLayout.getItemLeftBackGroundLayout().setVisibility(View.GONE);
+        }
+        if (mMenu.getTotalBtnLength(MenuItem.DIRECTION_RIGHT) > 0) {
+            itemMainLayout.getItemRightBackGroundLayout().getBackGroundImage().setBackgroundDrawable(mMenu.getItemBackGroundDrawable());
+            for (int i = 0; i < mMenu.getMenuItems(MenuItem.DIRECTION_RIGHT).size(); i++) {
+                View v = itemMainLayout.getItemRightBackGroundLayout().addMenuItem(mMenu.getMenuItems(MenuItem.DIRECTION_RIGHT).get(i));
+                v.setOnClickListener(this);
+                v.setClickable(false);
+                v.setTag(TAG_RIGHT, i);
+            }
+        } else {
+            itemMainLayout.getItemRightBackGroundLayout().setVisibility(View.GONE);
+        }
     }
 
 

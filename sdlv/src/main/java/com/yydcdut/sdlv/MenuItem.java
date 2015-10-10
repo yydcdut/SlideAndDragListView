@@ -1,11 +1,12 @@
 package com.yydcdut.sdlv;
 
+import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 
 /**
  * Created by yuyidong on 15/10/8.
  */
-public class MenuItem {
+public final class MenuItem {
     public static final int DIRECTION_LEFT = 1;
     public static final int DIRECTION_RIGHT = -1;
 
@@ -28,14 +29,13 @@ public class MenuItem {
     }
 
     public static class Builder {
-        //todo 默认值
-        private int width;
-        private String text;
-        private int textSize;
-        private int textColor;
-        private Drawable icon;
-        private Drawable background;
-        private int direction = 1;
+        private int width = 50;
+        private String text = null;
+        private int textSize = 14;
+        private int textColor = 0xff000000;
+        private Drawable icon = null;
+        private Drawable background = new ColorDrawable(0xffffffff);
+        private int direction = MenuItem.DIRECTION_LEFT;
 
         public Builder setWidth(int width) {
             this.width = width;
