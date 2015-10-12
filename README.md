@@ -167,9 +167,9 @@ SlideAndDragListView.OnSlideListener() {
         });
 ```
 
-`public void onSlideOpen(View view, int position)`. The parameter `view` is the ListView item that is slide open, and the parameter `position` is the position of the view in the list.
+`public void onSlideOpen(View view, View parentView, int position, int direction)`. The parameter `view` is the ListView item that is slide open, `parentView` here is SDLV, `position` is the position of the view in the list, and the parameter `direction` is the item slided direction.
 
-`public void onSlideClose(View view, int position)`. The parameter `view` is the ListView item that is slide close, and the parameter `position` is the position of the view in the list.
+`public void onSlideClose(View view, View parentView, int position, int direction)`. The parameter `view` is the ListView item that is slide close,`parentView` here is SDLV, `position` is the position of the view in the list, and the parameter `direction` is the item slided direction.
 
 # Permission
 
