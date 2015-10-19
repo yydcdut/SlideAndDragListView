@@ -15,7 +15,7 @@ import java.util.List;
 /**
  * Created by yuyidong on 15/9/30.
  */
-class DragListView<T> extends ListView implements View.OnDragListener {
+public class DragListView<T> extends ListView implements View.OnDragListener {
     /* 判断drag往上还是往下 */
     private boolean mUp = false;
     /* 当前drag所在ListView中的位置 */

@@ -23,7 +23,7 @@ import java.util.List;
  */
 public class DemoActivity extends AppCompatActivity implements SlideAndDragListView.OnListItemLongClickListener,
         SlideAndDragListView.OnDragListener, SlideAndDragListView.OnSlideListener,
-        SlideAndDragListView.OnListItemClickListener, SlideAndDragListView.OnButtonClickListener {
+        SlideAndDragListView.OnListItemClickListener, SlideAndDragListView.OnMenuItemClickListener {
 
     private Menu mMenu;
     private List<ApplicationInfo> mAppList;
@@ -77,7 +77,7 @@ public class DemoActivity extends AppCompatActivity implements SlideAndDragListV
         listView.setOnDragListener(this, mAppList);
         listView.setOnListItemClickListener(this);
         listView.setOnSlideListener(this);
-        listView.setOnButtonClickListener(this);
+        listView.setOnMenuItemClickListener(this);
     }
 
     private BaseAdapter mAdapter = new BaseAdapter() {
@@ -144,11 +144,6 @@ public class DemoActivity extends AppCompatActivity implements SlideAndDragListV
     }
 
     @Override
-    public void onClick(View v, int position, int number, int direction) {
-//        Toast.makeText(DemoActivity.this, "onClick   position--->" + position + "   number--->" + number + "  direction--->" + direction, Toast.LENGTH_SHORT).show();
-    }
-
-    @Override
     public void onListItemClick(View v, int position) {
 //        Toast.makeText(DemoActivity.this, "onItemClick   position--->" + position, Toast.LENGTH_SHORT).show();
     }
@@ -163,4 +158,25 @@ public class DemoActivity extends AppCompatActivity implements SlideAndDragListV
 //        Toast.makeText(DemoActivity.this, "onSlideClose   position--->" + position + "  direction--->" + direction, Toast.LENGTH_SHORT).show();
     }
 
+    @Override
+    public boolean onMenuItemClick(View v, int itemPosition, int buttonPosition, int direction) {
+        switch (direction) {
+            case MenuItem.DIRECTION_LEFT:
+                switch (buttonPosition) {
+                    case 0:
+                        return false;
+                    case 1:
+                        return true;
+                }
+                break;
+            case MenuItem.DIRECTION_RIGHT:
+                switch (buttonPosition) {
+                    case 0:
+                        return true;
+                    case 1:
+                        return false;
+                }
+        }
+        return false;
+    }
 }
