@@ -73,20 +73,20 @@ listView.setOnSlideListener(new SlideAndDragListView.OnSlideListener() {
 
             }
         });
-listView.setOnButtonClickListener(new SlideAndDragListView.OnButtonClickListener() {
+listView.setOnMenuItemClickListener(new SlideAndDragListView.OnMenuItemClickListener() {
             @Override
-            public void onClick(View v, int itemPosition, int buttonPosition, int direction) {
+            public boolean onMenuItemClick(View v, int itemPosition, int buttonPosition, int direction) {
                 switch (direction) {
                     case MenuItem.DIRECTION_LEFT:
                         switch (buttonPosition) {
                             case 0://One
-                                break;
+                                return true;
                         }
                         break;
                     case MenuItem.DIRECTION_RIGHT:
                         switch (buttonPosition) {
                             case 0://icon
-                                break;
+                                return false;
                         }
                         break;
                 }
