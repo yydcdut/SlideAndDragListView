@@ -8,14 +8,6 @@ A ListView that you can slide(or swipe) the item, drag the item and drop it to a
 
 Demo: <a href="https://github.com/yydcdut/SlideAndDragListView/blob/master/apk/sdlv.apk?raw=true">DOWNLOAD</a>
 
-# Binaries
-
-``` groovy
-compile 'com.yydcdut.sdlv:sdlv:0.2@aar'
-```
-
-[ ![Download](https://api.bintray.com/packages/yydcdut/maven/sdlv/images/download.svg) ](https://bintray.com/yydcdut/maven/sdlv/_latestVersion)
-
 # Overview
 
 SlideAndDragListView (SDLV) is an extension of the Android ListView that enables slide and drag-and-drop reordering of list items.
@@ -30,6 +22,18 @@ SlideAndDragListView (SDLV) is an extension of the Android ListView that enables
 6. so on...
 
 SlideAndDragListView is useful for all kinds of prioritized lists: favorites, playlists, checklists, etc. Would love to hear about your use case or app by email. I hope you find it useful; and please, help me improve the thing!
+
+# Binaries
+
+``` groovy
+compile 'com.yydcdut.sdlv:sdlv:0.2@aar'
+```
+
+[ ![Download](https://api.bintray.com/packages/yydcdut/maven/sdlv/images/download.svg) ](https://bintray.com/yydcdut/maven/sdlv/_latestVersion)
+
+Or, Download jar: <a href="https://github.com/yydcdut/SlideAndDragListView/blob/master/aar/sdlv-0.2.aar?raw=true">DOWNLOAD</a>
+
+Or, download aar: <a href="https://github.com/yydcdut/SlideAndDragListView/blob/master/jar/sdlv-0.2.jar?raw=true">DOWNLOAD</a>
 
 # Widget Usage
 

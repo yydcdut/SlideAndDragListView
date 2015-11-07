@@ -6,16 +6,6 @@
 
 Demo: <a href="https://github.com/yydcdut/SlideAndDragListView/blob/master/apk/sdlv.apk?raw=true">下载</a>
 
-# Binaries
-
-``` groovy
-compile 'com.yydcdut.sdlv:sdlv:0.2@aar'
-```
-
-[ ![Download](https://api.bintray.com/packages/yydcdut/maven/sdlv/images/download.svg) ](https://bintray.com/yydcdut/maven/sdlv/_latestVersion)
-
-
-
 # 简介
 
 SlideAndDragListView (SDLV) 继承与ListView，SDLV可以向左或者向右滑动Item，并且可以拖放item达到排序的目的。
@@ -30,6 +20,18 @@ SlideAndDragListView (SDLV) 继承与ListView，SDLV可以向左或者向右滑�
 6. 等等......
 
 SlideAndDragListView 用于各种优先级列表：收藏夹，播放列表，清单等。我希望你觉得它有请，同时，如果发现bug或者不人性化的地方，或者有什么建议，请麻烦告诉我或者帮助我！
+
+# 引用
+
+``` groovy
+compile 'com.yydcdut.sdlv:sdlv:0.2@aar'
+```
+
+[ ![Download](https://api.bintray.com/packages/yydcdut/maven/sdlv/images/download.svg) ](https://bintray.com/yydcdut/maven/sdlv/_latestVersion)
+
+或者, 下载jar包：<a href="https://github.com/yydcdut/SlideAndDragListView/blob/master/aar/sdlv-0.2.aar?raw=true">下载</a>
+
+或者，下载aar包：<a href="https://github.com/yydcdut/SlideAndDragListView/blob/master/jar/sdlv-0.2.jar?raw=true">下载</a>
 
 # 控件的使用
 
@@ -176,8 +178,6 @@ SlideAndDragListView.OnSlideListener() {
 ``` xml
 <uses-permission android:name="android.permission.VIBRATE"/>
 ```
-
-
 
 
 
