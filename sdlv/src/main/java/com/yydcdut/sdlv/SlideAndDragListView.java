@@ -315,7 +315,7 @@ public class SlideAndDragListView<T> extends DragListView<T> implements WrapperA
          * @param itemPosition   第几个item
          * @param buttonPosition 第几个button
          * @param direction      方向
-         * @return true--->复原  false--->不动
+         * @return true:复原  false:不动
          */
         boolean onMenuItemClick(View v, int itemPosition, int buttonPosition, int direction);
     }
