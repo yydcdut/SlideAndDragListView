@@ -1,7 +1,5 @@
 # SlideAndDragListView
 
-[ ![Download](https://api.bintray.com/packages/yydcdut/maven/sdlv/images/download.svg) ](https://bintray.com/yydcdut/maven/sdlv/_latestVersion)
-
 A ListView that you can slide(or swipe) the item, drag the item and drop it to another position.
 
 <img width="300" height="553" src="https://raw.githubusercontent.com/yydcdut/SlideAndDragListView/master/gif/v1.1.gif" />
@@ -9,6 +7,14 @@ A ListView that you can slide(or swipe) the item, drag the item and drop it to a
 中文：<a href="https://github.com/yydcdut/SlideAndDragListView/blob/master/CHINESE.md">CHINESE.md</a>
 
 Demo: <a href="https://github.com/yydcdut/SlideAndDragListView/blob/master/apk/sdlv.apk?raw=true">DOWNLOAD</a>
+
+# Binaries
+
+``` groovy
+compile 'com.yydcdut.sdlv:sdlv:0.2@aar'
+```
+
+[ ![Download](https://api.bintray.com/packages/yydcdut/maven/sdlv/images/download.svg) ](https://bintray.com/yydcdut/maven/sdlv/_latestVersion)
 
 # Overview
 

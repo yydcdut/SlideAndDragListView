@@ -1,12 +1,20 @@
 # SlideAndDragListView
 
-[ ![Download](https://api.bintray.com/packages/yydcdut/maven/sdlv/images/download.svg) ](https://bintray.com/yydcdut/maven/sdlv/_latestVersion)
-
 一个可以左右滑动item和拖放item的ListView。
 
 <img width="300" height="553" src="https://raw.githubusercontent.com/yydcdut/SlideAndDragListView/master/gif/v1.1.gif" />
 
 Demo: <a href="https://github.com/yydcdut/SlideAndDragListView/blob/master/apk/sdlv.apk?raw=true">下载</a>
+
+# Binaries
+
+``` groovy
+compile 'com.yydcdut.sdlv:sdlv:0.2@aar'
+```
+
+[ ![Download](https://api.bintray.com/packages/yydcdut/maven/sdlv/images/download.svg) ](https://bintray.com/yydcdut/maven/sdlv/_latestVersion)
+
+
 
 # 简介
 
@@ -29,7 +37,7 @@ SlideAndDragListView 用于各种优先级列表：收藏夹，播放列表，�
 
 ### 步骤1
 
-- 在layout的xml文件中添加SlideAndDragListView 
+- 在layout的xml文件中添加SlideAndDragListView
 
 ``` xml
 <com.yydcdut.sdlv.SlideAndDragListView
@@ -168,7 +176,6 @@ SlideAndDragListView.OnSlideListener() {
 ``` xml
 <uses-permission android:name="android.permission.VIBRATE"/>
 ```
-
 
 
 
