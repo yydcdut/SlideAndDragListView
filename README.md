@@ -25,15 +25,21 @@ SlideAndDragListView is useful for all kinds of prioritized lists: favorites, pl
 
 # Binaries
 
+[ ![Download](https://api.bintray.com/packages/yydcdut/maven/sdlv/images/download.svg) ](https://bintray.com/yydcdut/maven/sdlv/_latestVersion)
+
+## Gradle
+
 ``` groovy
 compile 'com.yydcdut.sdlv:sdlv:0.2@aar'
 ```
 
-[ ![Download](https://api.bintray.com/packages/yydcdut/maven/sdlv/images/download.svg) ](https://bintray.com/yydcdut/maven/sdlv/_latestVersion)
+## Jar
 
-Or, Download jar: <a href="https://github.com/yydcdut/SlideAndDragListView/blob/master/aar/sdlv-0.2.aar?raw=true">DOWNLOAD</a>
+<a href="https://github.com/yydcdut/SlideAndDragListView/blob/master/aar/sdlv-0.2.aar?raw=true">DOWNLOAD</a>
 
-Or, download aar: <a href="https://github.com/yydcdut/SlideAndDragListView/blob/master/jar/sdlv-0.2.jar?raw=true">DOWNLOAD</a>
+## aar
+
+<a href="https://github.com/yydcdut/SlideAndDragListView/blob/master/jar/sdlv-0.2.jar?raw=true">DOWNLOAD</a>
 
 # Widget Usage
 

@@ -23,15 +23,21 @@ SlideAndDragListView 用于各种优先级列表：收藏夹，播放列表，�
 
 # 引用
 
+[ ![Download](https://api.bintray.com/packages/yydcdut/maven/sdlv/images/download.svg) ](https://bintray.com/yydcdut/maven/sdlv/_latestVersion)
+
+## Gradle
+
 ``` groovy
 compile 'com.yydcdut.sdlv:sdlv:0.2@aar'
 ```
 
-[ ![Download](https://api.bintray.com/packages/yydcdut/maven/sdlv/images/download.svg) ](https://bintray.com/yydcdut/maven/sdlv/_latestVersion)
+## Jar
 
-或者, 下载jar包：<a href="https://github.com/yydcdut/SlideAndDragListView/blob/master/aar/sdlv-0.2.aar?raw=true">下载</a>
+<a href="https://github.com/yydcdut/SlideAndDragListView/blob/master/aar/sdlv-0.2.aar?raw=true">下载</a>
 
-或者，下载aar包：<a href="https://github.com/yydcdut/SlideAndDragListView/blob/master/jar/sdlv-0.2.jar?raw=true">下载</a>
+## aar
+
+<a href="https://github.com/yydcdut/SlideAndDragListView/blob/master/jar/sdlv-0.2.jar?raw=true">下载</a>
 
 # 控件的使用
 
@@ -178,8 +184,6 @@ SlideAndDragListView.OnSlideListener() {
 ``` xml
 <uses-permission android:name="android.permission.VIBRATE"/>
 ```
-
-
 
 
 
