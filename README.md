@@ -35,11 +35,11 @@ compile 'com.yydcdut.sdlv:sdlv:0.2.1@aar'
 
 ## Jar
 
-<a href="https://github.com/yydcdut/SlideAndDragListView/blob/master/aar/sdlv-0.2.aar?raw=true">DOWNLOAD</a>
+<a href="https://github.com/yydcdut/SlideAndDragListView/blob/master/aar/sdlv.aar?raw=true">DOWNLOAD</a>
 
 ## aar
 
-<a href="https://github.com/yydcdut/SlideAndDragListView/blob/master/jar/sdlv-0.2.jar?raw=true">DOWNLOAD</a>
+<a href="https://github.com/yydcdut/SlideAndDragListView/blob/master/jar/sdlv.jar?raw=true">DOWNLOAD</a>
 
 # Widget Usage
 

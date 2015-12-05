@@ -33,11 +33,11 @@ compile 'com.yydcdut.sdlv:sdlv:0.2.1@aar'
 
 ## Jar
 
-<a href="https://github.com/yydcdut/SlideAndDragListView/blob/master/aar/sdlv-0.2.aar?raw=true">下载</a>
+<a href="https://github.com/yydcdut/SlideAndDragListView/blob/master/aar/sdlv.aar?raw=true">下载</a>
 
 ## aar
 
-<a href="https://github.com/yydcdut/SlideAndDragListView/blob/master/jar/sdlv-0.2.jar?raw=true">下载</a>
+<a href="https://github.com/yydcdut/SlideAndDragListView/blob/master/jar/sdlv.jar?raw=true">下载</a>
 
 # 控件的使用
 
