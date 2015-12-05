@@ -9,6 +9,8 @@ import android.widget.Scroller;
 
 /**
  * Created by yuyidong on 15/9/24.
+ * todo fingerLeftAndRightMove()这个方法是可以优化的
+ * todo setDrawable compact
  */
 class ItemMainLayout extends FrameLayout {
     private static final int INTENTION_LEFT_OPEN = 1;
@@ -25,6 +27,7 @@ class ItemMainLayout extends FrameLayout {
     private int mScrollState = SCROLL_STATE_CLOSE;
     /* 时间 */
     private static final int SCROLL_TIME = 500;//500ms
+    private static final int SCROLL_BACK = 250;//250MS
     private static final int SCROLL_QUICK_TIME = 200;//200ms
     /* 控件高度 */
     private int mHeight;
@@ -313,7 +316,7 @@ class ItemMainLayout extends FrameLayout {
      * 归位
      */
     protected void scrollBack() {
-        mScroller.startScroll(mItemCustomLayout.getScrollX(), 0, -mItemCustomLayout.getScrollX(), 0, SCROLL_TIME);
+        mScroller.startScroll(mItemCustomLayout.getScrollX(), 0, -mItemCustomLayout.getScrollX(), 0, SCROLL_BACK);
         postInvalidate();
     }
 
