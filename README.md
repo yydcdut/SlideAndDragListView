@@ -25,12 +25,12 @@ SlideAndDragListView is useful for all kinds of prioritized lists: favorites, pl
 
 # Binaries
 
-[ ![Download](https://api.bintray.com/packages/yydcdut/maven/sdlv/images/download.svg) ](https://bintray.com/yydcdut/maven/sdlv/_latestVersion)
+ [ ![Download](https://api.bintray.com/packages/yydcdut/maven/sdlv/images/download.svg) ](https://bintray.com/yydcdut/maven/sdlv/_latestVersion)
 
 ## Gradle
 
 ``` groovy
-compile 'com.yydcdut.sdlv:sdlv:0.2@aar'
+compile 'com.yydcdut.sdlv:sdlv:0.2.1@aar'
 ```
 
 ## Jar

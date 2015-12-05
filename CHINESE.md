@@ -23,12 +23,12 @@ SlideAndDragListView 用于各种优先级列表：收藏夹，播放列表，�
 
 # 引用
 
-[ ![Download](https://api.bintray.com/packages/yydcdut/maven/sdlv/images/download.svg) ](https://bintray.com/yydcdut/maven/sdlv/_latestVersion)
-
+ [ ![Download](https://api.bintray.com/packages/yydcdut/maven/sdlv/images/download.svg) ](https://bintray.com/yydcdut/maven/sdlv/_latestVersion)
+ 
 ## Gradle
 
 ``` groovy
-compile 'com.yydcdut.sdlv:sdlv:0.2@aar'
+compile 'com.yydcdut.sdlv:sdlv:0.2.1@aar'
 ```
 
 ## Jar
