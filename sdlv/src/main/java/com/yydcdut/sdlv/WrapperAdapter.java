@@ -12,7 +12,7 @@ import android.widget.WrapperListAdapter;
  * Created by yuyidong on 15/9/28.
  */
 abstract class WrapperAdapter implements WrapperListAdapter, ItemMainLayout.OnItemSlideListenerProxy, View.OnClickListener,
-        AbsListView.OnScrollListener {
+        AbsListView.OnScrollListener, ItemMainLayout.OnItemDeleteListenerProxy {
     private static final int TAG_LEFT = 3 << 24;
     private static final int TAG_RIGHT = 4 << 24;
     /* 上下文 */
@@ -131,7 +131,6 @@ abstract class WrapperAdapter implements WrapperListAdapter, ItemMainLayout.OnIt
         }
     }
 
-
     @Override
     public int getItemViewType(int position) {
         return mAdapter.getItemViewType(position);
@@ -234,12 +233,26 @@ abstract class WrapperAdapter implements WrapperListAdapter, ItemMainLayout.OnIt
     @Override
     public void onClick(View v) {
         if (mOnAdapterMenuClickListenerProxy != null) {
-            boolean isScrollBack = mOnAdapterMenuClickListenerProxy.onMenuItemClick(v, mSlideItemPosition,
+            int scroll = mOnAdapterMenuClickListenerProxy.onMenuItemClick(v, mSlideItemPosition,
                     (Integer) (v.getTag(TAG_LEFT) != null ? v.getTag(TAG_LEFT) : v.getTag(TAG_RIGHT)),
                     v.getTag(TAG_LEFT) != null ? MenuItem.DIRECTION_LEFT : MenuItem.DIRECTION_RIGHT);
-            if (isScrollBack) {
-                //归位
-                returnSlideItemPosition();
+            switch (scroll) {
+                case Menu.ITEM_NOTHING:
+                    break;
+                case Menu.ITEM_SCROLL_BACK:
+                    //归位
+                    returnSlideItemPosition();
+                    break;
+                case Menu.ITEM_DELETE_FROM_BOTTOM_TO_TOP:
+                    if (mSlideItemPosition != -1) {
+                        ItemMainLayout itemMainLayout = (ItemMainLayout) mListView.getChildAt(mSlideItemPosition - mListView.getFirstVisiblePosition());
+                        if (itemMainLayout != null) {
+                            itemMainLayout.deleteItem(this);
+                        }
+                    }
+                    break;
+                default:
+                    break;
             }
         }
     }
@@ -258,8 +271,14 @@ abstract class WrapperAdapter implements WrapperListAdapter, ItemMainLayout.OnIt
         onScrollProxy(view, firstVisibleItem, visibleItemCount, totalItemCount);
     }
 
+    @Override
+    public void onDelete(View view) {
+        onItemDelete(view, mSlideItemPosition);
+        mSlideItemPosition = -1;
+    }
+
     public interface OnAdapterMenuClickListenerProxy {
-        boolean onMenuItemClick(View v, int itemPosition, int buttonPosition, int direction);
+        int onMenuItemClick(View v, int itemPosition, int buttonPosition, int direction);
     }
 
     public interface OnAdapterSlideListenerProxy {
@@ -271,5 +290,7 @@ abstract class WrapperAdapter implements WrapperListAdapter, ItemMainLayout.OnIt
     public abstract void onScrollStateChangedProxy(AbsListView view, int scrollState);
 
     public abstract void onScrollProxy(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount);
+
+    public abstract void onItemDelete(View view, int position);
 
 }

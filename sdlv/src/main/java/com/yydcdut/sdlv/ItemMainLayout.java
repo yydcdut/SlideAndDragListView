@@ -4,6 +4,8 @@ import android.content.Context;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.Transformation;
 import android.widget.FrameLayout;
 import android.widget.Scroller;
 
@@ -29,6 +31,7 @@ class ItemMainLayout extends FrameLayout {
     private static final int SCROLL_TIME = 500;//500ms
     private static final int SCROLL_BACK = 250;//250MS
     private static final int SCROLL_QUICK_TIME = 200;//200ms
+    private static final int SCROLL_DELETE_TIEM = 300;//300ms
     /* 控件高度 */
     private int mHeight;
     /* 子控件中button的总宽度 */
@@ -303,6 +306,51 @@ class ItemMainLayout extends FrameLayout {
                 ev.getY() - mYDown < 25 && ev.getY() - mYDown > -25);
     }
 
+    /**
+     * 删除Item
+     */
+    public void deleteItem(final OnItemDeleteListenerProxy onItemDeleteListenerProxy) {
+        scrollBack();
+        Animation.AnimationListener animationListener = new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
+
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                if (onItemDeleteListenerProxy != null) {
+                    onItemDeleteListenerProxy.onDelete(ItemMainLayout.this);
+                }
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+
+            }
+        };
+        final int originHeight = this.getMeasuredHeight();
+        Animation animation = new Animation() {
+            @Override
+            protected void applyTransformation(float interpolatedTime, Transformation t) {
+                if (interpolatedTime == 1.0f) {
+                    mHeight = originHeight;
+                } else {
+                    mHeight = originHeight - (int) (originHeight * interpolatedTime);
+                }
+                ItemMainLayout.this.requestLayout();
+            }
+
+            @Override
+            public boolean willChangeBounds() {
+                return true;
+            }
+        };
+        animation.setAnimationListener(animationListener);
+        animation.setDuration(SCROLL_DELETE_TIEM);
+        startAnimation(animation);
+    }
+
     @Override
     public void computeScroll() {
         if (mScroller.computeScrollOffset()) {
@@ -333,5 +381,9 @@ class ItemMainLayout extends FrameLayout {
         void onSlideOpen(View view, int direction);
 
         void onSlideClose(View view, int direction);
+    }
+
+    protected interface OnItemDeleteListenerProxy {
+        void onDelete(View view);
     }
 }

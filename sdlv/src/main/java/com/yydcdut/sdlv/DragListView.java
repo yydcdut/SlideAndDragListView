@@ -25,9 +25,9 @@ public class DragListView<T> extends ListView implements View.OnDragListener {
     /* 之前之前drag所在ListView中的位置 */
     private int mBeforeBeforePosition;
     /* 适配器 */
-    private BaseAdapter mSDAdapter;
+    protected BaseAdapter mSDAdapter;
     /* 数据 */
-    private List<T> mDataList;
+    protected List<T> mDataList;
     /* 监听器 */
     private OnDragListener mOnDragListener;
 
@@ -183,8 +183,8 @@ public class DragListView<T> extends ListView implements View.OnDragListener {
             view.startDrag(data, new View.DragShadowBuilder(view), null, 0);
             mOnDragListener.onDragViewStart(position);
             view.getItemCustomLayout().getBackGroundImage().setVisibility(VISIBLE);
-            view.getItemLeftBackGroundLayout().setVisibility(VISIBLE);
-            view.getItemRightBackGroundLayout().setVisibility(VISIBLE);
+//            view.getItemLeftBackGroundLayout().setVisibility(VISIBLE);
+//            view.getItemRightBackGroundLayout().setVisibility(VISIBLE);
         }
     }
 

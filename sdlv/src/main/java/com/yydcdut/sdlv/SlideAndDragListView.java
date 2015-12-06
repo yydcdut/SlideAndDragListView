@@ -45,6 +45,7 @@ public class SlideAndDragListView<T> extends DragListView<T> implements WrapperA
     private OnMenuItemClickListener mOnMenuItemClickListener;
     private OnListItemLongClickListener mOnListItemLongClickListener;
     private OnListItemClickListener mOnListItemClickListener;
+    private OnItemDeleteListener mOnItemDeleteListener;
 
     public SlideAndDragListView(Context context) {
         this(context, null);
@@ -224,11 +225,12 @@ public class SlideAndDragListView<T> extends DragListView<T> implements WrapperA
     }
 
     @Override
-    public void setAdapter(ListAdapter adapter) {
+    public void setAdapter(final ListAdapter adapter) {
         if (mMenu == null) {
             throw new IllegalArgumentException("先设置Menu");
         }
         mWrapperAdapter = new WrapperAdapter(getContext(), this, adapter, mMenu) {
+
             @Override
             public void onScrollStateChangedProxy(AbsListView view, int scrollState) {
                 if (scrollState == WrapperAdapter.SCROLL_STATE_IDLE) {
@@ -242,6 +244,14 @@ public class SlideAndDragListView<T> extends DragListView<T> implements WrapperA
             public void onScrollProxy(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
 
             }
+
+            @Override
+            public void onItemDelete(View view, int position) {
+                if (mOnItemDeleteListener != null){
+                    mOnItemDeleteListener.onItemDelete(view,position);
+                }
+            }
+
         };
         mWrapperAdapter.setOnAdapterSlideListenerProxy(this);
         mWrapperAdapter.setOnAdapterMenuClickListenerProxy(this);
@@ -315,17 +325,17 @@ public class SlideAndDragListView<T> extends DragListView<T> implements WrapperA
          * @param itemPosition   第几个item
          * @param buttonPosition 第几个button
          * @param direction      方向
-         * @return true:复原  false:不动
+         * @return 参考Menu的几个常量
          */
-        boolean onMenuItemClick(View v, int itemPosition, int buttonPosition, int direction);
+        int onMenuItemClick(View v, int itemPosition, int buttonPosition, int direction);
     }
 
     @Override
-    public boolean onMenuItemClick(View v, int itemPosition, int buttonPosition, int direction) {
+    public int onMenuItemClick(View v, int itemPosition, int buttonPosition, int direction) {
         if (mOnMenuItemClickListener != null) {
             return mOnMenuItemClickListener.onMenuItemClick(v, itemPosition, buttonPosition, direction);
         }
-        return false;
+        return Menu.ITEM_NOTHING;
     }
 
     @Deprecated
@@ -368,6 +378,14 @@ public class SlideAndDragListView<T> extends DragListView<T> implements WrapperA
      */
     public interface OnListItemLongClickListener {
         void onListItemLongClick(View view, int position);
+    }
+
+    public void setOnItemDeleteListener(OnItemDeleteListener onItemDeleteListener) {
+        mOnItemDeleteListener = onItemDeleteListener;
+    }
+
+    public interface OnItemDeleteListener{
+        void onItemDelete(View view,int position);
     }
 
 }

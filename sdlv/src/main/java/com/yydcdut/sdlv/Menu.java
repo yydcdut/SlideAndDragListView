@@ -9,6 +9,10 @@ import java.util.List;
  * Created by yuyidong on 15/10/8.
  */
 public final class Menu {
+    public static final int ITEM_NOTHING = 0;
+    public static final int ITEM_SCROLL_BACK = 1;
+    public static final int ITEM_DELETE_FROM_BOTTOM_TO_TOP = 2;
+
     private List<MenuItem> mLeftMenuItems;
     private List<MenuItem> mRightMenuItems;
 

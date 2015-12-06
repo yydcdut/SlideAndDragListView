@@ -24,7 +24,8 @@ import java.util.List;
  */
 public class DemoActivity extends AppCompatActivity implements SlideAndDragListView.OnListItemLongClickListener,
         SlideAndDragListView.OnDragListener, SlideAndDragListView.OnSlideListener,
-        SlideAndDragListView.OnListItemClickListener, SlideAndDragListView.OnMenuItemClickListener {
+        SlideAndDragListView.OnListItemClickListener, SlideAndDragListView.OnMenuItemClickListener,
+        SlideAndDragListView.OnItemDeleteListener {
 
     private Menu mMenu;
     private List<ApplicationInfo> mAppList;
@@ -79,6 +80,7 @@ public class DemoActivity extends AppCompatActivity implements SlideAndDragListV
         listView.setOnListItemClickListener(this);
         listView.setOnSlideListener(this);
         listView.setOnMenuItemClickListener(this);
+        listView.setOnItemDeleteListener(this);
     }
 
     private BaseAdapter mAdapter = new BaseAdapter() {
@@ -160,24 +162,30 @@ public class DemoActivity extends AppCompatActivity implements SlideAndDragListV
     }
 
     @Override
-    public boolean onMenuItemClick(View v, int itemPosition, int buttonPosition, int direction) {
+    public int onMenuItemClick(View v, int itemPosition, int buttonPosition, int direction) {
         switch (direction) {
             case MenuItem.DIRECTION_LEFT:
                 switch (buttonPosition) {
                     case 0:
-                        return false;
+                        return Menu.ITEM_NOTHING;
                     case 1:
-                        return true;
+                        return Menu.ITEM_SCROLL_BACK;
                 }
                 break;
             case MenuItem.DIRECTION_RIGHT:
                 switch (buttonPosition) {
                     case 0:
-                        return true;
+                        return Menu.ITEM_SCROLL_BACK;
                     case 1:
-                        return false;
+                        return Menu.ITEM_DELETE_FROM_BOTTOM_TO_TOP;
                 }
         }
-        return false;
+        return Menu.ITEM_NOTHING;
+    }
+
+    @Override
+    public void onItemDelete(View view, int position) {
+        mAppList.remove(position);
+        mAdapter.notifyDataSetChanged();
     }
 }
