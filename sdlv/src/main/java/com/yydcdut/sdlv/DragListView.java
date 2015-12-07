@@ -133,12 +133,6 @@ public class DragListView<T> extends ListView implements View.OnDragListener {
      * @param itemMainLayout
      */
     private void setItemVisible(ItemMainLayout itemMainLayout) {
-//        if (itemMainLayout.getItemLeftBackGroundLayout().getVisibility() != View.VISIBLE) {
-//            itemMainLayout.getItemLeftBackGroundLayout().setVisibility(View.VISIBLE);
-//        }
-//        if (itemMainLayout.getItemRightBackGroundLayout().getVisibility() != View.VISIBLE) {
-//            itemMainLayout.getItemRightBackGroundLayout().setVisibility(View.VISIBLE);
-//        }
         if (itemMainLayout.getItemCustomLayout().getBackGroundImage().getVisibility() != View.VISIBLE) {
             itemMainLayout.getItemCustomLayout().getBackGroundImage().setVisibility(View.VISIBLE);
         }
@@ -183,8 +177,6 @@ public class DragListView<T> extends ListView implements View.OnDragListener {
             view.startDrag(data, new View.DragShadowBuilder(view), null, 0);
             mOnDragListener.onDragViewStart(position);
             view.getItemCustomLayout().getBackGroundImage().setVisibility(VISIBLE);
-//            view.getItemLeftBackGroundLayout().setVisibility(VISIBLE);
-//            view.getItemRightBackGroundLayout().setVisibility(VISIBLE);
         }
     }
 

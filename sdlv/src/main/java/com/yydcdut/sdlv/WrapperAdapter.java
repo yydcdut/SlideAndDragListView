@@ -91,7 +91,7 @@ abstract class WrapperAdapter implements WrapperListAdapter, ItemMainLayout.OnIt
             itemMainLayout.setParams(mMenu.getItemHeight(), mMenu.getTotalBtnLength(MenuItem.DIRECTION_LEFT),
                     mMenu.getTotalBtnLength(MenuItem.DIRECTION_RIGHT), mMenu.isWannaOver());
             createMenu(itemMainLayout);
-            itemMainLayout.getItemCustomLayout().getBackGroundImage().setBackgroundDrawable(mMenu.getItemBackGroundDrawable());
+            Compat.setBackgroundDrawable(itemMainLayout.getItemCustomLayout().getBackGroundImage(), mMenu.getItemBackGroundDrawable());
             itemMainLayout.setOnItemSlideListenerProxy(this);
             itemMainLayout.getItemCustomLayout().addCustomView(contentView);
         } else {
@@ -108,7 +108,7 @@ abstract class WrapperAdapter implements WrapperListAdapter, ItemMainLayout.OnIt
      */
     private void createMenu(ItemMainLayout itemMainLayout) {
         if (mMenu.getTotalBtnLength(MenuItem.DIRECTION_LEFT) > 0) {
-            itemMainLayout.getItemLeftBackGroundLayout().getBackGroundImage().setBackgroundDrawable(mMenu.getItemBackGroundDrawable());
+            Compat.setBackgroundDrawable(itemMainLayout.getItemLeftBackGroundLayout().getBackGroundImage(), mMenu.getItemBackGroundDrawable());
             for (int i = 0; i < mMenu.getMenuItems(MenuItem.DIRECTION_LEFT).size(); i++) {
                 View v = itemMainLayout.getItemLeftBackGroundLayout().addMenuItem(mMenu.getMenuItems(MenuItem.DIRECTION_LEFT).get(i));
                 v.setOnClickListener(this);
@@ -119,7 +119,7 @@ abstract class WrapperAdapter implements WrapperListAdapter, ItemMainLayout.OnIt
             itemMainLayout.getItemLeftBackGroundLayout().setVisibility(View.GONE);
         }
         if (mMenu.getTotalBtnLength(MenuItem.DIRECTION_RIGHT) > 0) {
-            itemMainLayout.getItemRightBackGroundLayout().getBackGroundImage().setBackgroundDrawable(mMenu.getItemBackGroundDrawable());
+            Compat.setBackgroundDrawable(itemMainLayout.getItemRightBackGroundLayout().getBackGroundImage(), mMenu.getItemBackGroundDrawable());
             for (int i = 0; i < mMenu.getMenuItems(MenuItem.DIRECTION_RIGHT).size(); i++) {
                 View v = itemMainLayout.getItemRightBackGroundLayout().addMenuItem(mMenu.getMenuItems(MenuItem.DIRECTION_RIGHT).get(i));
                 v.setOnClickListener(this);
@@ -273,7 +273,8 @@ abstract class WrapperAdapter implements WrapperListAdapter, ItemMainLayout.OnIt
 
     @Override
     public void onDelete(View view) {
-        onItemDelete(view, mSlideItemPosition);
+        int position = mSlideItemPosition;
+        onItemDelete(view, position);
         mSlideItemPosition = -1;
     }
 

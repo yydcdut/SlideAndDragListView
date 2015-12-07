@@ -39,13 +39,14 @@ class ItemBackGroundLayout extends ViewGroup {
         mBGImage.setBackgroundColor(Color.TRANSPARENT);
         addView(mBGImage, 0, new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
         mBtnViews = new ArrayList<>();
+        setVisibility(GONE);
     }
 
     public View addMenuItem(MenuItem menuItem) {
         int count = getChildCount();
         if (!TextUtils.isEmpty(menuItem.text)) {
             TextView textView = new TextView(getContext());
-            textView.setBackgroundDrawable(menuItem.background);
+            Compat.setBackgroundDrawable(textView, menuItem.background);
             textView.setText(menuItem.text);
             textView.setTextSize(menuItem.textSize);
             textView.setTextColor(menuItem.textColor);
@@ -57,7 +58,7 @@ class ItemBackGroundLayout extends ViewGroup {
             return textView;
         } else if (menuItem.icon != null) {
             ImageView imageView = new ImageView(getContext());
-            imageView.setBackgroundDrawable(menuItem.background);
+            Compat.setBackgroundDrawable(imageView, menuItem.background);
             imageView.setImageDrawable(menuItem.icon);
             imageView.setScaleType(ImageView.ScaleType.CENTER);
             imageView.setTag(menuItem);

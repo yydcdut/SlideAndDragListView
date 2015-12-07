@@ -167,7 +167,7 @@ public class DemoActivity extends AppCompatActivity implements SlideAndDragListV
             case MenuItem.DIRECTION_LEFT:
                 switch (buttonPosition) {
                     case 0:
-                        return Menu.ITEM_NOTHING;
+                        return Menu.ITEM_DELETE_FROM_BOTTOM_TO_TOP;
                     case 1:
                         return Menu.ITEM_SCROLL_BACK;
                 }
@@ -185,7 +185,7 @@ public class DemoActivity extends AppCompatActivity implements SlideAndDragListV
 
     @Override
     public void onItemDelete(View view, int position) {
-//        mAppList.remove(position);
-//        mAdapter.notifyDataSetChanged();
+        mAppList.remove(position);
+        mAdapter.notifyDataSetChanged();
     }
 }

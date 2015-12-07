@@ -1,7 +1,6 @@
 package com.yydcdut.sdlv;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,7 +24,6 @@ class ItemCustomLayout extends FrameLayout {
     public ItemCustomLayout(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         mBGImage = new ImageView(context);
-        mBGImage.setBackgroundColor(Color.TRANSPARENT);
         addView(mBGImage, 0, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
     }
 

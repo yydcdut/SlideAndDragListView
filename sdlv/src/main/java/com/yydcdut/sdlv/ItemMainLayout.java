@@ -12,7 +12,6 @@ import android.widget.Scroller;
 /**
  * Created by yuyidong on 15/9/24.
  * todo fingerLeftAndRightMove()这个方法是可以优化的
- * todo setDrawable compact
  */
 class ItemMainLayout extends FrameLayout {
     private static final int INTENTION_LEFT_OPEN = 1;
@@ -21,6 +20,7 @@ class ItemMainLayout extends FrameLayout {
     private static final int INTENTION_RIGHT_OPEN = -1;
     private static final int INTENTION_RIGHT_CLOSE = -2;
     private static final int INTENTION_RIGHT_ALREADY_OPEN = -3;
+    private static final int INTENTION_SCROLL_BACK = -4;
     private static final int INTENTION_ZERO = 0;
     private int mIntention = INTENTION_ZERO;
 
@@ -199,6 +199,7 @@ class ItemMainLayout extends FrameLayout {
                         //如果滑出的话，那么就滑到固定位置(只要滑出了 mBtnLeftTotalWidth / 2 ，就算滑出去了)
                         if (Math.abs(mItemCustomLayout.getScrollX()) > mBtnLeftTotalWidth / 2) {
                             //滑出
+                            mIntention = INTENTION_LEFT_OPEN;
                             int delta = mBtnLeftTotalWidth - Math.abs(mItemCustomLayout.getScrollX());
                             if (Math.abs(mItemCustomLayout.getScrollX()) < mBtnLeftTotalWidth) {
                                 mScroller.startScroll(mItemCustomLayout.getScrollX(), 0, -delta, 0, SCROLL_QUICK_TIME);
@@ -210,6 +211,7 @@ class ItemMainLayout extends FrameLayout {
                             }
                             mScrollState = SCROLL_STATE_OPEN;
                         } else {
+                            mIntention = INTENTION_LEFT_CLOSE;
                             mScroller.startScroll(mItemCustomLayout.getScrollX(), 0, -mItemCustomLayout.getScrollX(), 0, SCROLL_TIME);
                             //滑回去,归位
                             if (mOnItemSlideListenerProxy != null && mScrollState != SCROLL_STATE_CLOSE) {
@@ -223,6 +225,7 @@ class ItemMainLayout extends FrameLayout {
                     case INTENTION_RIGHT_ALREADY_OPEN:
                         if (Math.abs(mItemCustomLayout.getScrollX()) > mBtnRightTotalWidth / 2) {
                             //滑出
+                            mIntention = INTENTION_RIGHT_OPEN;
                             int delta = mBtnRightTotalWidth - Math.abs(mItemCustomLayout.getScrollX());
                             if (Math.abs(mItemCustomLayout.getScrollX()) < mBtnRightTotalWidth) {
                                 mScroller.startScroll(mItemCustomLayout.getScrollX(), 0, delta, 0, SCROLL_QUICK_TIME);
@@ -234,6 +237,7 @@ class ItemMainLayout extends FrameLayout {
                             }
                             mScrollState = SCROLL_STATE_OPEN;
                         } else {
+                            mIntention = INTENTION_RIGHT_CLOSE;
                             mScroller.startScroll(mItemCustomLayout.getScrollX(), 0, -mItemCustomLayout.getScrollX(), 0, SCROLL_TIME);
                             //滑回去,归位
                             if (mOnItemSlideListenerProxy != null && mScrollState != SCROLL_STATE_CLOSE) {
@@ -243,7 +247,7 @@ class ItemMainLayout extends FrameLayout {
                         }
                         break;
                 }
-                mIntention = INTENTION_ZERO;
+//                mIntention = INTENTION_ZERO;
                 postInvalidate();
                 mIsMoving = false;
                 break;
@@ -329,10 +333,19 @@ class ItemMainLayout extends FrameLayout {
         Animation animation = new Animation() {
             @Override
             protected void applyTransformation(float interpolatedTime, Transformation t) {
-                if (interpolatedTime == 1.0f) {
-                    mHeight = originHeight;
+                //FIXME:5.0以下有个bug...就是当notifyDataChanged的时候，这个item bgImage与这个item上边的的item bgImage高度不能占完全item高度
+                if (Compat.afterLollipop()) {
+                    if (interpolatedTime > 0.9f) {
+                        mHeight = originHeight;
+                    } else {
+                        mHeight = originHeight - (int) (originHeight * interpolatedTime * 10 / 9);
+                    }
                 } else {
-                    mHeight = originHeight - (int) (originHeight * interpolatedTime);
+                    if (interpolatedTime == 1f) {
+                        mHeight = originHeight;
+                    } else {
+                        mHeight = originHeight - (int) (originHeight * interpolatedTime);
+                    }
                 }
                 ItemMainLayout.this.requestLayout();
             }
@@ -352,6 +365,16 @@ class ItemMainLayout extends FrameLayout {
         if (mScroller.computeScrollOffset()) {
             mItemCustomLayout.scrollTo(mScroller.getCurrX(), mScroller.getCurrY());
             postInvalidate();
+            if (mScroller.isFinished()) {
+                switch (mIntention) {
+                    case INTENTION_LEFT_CLOSE:
+                    case INTENTION_RIGHT_CLOSE:
+                    case INTENTION_SCROLL_BACK:
+                        setBackGroundVisible(false, false);
+                        break;
+                }
+                mIntention = INTENTION_ZERO;
+            }
         }
         super.computeScroll();
     }
@@ -360,6 +383,7 @@ class ItemMainLayout extends FrameLayout {
      * 归位
      */
     protected void scrollBack() {
+        mIntention = INTENTION_SCROLL_BACK;
         mScroller.startScroll(mItemCustomLayout.getScrollX(), 0, -mItemCustomLayout.getScrollX(), 0, SCROLL_BACK);
         postInvalidate();
     }
