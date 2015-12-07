@@ -91,7 +91,7 @@ abstract class WrapperAdapter implements WrapperListAdapter, ItemMainLayout.OnIt
             itemMainLayout.setParams(mMenu.getItemHeight(), mMenu.getTotalBtnLength(MenuItem.DIRECTION_LEFT),
                     mMenu.getTotalBtnLength(MenuItem.DIRECTION_RIGHT), mMenu.isWannaOver());
             createMenu(itemMainLayout);
-            Compat.setBackgroundDrawable(itemMainLayout.getItemCustomLayout().getBackGroundImage(), mMenu.getItemBackGroundDrawable());
+            itemMainLayout.getItemCustomLayout().saveBackground(mMenu.getItemBackGroundDrawable());
             itemMainLayout.setOnItemSlideListenerProxy(this);
             itemMainLayout.getItemCustomLayout().addCustomView(contentView);
         } else {

@@ -20,7 +20,6 @@ import java.util.List;
 
 /**
  * Created by yuyidong on 15/7/31.
- * todo 最后一个滑动后再drag有bug
  */
 public class DemoActivity extends AppCompatActivity implements SlideAndDragListView.OnListItemLongClickListener,
         SlideAndDragListView.OnDragListener, SlideAndDragListView.OnSlideListener,
