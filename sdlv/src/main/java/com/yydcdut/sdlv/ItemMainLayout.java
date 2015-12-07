@@ -31,7 +31,7 @@ class ItemMainLayout extends FrameLayout {
     private static final int SCROLL_TIME = 500;//500ms
     private static final int SCROLL_BACK = 250;//250MS
     private static final int SCROLL_QUICK_TIME = 200;//200ms
-    private static final int SCROLL_DELETE_TIEM = 300;//300ms
+    private static final int SCROLL_DELETE_TIME = 300;//300ms
     /* 控件高度 */
     private int mHeight;
     /* 子控件中button的总宽度 */
@@ -117,13 +117,9 @@ class ItemMainLayout extends FrameLayout {
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        if (mHeight > 0) {
-            setMeasuredDimension(MeasureSpec.getSize(widthMeasureSpec), mHeight);
-            for (int i = 0; i < getChildCount(); i++) {
-                measureChild(getChildAt(i), widthMeasureSpec, MeasureSpec.makeMeasureSpec(mHeight, MeasureSpec.EXACTLY));
-            }
-        } else {
-            super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+        setMeasuredDimension(MeasureSpec.getSize(widthMeasureSpec), mHeight);
+        for (int i = 0; i < getChildCount(); i++) {
+            measureChild(getChildAt(i), widthMeasureSpec, MeasureSpec.makeMeasureSpec(mHeight, MeasureSpec.EXACTLY));
         }
     }
 
@@ -329,7 +325,7 @@ class ItemMainLayout extends FrameLayout {
 
             }
         };
-        final int originHeight = this.getMeasuredHeight();
+        final int originHeight = mHeight;
         Animation animation = new Animation() {
             @Override
             protected void applyTransformation(float interpolatedTime, Transformation t) {
@@ -347,7 +343,7 @@ class ItemMainLayout extends FrameLayout {
             }
         };
         animation.setAnimationListener(animationListener);
-        animation.setDuration(SCROLL_DELETE_TIEM);
+        animation.setDuration(SCROLL_DELETE_TIME);
         startAnimation(animation);
     }
 

@@ -25,7 +25,6 @@ class ItemBackGroundLayout extends ViewGroup {
     /* 添加的子View */
     private List<View> mBtnViews;
 
-
     public ItemBackGroundLayout(Context context) {
         this(context, null);
     }
@@ -52,7 +51,7 @@ class ItemBackGroundLayout extends ViewGroup {
             textView.setTextColor(menuItem.textColor);
             textView.setGravity(Gravity.CENTER);
             textView.setTag(menuItem);
-            addView(textView, count, new LayoutParams(LayoutParams.MATCH_PARENT, menuItem.width));
+            addView(textView, count, new LayoutParams(menuItem.width, LayoutParams.MATCH_PARENT));
             requestLayout();
             mBtnViews.add(textView);
             return textView;
@@ -62,7 +61,7 @@ class ItemBackGroundLayout extends ViewGroup {
             imageView.setImageDrawable(menuItem.icon);
             imageView.setScaleType(ImageView.ScaleType.CENTER);
             imageView.setTag(menuItem);
-            addView(imageView, count, new LayoutParams(LayoutParams.MATCH_PARENT, menuItem.width));
+            addView(imageView, count, new LayoutParams(menuItem.width, LayoutParams.MATCH_PARENT));
             requestLayout();
             mBtnViews.add(imageView);
             return imageView;

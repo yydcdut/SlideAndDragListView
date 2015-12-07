@@ -45,7 +45,7 @@ public class DemoActivity extends AppCompatActivity implements SlideAndDragListV
 
     public void initMenu() {
         mMenu = new Menu((int) getResources().getDimension(R.dimen.slv_item_height), new ColorDrawable(Color.LTGRAY), true);
-        mMenu.addItem(new MenuItem.Builder().setWidth((int) getResources().getDimension(R.dimen.slv_item_bg_btn_width))
+        mMenu.addItem(new MenuItem.Builder().setWidth((int) getResources().getDimension(R.dimen.slv_item_bg_btn_width) * 2)
                 .setBackground(new ColorDrawable(Color.RED))
                 .setText("One")
                 .setTextColor(Color.GRAY)
@@ -185,7 +185,7 @@ public class DemoActivity extends AppCompatActivity implements SlideAndDragListV
 
     @Override
     public void onItemDelete(View view, int position) {
-        mAppList.remove(position);
-        mAdapter.notifyDataSetChanged();
+//        mAppList.remove(position);
+//        mAdapter.notifyDataSetChanged();
     }
 }
