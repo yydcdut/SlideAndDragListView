@@ -2,7 +2,6 @@ package com.yydcdut.sdlv;
 
 import android.content.Context;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.Animation;
@@ -31,7 +30,6 @@ class ItemMainLayout extends FrameLayout {
     /* 时间 */
     private static final int SCROLL_TIME = 500;//500ms
     private static final int SCROLL_BACK = 250;//250MS
-    private static final int SCROLL_QUICK_TIME = 200;//200ms
     private static final int SCROLL_DELETE_TIME = 300;//300ms
     /* 控件高度 */
     private int mHeight;
@@ -228,7 +226,6 @@ class ItemMainLayout extends FrameLayout {
                         } else {
                             mIntention = INTENTION_LEFT_CLOSE;
                             //滑回去,归位
-                            Log.i("yuyidong", "mItemCustomLayout.getLeft()--->" + mItemCustomLayout.getLeft());
                             mScroller.startScroll(mItemCustomLayout.getLeft(), 0, -mItemCustomLayout.getLeft(), 0, SCROLL_TIME);
                             if (mOnItemSlideListenerProxy != null && mScrollState != SCROLL_STATE_CLOSE) {
                                 mOnItemSlideListenerProxy.onSlideClose(this, MenuItem.DIRECTION_LEFT);
@@ -375,7 +372,6 @@ class ItemMainLayout extends FrameLayout {
     @Override
     public void computeScroll() {
         if (mScroller.computeScrollOffset()) {
-            Log.i("yuyidong", "mScroller.getCurrX()--->" + mScroller.getCurrX());
             mItemCustomLayout.layout(mScroller.getCurrX(), mItemCustomLayout.getTop(),
                     mScroller.getCurrX() + mItemCustomLayout.getWidth(), mItemCustomLayout.getBottom());
             postInvalidate();
