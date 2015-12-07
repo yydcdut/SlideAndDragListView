@@ -334,7 +334,7 @@ class ItemMainLayout extends FrameLayout {
             @Override
             protected void applyTransformation(float interpolatedTime, Transformation t) {
                 //FIXME:5.0以下有个bug...就是当notifyDataChanged的时候，这个item bgImage与这个item上边的的item bgImage高度不能占完全item高度
-                if (Compat.afterLollipop()) {
+                if (!Compat.afterLollipop()) {
                     if (interpolatedTime > 0.9f) {
                         mHeight = originHeight;
                     } else {
