@@ -11,8 +11,8 @@ import android.widget.WrapperListAdapter;
 /**
  * Created by yuyidong on 15/9/28.
  */
-abstract class WrapperAdapter implements WrapperListAdapter, ItemMainLayout.OnItemSlideListenerProxy, View.OnClickListener,
-        AbsListView.OnScrollListener, ItemMainLayout.OnItemDeleteListenerProxy {
+abstract class WrapperAdapter implements WrapperListAdapter, ItemMainLayout2.OnItemSlideListenerProxy, View.OnClickListener,
+        AbsListView.OnScrollListener, ItemMainLayout2.OnItemDeleteListenerProxy {
     private static final int TAG_LEFT = 3 << 24;
     private static final int TAG_RIGHT = 4 << 24;
     /* 上下文 */
@@ -84,50 +84,50 @@ abstract class WrapperAdapter implements WrapperListAdapter, ItemMainLayout.OnIt
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        ItemMainLayout itemMainLayout = null;
+        ItemMainLayout2 itemMainLayout2 = null;
         if (convertView == null) {
             View contentView = mAdapter.getView(position, convertView, parent);
-            itemMainLayout = new ItemMainLayout(mContext);
-            itemMainLayout.setParams(mMenu.getItemHeight(), mMenu.getTotalBtnLength(MenuItem.DIRECTION_LEFT),
+            itemMainLayout2 = new ItemMainLayout2(mContext);
+            itemMainLayout2.setParams(mMenu.getItemHeight(), mMenu.getTotalBtnLength(MenuItem.DIRECTION_LEFT),
                     mMenu.getTotalBtnLength(MenuItem.DIRECTION_RIGHT), mMenu.isWannaOver());
-            createMenu(itemMainLayout);
-            itemMainLayout.getItemCustomLayout().saveBackground(mMenu.getItemBackGroundDrawable());
-            itemMainLayout.setOnItemSlideListenerProxy(this);
-            itemMainLayout.getItemCustomLayout().addCustomView(contentView);
+            createMenu(itemMainLayout2);
+            itemMainLayout2.getItemCustomLayout().saveBackground(mMenu.getItemBackGroundDrawable());
+            itemMainLayout2.setOnItemSlideListenerProxy(this);
+            itemMainLayout2.getItemCustomLayout().addCustomView(contentView);
         } else {
-            itemMainLayout = (ItemMainLayout) convertView;
-            mAdapter.getView(position, itemMainLayout.getItemCustomLayout().getCustomView(), parent);
+            itemMainLayout2 = (ItemMainLayout2) convertView;
+            mAdapter.getView(position, itemMainLayout2.getItemCustomLayout().getCustomView(), parent);
         }
-        return itemMainLayout;
+        return itemMainLayout2;
     }
 
     /**
      * 创建Menu
      *
-     * @param itemMainLayout
+     * @param itemMainLayout2
      */
-    private void createMenu(ItemMainLayout itemMainLayout) {
+    private void createMenu(ItemMainLayout2 itemMainLayout2) {
         if (mMenu.getTotalBtnLength(MenuItem.DIRECTION_LEFT) > 0) {
-            Compat.setBackgroundDrawable(itemMainLayout.getItemLeftBackGroundLayout().getBackGroundImage(), mMenu.getItemBackGroundDrawable());
+            Compat.setBackgroundDrawable(itemMainLayout2.getItemLeftBackGroundLayout().getBackGroundImage(), mMenu.getItemBackGroundDrawable());
             for (int i = 0; i < mMenu.getMenuItems(MenuItem.DIRECTION_LEFT).size(); i++) {
-                View v = itemMainLayout.getItemLeftBackGroundLayout().addMenuItem(mMenu.getMenuItems(MenuItem.DIRECTION_LEFT).get(i));
+                View v = itemMainLayout2.getItemLeftBackGroundLayout().addMenuItem(mMenu.getMenuItems(MenuItem.DIRECTION_LEFT).get(i));
                 v.setOnClickListener(this);
                 v.setClickable(false);
                 v.setTag(TAG_LEFT, i);
             }
         } else {
-            itemMainLayout.getItemLeftBackGroundLayout().setVisibility(View.GONE);
+            itemMainLayout2.getItemLeftBackGroundLayout().setVisibility(View.GONE);
         }
         if (mMenu.getTotalBtnLength(MenuItem.DIRECTION_RIGHT) > 0) {
-            Compat.setBackgroundDrawable(itemMainLayout.getItemRightBackGroundLayout().getBackGroundImage(), mMenu.getItemBackGroundDrawable());
+            Compat.setBackgroundDrawable(itemMainLayout2.getItemRightBackGroundLayout().getBackGroundImage(), mMenu.getItemBackGroundDrawable());
             for (int i = 0; i < mMenu.getMenuItems(MenuItem.DIRECTION_RIGHT).size(); i++) {
-                View v = itemMainLayout.getItemRightBackGroundLayout().addMenuItem(mMenu.getMenuItems(MenuItem.DIRECTION_RIGHT).get(i));
+                View v = itemMainLayout2.getItemRightBackGroundLayout().addMenuItem(mMenu.getMenuItems(MenuItem.DIRECTION_RIGHT).get(i));
                 v.setOnClickListener(this);
                 v.setClickable(false);
                 v.setTag(TAG_RIGHT, i);
             }
         } else {
-            itemMainLayout.getItemRightBackGroundLayout().setVisibility(View.GONE);
+            itemMainLayout2.getItemRightBackGroundLayout().setVisibility(View.GONE);
         }
     }
 
@@ -159,11 +159,11 @@ abstract class WrapperAdapter implements WrapperListAdapter, ItemMainLayout.OnIt
             return;
         }
         mSlideItemPosition = position;
-        ItemMainLayout itemMainLayout = (ItemMainLayout) mListView.getChildAt(mSlideItemPosition - mListView.getFirstVisiblePosition());
-        for (View v : itemMainLayout.getItemLeftBackGroundLayout().getBtnViews()) {
+        ItemMainLayout2 itemMainLayout2 = (ItemMainLayout2) mListView.getChildAt(mSlideItemPosition - mListView.getFirstVisiblePosition());
+        for (View v : itemMainLayout2.getItemLeftBackGroundLayout().getBtnViews()) {
             v.setClickable(true);
         }
-        for (View v : itemMainLayout.getItemRightBackGroundLayout().getBtnViews()) {
+        for (View v : itemMainLayout2.getItemRightBackGroundLayout().getBtnViews()) {
             v.setClickable(true);
         }
     }
@@ -182,13 +182,13 @@ abstract class WrapperAdapter implements WrapperListAdapter, ItemMainLayout.OnIt
      */
     public void returnSlideItemPosition() {
         if (mSlideItemPosition != -1) {
-            ItemMainLayout itemMainLayout = (ItemMainLayout) mListView.getChildAt(mSlideItemPosition - mListView.getFirstVisiblePosition());
-            if (itemMainLayout != null) {
-                itemMainLayout.scrollBack();
-                for (View v : itemMainLayout.getItemLeftBackGroundLayout().getBtnViews()) {
+            ItemMainLayout2 itemMainLayout2 = (ItemMainLayout2) mListView.getChildAt(mSlideItemPosition - mListView.getFirstVisiblePosition());
+            if (itemMainLayout2 != null) {
+                itemMainLayout2.scrollBack();
+                for (View v : itemMainLayout2.getItemLeftBackGroundLayout().getBtnViews()) {
                     v.setClickable(false);
                 }
-                for (View v : itemMainLayout.getItemRightBackGroundLayout().getBtnViews()) {
+                for (View v : itemMainLayout2.getItemRightBackGroundLayout().getBtnViews()) {
                     v.setClickable(false);
                 }
             }
@@ -245,9 +245,9 @@ abstract class WrapperAdapter implements WrapperListAdapter, ItemMainLayout.OnIt
                     break;
                 case Menu.ITEM_DELETE_FROM_BOTTOM_TO_TOP:
                     if (mSlideItemPosition != -1) {
-                        ItemMainLayout itemMainLayout = (ItemMainLayout) mListView.getChildAt(mSlideItemPosition - mListView.getFirstVisiblePosition());
-                        if (itemMainLayout != null) {
-                            itemMainLayout.deleteItem(this);
+                        ItemMainLayout2 itemMainLayout2 = (ItemMainLayout2) mListView.getChildAt(mSlideItemPosition - mListView.getFirstVisiblePosition());
+                        if (itemMainLayout2 != null) {
+                            itemMainLayout2.deleteItem(this);
                         }
                     }
                     break;
