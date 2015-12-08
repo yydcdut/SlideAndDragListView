@@ -30,6 +30,7 @@ class ItemMainLayout extends FrameLayout {
     /* 时间 */
     private static final int SCROLL_TIME = 500;//500ms
     private static final int SCROLL_BACK = 250;//250MS
+    private static final int SCROLL_QUICK_TIME = 200;//200ms
     private static final int SCROLL_DELETE_TIME = 300;//300ms
     /* 控件高度 */
     private int mHeight;
@@ -50,7 +51,7 @@ class ItemMainLayout extends FrameLayout {
     private float mXDown;
     private float mYDown;
     /* X方向滑动距离 */
-    private float mLeftDistance;
+    private float mXScrollDistance;
     /* 滑动的监听器 */
     private OnItemSlideListenerProxy mOnItemSlideListenerProxy;
 
@@ -130,7 +131,7 @@ class ItemMainLayout extends FrameLayout {
                 mXDown = ev.getX();
                 mYDown = ev.getY();
                 //控件初始距离
-                mLeftDistance = mItemCustomLayout.getLeft();
+                mXScrollDistance = mItemCustomLayout.getScrollX();
                 //是否有要scroll的动向，目前没有
                 mIsMoving = false;
                 break;
@@ -146,87 +147,73 @@ class ItemMainLayout extends FrameLayout {
                     float moveDistance = ev.getX() - mXDown;//这个往右是正，往左是负
                     //判断意图
                     if (moveDistance > 0) {//往右
-                        if (mLeftDistance == 0) {//关闭状态
+                        if (mXScrollDistance == 0) {//关闭状态
                             mIntention = INTENTION_LEFT_OPEN;
                             setBackGroundVisible(true, false);
-                        } else if (mLeftDistance < 0) {//右边的btn显示出来的
+                        } else if (mXScrollDistance > 0) {//右边的btn显示出来的
                             mIntention = INTENTION_RIGHT_CLOSE;
-                        } else if (mLeftDistance > 0) {//左边的btn显示出来的
+                        } else if (mXScrollDistance < 0) {//左边的btn显示出来的
                             mIntention = INTENTION_LEFT_ALREADY_OPEN;
                         }
                     } else if (moveDistance < 0) {//往左
-                        if (mLeftDistance == 0) {//关闭状态
+                        if (mXScrollDistance == 0) {//关闭状态
                             mIntention = INTENTION_RIGHT_OPEN;
                             setBackGroundVisible(false, true);
-                        } else if (mLeftDistance < 0) {//右边的btn显示出来的
+                        } else if (mXScrollDistance > 0) {//右边的btn显示出来的
                             mIntention = INTENTION_RIGHT_ALREADY_OPEN;
-                        } else if (mLeftDistance > 0) {//左边的btn显示出来的
+                        } else if (mXScrollDistance < 0) {//左边的btn显示出来的
                             mIntention = INTENTION_LEFT_CLOSE;
                         }
                     }
                     //计算出距离
                     switch (mIntention) {
+                        case INTENTION_LEFT_CLOSE:
                         case INTENTION_LEFT_OPEN:
                         case INTENTION_LEFT_ALREADY_OPEN:
-                            //此时moveDistance为正数，mLeftDistance为0
-                            float distanceLeftOpen = mLeftDistance + moveDistance;
+                            float distanceLeft = mXScrollDistance - moveDistance < 0 ? mXScrollDistance - moveDistance : 0;
                             if (!mWannaOver) {
-                                distanceLeftOpen = distanceLeftOpen > mBtnLeftTotalWidth ? mBtnLeftTotalWidth : distanceLeftOpen;
+                                distanceLeft = distanceLeft < -mBtnLeftTotalWidth ? -mBtnLeftTotalWidth : distanceLeft;
                             }
                             //滑动
-                            mItemCustomLayout.layout((int) distanceLeftOpen, mItemCustomLayout.getTop(),
-                                    mItemCustomLayout.getWidth() + (int) distanceLeftOpen, mItemCustomLayout.getBottom());
-                            break;
-                        case INTENTION_LEFT_CLOSE:
-                            //此时moveDistance为负数，mLeftDistance为正数
-                            float distanceLeftClose = mLeftDistance + moveDistance < 0 ? 0 : mLeftDistance + moveDistance;
-                            //滑动
-                            mItemCustomLayout.layout((int) distanceLeftClose, mItemCustomLayout.getTop(),
-                                    mItemCustomLayout.getWidth() + (int) distanceLeftClose, mItemCustomLayout.getBottom());
-                            break;
-                        case INTENTION_RIGHT_OPEN:
-                        case INTENTION_RIGHT_ALREADY_OPEN:
-                            //此时moveDistance为负数，mLeftDistance为0
-                            float distanceRightOpen = mLeftDistance + moveDistance;
-                            //distanceRightOpen为正数
-                            if (!mWannaOver) {
-                                distanceRightOpen = -distanceRightOpen > mBtnRightTotalWidth ? -mBtnRightTotalWidth : distanceRightOpen;
-                            }
-                            //滑动
-                            mItemCustomLayout.layout((int) distanceRightOpen, mItemCustomLayout.getTop(),
-                                    mItemCustomLayout.getWidth() + (int) distanceRightOpen, mItemCustomLayout.getBottom());
+                            mItemCustomLayout.scrollTo((int) distanceLeft, 0);
                             break;
                         case INTENTION_RIGHT_CLOSE:
-                            //此时moveDistance为正数，mLeftDistance为负数
-                            float distanceRightClose = mLeftDistance + moveDistance > 0 ? 0 : mLeftDistance + moveDistance;
-                            //滑动
-                            mItemCustomLayout.layout((int) distanceRightClose, mItemCustomLayout.getTop(),
-                                    mItemCustomLayout.getWidth() + (int) distanceRightClose, mItemCustomLayout.getBottom());
-
+                        case INTENTION_RIGHT_OPEN:
+                        case INTENTION_RIGHT_ALREADY_OPEN:
+                            float distanceRight = mXScrollDistance - moveDistance > 0 ? mXScrollDistance - moveDistance : 0;
+                            if (!mWannaOver) {
+                                distanceRight = distanceRight < mBtnRightTotalWidth ? distanceRight : mBtnRightTotalWidth;
+                            }
+                            mItemCustomLayout.scrollTo((int) distanceRight, 0);
                             break;
                     }
                 }
                 break;
             case MotionEvent.ACTION_UP:
             case MotionEvent.ACTION_CANCEL:
+                //todo 有待优化这里的代码
                 switch (mIntention) {
                     case INTENTION_LEFT_CLOSE:
                     case INTENTION_LEFT_OPEN:
                     case INTENTION_LEFT_ALREADY_OPEN:
                         //如果滑出的话，那么就滑到固定位置(只要滑出了 mBtnLeftTotalWidth / 2 ，就算滑出去了)
-                        if (Math.abs(mItemCustomLayout.getLeft()) > mBtnLeftTotalWidth / 2) {
+                        if (Math.abs(mItemCustomLayout.getScrollX()) > mBtnLeftTotalWidth / 2) {
                             //滑出
                             mIntention = INTENTION_LEFT_OPEN;
-                            int delta = mBtnLeftTotalWidth - Math.abs(mItemCustomLayout.getLeft());
-                            mScroller.startScroll(mItemCustomLayout.getLeft(), 0, delta, 0, SCROLL_TIME);
+                            int delta = mBtnLeftTotalWidth - Math.abs(mItemCustomLayout.getScrollX());
+                            if (Math.abs(mItemCustomLayout.getScrollX()) < mBtnLeftTotalWidth) {
+                                mScroller.startScroll(mItemCustomLayout.getScrollX(), 0, -delta, 0, SCROLL_QUICK_TIME);
+                            } else {
+                                mScroller.startScroll(mItemCustomLayout.getScrollX(), 0, -delta, 0, SCROLL_TIME);
+                            }
                             if (mOnItemSlideListenerProxy != null && mScrollState != SCROLL_STATE_OPEN) {
                                 mOnItemSlideListenerProxy.onSlideOpen(this, MenuItem.DIRECTION_LEFT);
                             }
                             mScrollState = SCROLL_STATE_OPEN;
                         } else {
                             mIntention = INTENTION_LEFT_CLOSE;
+                            mScroller.startScroll(mItemCustomLayout.getScrollX(), 0, -mItemCustomLayout.getScrollX(), 0, SCROLL_TIME);
                             //滑回去,归位
-                            mScroller.startScroll(mItemCustomLayout.getLeft(), 0, -mItemCustomLayout.getLeft(), 0, SCROLL_TIME);
                             if (mOnItemSlideListenerProxy != null && mScrollState != SCROLL_STATE_CLOSE) {
                                 mOnItemSlideListenerProxy.onSlideClose(this, MenuItem.DIRECTION_LEFT);
                             }
@@ -236,18 +223,22 @@ class ItemMainLayout extends FrameLayout {
                     case INTENTION_RIGHT_CLOSE:
                     case INTENTION_RIGHT_OPEN:
                     case INTENTION_RIGHT_ALREADY_OPEN:
-                        if (Math.abs(mItemCustomLayout.getLeft()) > mBtnRightTotalWidth / 2) {
+                        if (Math.abs(mItemCustomLayout.getScrollX()) > mBtnRightTotalWidth / 2) {
                             //滑出
                             mIntention = INTENTION_RIGHT_OPEN;
-                            int delta = mBtnRightTotalWidth - Math.abs(mItemCustomLayout.getLeft());
-                            mScroller.startScroll(mItemCustomLayout.getLeft(), 0, -delta, 0, SCROLL_TIME);
+                            int delta = mBtnRightTotalWidth - Math.abs(mItemCustomLayout.getScrollX());
+                            if (Math.abs(mItemCustomLayout.getScrollX()) < mBtnRightTotalWidth) {
+                                mScroller.startScroll(mItemCustomLayout.getScrollX(), 0, delta, 0, SCROLL_QUICK_TIME);
+                            } else {
+                                mScroller.startScroll(mItemCustomLayout.getScrollX(), 0, delta, 0, SCROLL_TIME);
+                            }
                             if (mOnItemSlideListenerProxy != null && mScrollState != SCROLL_STATE_OPEN) {
                                 mOnItemSlideListenerProxy.onSlideOpen(this, MenuItem.DIRECTION_RIGHT);
                             }
                             mScrollState = SCROLL_STATE_OPEN;
                         } else {
                             mIntention = INTENTION_RIGHT_CLOSE;
-                            mScroller.startScroll(mItemCustomLayout.getLeft(), 0, -mItemCustomLayout.getLeft(), 0, SCROLL_TIME);
+                            mScroller.startScroll(mItemCustomLayout.getScrollX(), 0, -mItemCustomLayout.getScrollX(), 0, SCROLL_TIME);
                             //滑回去,归位
                             if (mOnItemSlideListenerProxy != null && mScrollState != SCROLL_STATE_CLOSE) {
                                 mOnItemSlideListenerProxy.onSlideClose(this, MenuItem.DIRECTION_RIGHT);
@@ -347,6 +338,7 @@ class ItemMainLayout extends FrameLayout {
                 } else {
                     mHeight = originHeight - (int) (originHeight * interpolatedTime);
                 }
+                ItemMainLayout.this.requestLayout();
             }
 
             @Override
@@ -356,15 +348,13 @@ class ItemMainLayout extends FrameLayout {
         };
         animation.setAnimationListener(animationListener);
         animation.setDuration(SCROLL_DELETE_TIME);
-
         startAnimation(animation);
     }
 
     @Override
     public void computeScroll() {
         if (mScroller.computeScrollOffset()) {
-            mItemCustomLayout.layout(mScroller.getCurrX(), mItemCustomLayout.getTop(),
-                    mScroller.getCurrX() + mItemCustomLayout.getWidth(), mItemCustomLayout.getBottom());
+            mItemCustomLayout.scrollTo(mScroller.getCurrX(), mScroller.getCurrY());
             postInvalidate();
             if (mScroller.isFinished()) {
                 switch (mIntention) {
@@ -385,7 +375,7 @@ class ItemMainLayout extends FrameLayout {
      */
     protected void scrollBack() {
         mIntention = INTENTION_SCROLL_BACK;
-        mScroller.startScroll(mItemCustomLayout.getLeft(), 0, -mItemCustomLayout.getLeft(), 0, SCROLL_BACK);
+        mScroller.startScroll(mItemCustomLayout.getScrollX(), 0, -mItemCustomLayout.getScrollX(), 0, SCROLL_BACK);
         postInvalidate();
     }
 
