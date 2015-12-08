@@ -344,9 +344,14 @@ class ItemMainLayout extends FrameLayout {
             protected void applyTransformation(float interpolatedTime, Transformation t) {
                 if (interpolatedTime == 1.0f) {
                     mHeight = originHeight;
+                    // FIXME: 15/12/8 5.0上面有个bug，这个bug可以这样绕过去
+                    ItemMainLayout.this.requestLayout();
+                    ItemMainLayout.this.getItemCustomLayout().hideBackground();
+                    ItemMainLayout.this.getItemCustomLayout().showBackground();
                 } else {
                     mHeight = originHeight - (int) (originHeight * interpolatedTime);
                 }
+                ItemMainLayout.this.requestLayout();
             }
 
             @Override

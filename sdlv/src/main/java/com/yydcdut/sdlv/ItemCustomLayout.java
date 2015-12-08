@@ -1,8 +1,6 @@
 package com.yydcdut.sdlv;
 
 import android.content.Context;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,13 +13,11 @@ import android.widget.ImageView;
 class ItemCustomLayout extends FrameLayout {
     private ImageView mBGImage;
     private Drawable mDrawable;
-    private Drawable mTransparentDrawable;
 
     public ItemCustomLayout(Context context) {
         super(context);
         mBGImage = new ImageView(context);
         addView(mBGImage, 0, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
-        mTransparentDrawable = new ColorDrawable(Color.TRANSPARENT);
     }
 
     public void addCustomView(View customView) {
@@ -37,10 +33,11 @@ class ItemCustomLayout extends FrameLayout {
     }
 
     public void hideBackground() {
-        mBGImage.setImageDrawable(mTransparentDrawable);
+        mBGImage.setVisibility(GONE);
     }
 
     public void showBackground() {
+        mBGImage.setVisibility(VISIBLE);
         mBGImage.setImageDrawable(mDrawable);
     }
 

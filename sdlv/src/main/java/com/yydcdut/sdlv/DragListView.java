@@ -112,7 +112,7 @@ public class DragListView<T> extends ListView implements View.OnDragListener {
             case DragEvent.ACTION_DROP:
                 mSDAdapter.notifyDataSetChanged();
                 for (int i = 0; i < getLastVisiblePosition() - getFirstVisiblePosition(); i++) {
-                    ItemMainLayout2 view = (ItemMainLayout2) getChildAt(i);
+                    ItemMainLayout view = (ItemMainLayout) getChildAt(i);
                     setItemVisible(view);
                 }
                 if (mOnDragListener != null) {
@@ -130,11 +130,11 @@ public class DragListView<T> extends ListView implements View.OnDragListener {
     /**
      * 将透明的那部分变回来
      *
-     * @param itemMainLayout2
+     * @param itemMainLayout
      */
-    private void setItemVisible(ItemMainLayout2 itemMainLayout2) {
-        if (!itemMainLayout2.getItemCustomLayout().isBackgroundShowing()) {
-            itemMainLayout2.getItemCustomLayout().showBackground();
+    private void setItemVisible(ItemMainLayout itemMainLayout) {
+        if (!itemMainLayout.getItemCustomLayout().isBackgroundShowing()) {
+            itemMainLayout.getItemCustomLayout().showBackground();
         }
     }
 
@@ -168,7 +168,7 @@ public class DragListView<T> extends ListView implements View.OnDragListener {
         mBeforeCurrentPosition = position;
         mBeforeBeforePosition = position;
         if (mOnDragListener != null) {
-            ItemMainLayout2 view = (ItemMainLayout2) getChildAt(position - getFirstVisiblePosition());
+            ItemMainLayout view = (ItemMainLayout) getChildAt(position - getFirstVisiblePosition());
             view.getItemCustomLayout().hideBackground();
             view.getItemLeftBackGroundLayout().setVisibility(GONE);
             view.getItemRightBackGroundLayout().setVisibility(GONE);
