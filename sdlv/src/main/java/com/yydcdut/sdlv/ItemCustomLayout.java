@@ -11,6 +11,7 @@ import android.widget.ImageView;
  * Created by yuyidong on 15/9/25.
  */
 class ItemCustomLayout extends FrameLayout {
+    private boolean mIsFirstTimeRefresh = true;
     private ImageView mBGImage;
     private Drawable mDrawable;
 
@@ -38,15 +39,24 @@ class ItemCustomLayout extends FrameLayout {
 
     public void showBackground() {
         mBGImage.setVisibility(VISIBLE);
-        mBGImage.setImageDrawable(mDrawable);
     }
 
     public void saveBackground(Drawable drawable) {
         mDrawable = drawable;
+        mBGImage.setImageDrawable(mDrawable);
         showBackground();
     }
 
     public boolean isBackgroundShowing() {
         return mDrawable == mBGImage.getDrawable();
+    }
+
+    public void refreshBackground() {
+        //// FIXME: 15/12/8 第一次进行deleteItem的时候总是会有bug
+        if (mIsFirstTimeRefresh) {
+            hideBackground();
+            showBackground();
+            mIsFirstTimeRefresh = false;
+        }
     }
 }

@@ -320,6 +320,7 @@ class ItemMainLayout extends FrameLayout {
      */
     public void deleteItem(final OnItemDeleteListenerProxy onItemDeleteListenerProxy) {
         scrollBack();
+        final int originHeight = mHeight;
         Animation.AnimationListener animationListener = new Animation.AnimationListener() {
             @Override
             public void onAnimationStart(Animation animation) {
@@ -328,6 +329,9 @@ class ItemMainLayout extends FrameLayout {
 
             @Override
             public void onAnimationEnd(Animation animation) {
+                mHeight = originHeight;
+                ItemMainLayout.this.requestLayout();
+                ItemMainLayout.this.getItemCustomLayout().refreshBackground();
                 if (onItemDeleteListenerProxy != null) {
                     onItemDeleteListenerProxy.onDelete(ItemMainLayout.this);
                 }
@@ -338,16 +342,12 @@ class ItemMainLayout extends FrameLayout {
 
             }
         };
-        final int originHeight = mHeight;
+
         Animation animation = new Animation() {
             @Override
             protected void applyTransformation(float interpolatedTime, Transformation t) {
                 if (interpolatedTime == 1.0f) {
                     mHeight = originHeight;
-                    // FIXME: 15/12/8 5.0上面有个bug，这个bug可以这样绕过去
-                    ItemMainLayout.this.requestLayout();
-                    ItemMainLayout.this.getItemCustomLayout().hideBackground();
-                    ItemMainLayout.this.getItemCustomLayout().showBackground();
                 } else {
                     mHeight = originHeight - (int) (originHeight * interpolatedTime);
                 }
