@@ -4,6 +4,7 @@ import android.content.Context;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewConfiguration;
 import android.view.animation.Animation;
 import android.view.animation.Transformation;
 import android.widget.FrameLayout;
@@ -11,7 +12,6 @@ import android.widget.Scroller;
 
 /**
  * Created by yuyidong on 15/9/24.
- * todo fingerLeftAndRightMove()这个方法是可以优化的
  */
 class ItemMainLayout extends FrameLayout {
     private static final int INTENTION_LEFT_OPEN = 1;
@@ -49,6 +49,8 @@ class ItemMainLayout extends FrameLayout {
     /* 坐标 */
     private float mXDown;
     private float mYDown;
+    /* 最小滑动距离，超过了，才认为开始滑动 */
+    private int mTouchSlop = 0;
     /* X方向滑动距离 */
     private float mLeftDistance;
     /* 滑动的监听器 */
@@ -71,6 +73,7 @@ class ItemMainLayout extends FrameLayout {
         addView(mItemLeftBackGroundLayout, new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
         mItemCustomLayout = new ItemCustomLayout(context);
         addView(mItemCustomLayout, new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
+        mTouchSlop = ViewConfiguration.get(getContext()).getScaledTouchSlop();
     }
 
     /**
@@ -300,8 +303,8 @@ class ItemMainLayout extends FrameLayout {
      * @return
      */
     private boolean fingerNotMove(MotionEvent ev) {
-        return (mXDown - ev.getX() < 25 && mXDown - ev.getX() > -25 &&
-                mYDown - ev.getY() < 25 && mYDown - ev.getY() > -25);
+        return (mXDown - ev.getX() < mTouchSlop && mXDown - ev.getX() > -mTouchSlop &&
+                mYDown - ev.getY() < mTouchSlop && mYDown - ev.getY() > -mTouchSlop);
     }
 
     /**
@@ -311,8 +314,8 @@ class ItemMainLayout extends FrameLayout {
      * @return
      */
     private boolean fingerLeftAndRightMove(MotionEvent ev) {
-        return ((ev.getX() - mXDown > 25 || ev.getX() - mXDown < -25) &&
-                ev.getY() - mYDown < 25 && ev.getY() - mYDown > -25);
+        return ((ev.getX() - mXDown > mTouchSlop || ev.getX() - mXDown < -mTouchSlop) &&
+                ev.getY() - mYDown < mTouchSlop && ev.getY() - mYDown > -mTouchSlop);
     }
 
     /**
