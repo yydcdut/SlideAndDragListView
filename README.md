@@ -30,7 +30,7 @@ SlideAndDragListView is useful for all kinds of prioritized lists: favorites, pl
 ## Gradle
 
 ``` groovy
-compile 'com.yydcdut.sdlv:sdlv:0.3.0@aar'
+compile 'com.yydcdut.sdlv:sdlv:0.3.1@aar'
 ```
 
 ## aar
@@ -221,7 +221,7 @@ slideAndDragListView.OnSlideListener() {
 slideAndDragListView.setOnItemDeleteListener(new SlideAndDragListView.OnItemDeleteListener() {
             @Override
             public void onItemDelete(View view, int position) {
-                
+
             }
         });
 ```
