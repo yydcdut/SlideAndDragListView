@@ -30,14 +30,14 @@ SlideAndDragListView is useful for all kinds of prioritized lists: favorites, pl
 ## Gradle
 
 ``` groovy
-compile 'com.yydcdut.sdlv:sdlv:0.2.1@aar'
+compile 'com.yydcdut.sdlv:sdlv:0.3.0@aar'
 ```
 
-## Jar
+## aar
 
 <a href="https://github.com/yydcdut/SlideAndDragListView/blob/master/aar/sdlv.aar?raw=true">DOWNLOAD</a>
 
-## aar
+## Jar
 
 <a href="https://github.com/yydcdut/SlideAndDragListView/blob/master/jar/sdlv.jar?raw=true">DOWNLOAD</a>
 
@@ -77,6 +77,16 @@ menu.addItem(new MenuItem.Builder().setWidth(120)
 listView.setMenu(menu);
 ```
 
+The class `Menu`, the construct function `Menu(int itemHeight, Drawable itemBackGroundDrawable, boolean wannaOver)`, the third parameter means whether can slide over.
+
+If it’s `true`:
+
+<img width="150" height="60" src="https://raw.githubusercontent.com/yydcdut/SlideAndDragListView/master/gif/wannaOver_true.gif" />
+
+If it’s `false`:
+
+<img width="150" height="60" src="https://raw.githubusercontent.com/yydcdut/SlideAndDragListView/master/gif/wannaOver_false.gif" />
+
 ### Step 3
 
 - Implement menu item click listener
@@ -95,24 +105,40 @@ listView.setOnSlideListener(new SlideAndDragListView.OnSlideListener() {
         });
 listView.setOnMenuItemClickListener(new SlideAndDragListView.OnMenuItemClickListener() {
             @Override
-            public boolean onMenuItemClick(View v, int itemPosition, int buttonPosition, int direction) {
+            public int onMenuItemClick(View v, int itemPosition, int buttonPosition, int direction) {
                 switch (direction) {
                     case MenuItem.DIRECTION_LEFT:
                         switch (buttonPosition) {
                             case 0://One
-                                return true;
+                                return Menu.ITEM_SCROLL_BACK;
                         }
                         break;
                     case MenuItem.DIRECTION_RIGHT:
                         switch (buttonPosition) {
                             case 0://icon
-                                return false;
+                                return Menu.ITEM_DELETE_FROM_BOTTOM_TO_TOP;
                         }
                         break;
+                    default :
+                        return Menu.ITEM_NOTHING;
                 }
             }
         });
 ```
+
+Have to set `OnSlideListener`!!!!!!
+
+`Menu.ITEM_NOTHING`:
+
+<img width="150" height="60" src="https://raw.githubusercontent.com/yydcdut/SlideAndDragListView/master/gif/ITEM_NOTHING`.gif" />
+
+Menu.ITEM_SCROLL_BACK`:
+
+<img width="150" height="60" src="https://raw.githubusercontent.com/yydcdut/SlideAndDragListView/master/gif/ITEM_SCROLL_BACK.gif" />
+
+Menu.ITEM_DELETE_FROM_BOTTOM_TO_TOP`:
+
+<img width="150" height="60" src="https://raw.githubusercontent.com/yydcdut/SlideAndDragListView/master/gif/ITEM_DELETE_FROM_BOTTOM_TO_TOP" />
 
 ## Drag
 
