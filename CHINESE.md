@@ -24,18 +24,18 @@ SlideAndDragListView 用于各种优先级列表：收藏夹，播放列表，�
 # 引用
 
  [ ![Download](https://api.bintray.com/packages/yydcdut/maven/sdlv/images/download.svg) ](https://bintray.com/yydcdut/maven/sdlv/_latestVersion)
- 
+
 ## Gradle
 
 ``` groovy
-compile 'com.yydcdut.sdlv:sdlv:0.2.1@aar'
+compile 'com.yydcdut.sdlv:sdlv:0.3.0@aar'
 ```
 
-## Jar
+## aar
 
 <a href="https://github.com/yydcdut/SlideAndDragListView/blob/master/aar/sdlv.aar?raw=true">下载</a>
 
-## aar
+## Jar
 
 <a href="https://github.com/yydcdut/SlideAndDragListView/blob/master/jar/sdlv.jar?raw=true">下载</a>
 
@@ -75,12 +75,24 @@ menu.addItem(new MenuItem.Builder().setWidth(120)
 listView.setMenu(menu);
 ```
 
+类 `Menu` 的构造函数中的第三个参数表示滑动item是否能滑的过量(true表示过量，就像Gif中显示的那样；false表示不过量。
+
+如果是`true`:
+
+<img width="350" height="70" src="https://raw.githubusercontent.com/yydcdut/SlideAndDragListView/master/gif/wannaOver_true.gif" />
+
+如果是 `false`:
+
+<img width="350" height="70" src="https://raw.githubusercontent.com/yydcdut/SlideAndDragListView/master/gif/wannaOver_false.gif" />
+
+
+
 ### 步骤3
 
 - 实现 menu item的单击事件
 
 ``` java
-listView.setOnSlideListener(new SlideAndDragListView.OnSlideListener() {
+slideAndDragListView.setOnSlideListener(new SlideAndDragListView.OnSlideListener() {
             @Override
             public void onSlideOpen(View view, View parentView, int position, int direction) {
 
@@ -91,31 +103,47 @@ listView.setOnSlideListener(new SlideAndDragListView.OnSlideListener() {
 
             }
         });
-listView.setOnMenuItemClickListener(new SlideAndDragListView.OnMenuItemClickListener() {
+slideAndDragListView.setOnMenuItemClickListener(new SlideAndDragListView.OnMenuItemClickListener() {
             @Override
-            public boolean onMenuItemClick(View v, int itemPosition, int buttonPosition, int direction) {
+            public int onMenuItemClick(View v, int itemPosition, int buttonPosition, int direction) {
                 switch (direction) {
                     case MenuItem.DIRECTION_LEFT:
                         switch (buttonPosition) {
                             case 0://One
-                                return true;
+                                return Menu.ITEM_SCROLL_BACK;
                         }
                         break;
                     case MenuItem.DIRECTION_RIGHT:
                         switch (buttonPosition) {
                             case 0://icon
-                                return false;
+                                return Menu.ITEM_DELETE_FROM_BOTTOM_TO_TOP;
                         }
                         break;
+                    default :
+                        return Menu.ITEM_NOTHING;
                 }
             }
         });
 ```
 
+注意：必须得设置OnSlideListener监听器。
+
+Menu.ITEM_NOTHING`:
+
+<img width="350" height="70" src="https://raw.githubusercontent.com/yydcdut/SlideAndDragListView/master/gif/ITEM_NOTHING.gif" />
+
+`Menu.ITEM_SCROLL_BACK`:
+
+<img width="350" height="70" src="https://raw.githubusercontent.com/yydcdut/SlideAndDragListView/master/gif/ITEM_SCROLL_BACK.gif" />
+
+`Menu.ITEM_DELETE_FROM_BOTTOM_TO_TOP`:
+
+<img width="350" height="70" src="https://raw.githubusercontent.com/yydcdut/SlideAndDragListView/master/gif/ITEM_DELETE_FROM_BOTTOM_TO_TOP.gif" />
+
 ## 拖放
 
 ``` java
-listView.setOnDragListener(new SlideAndDragListView.OnDragListener() {
+slideAndDragListView.setOnDragListener(new SlideAndDragListView.OnDragListener() {
             @Override
             public void onDragViewStart(int position) {
 
@@ -144,7 +172,7 @@ listView.setOnDragListener(new SlideAndDragListView.OnDragListener() {
 ### Item单击
 
 ``` java
-listView.setOnListItemClickListener(new SlideAndDragListView.OnListItemClickListener() {
+slideAndDragListView.setOnListItemClickListener(new SlideAndDragListView.OnListItemClickListener() {
             @Override
             public void onListItemClick(View v, int position) {
 
@@ -155,7 +183,7 @@ listView.setOnListItemClickListener(new SlideAndDragListView.OnListItemClickList
 ### Item长单击
 
 ``` java
-listView.setOnListItemLongClickListener(new SlideAndDragListView.OnListItemLongClickListener() {
+slideAndDragListView.setOnListItemLongClickListener(new SlideAndDragListView.OnListItemLongClickListener() {
             @Override
             public void onListItemLongClick(View view, int position) {
 
@@ -179,15 +207,24 @@ SlideAndDragListView.OnSlideListener() {
         });
 ```
 
+### Item删除监听器
+
+``` java
+slideAndDragListView.setOnItemDeleteListener(new SlideAndDragListView.OnItemDeleteListener() {
+            @Override
+            public void onItemDelete(View view, int position) {
+
+            }
+        });
+```
+
+`public void onItemDelete(View view, int position)` 的调用是在 `int onMenuItemClick(View v, int itemPosition, int buttonPosition, int direction)` 返回`Menu.ITEM_DELETE_FROM_BOTTOM_TO_TOP`之后.
+
 # 权限
 
 ``` xml
 <uses-permission android:name="android.permission.VIBRATE"/>
 ```
-
-
-
-
 
 
 
