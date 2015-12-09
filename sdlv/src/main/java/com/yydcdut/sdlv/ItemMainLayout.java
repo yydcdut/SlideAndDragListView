@@ -259,7 +259,7 @@ class ItemMainLayout extends FrameLayout {
                         }
                         break;
                 }
-//                mIntention = INTENTION_ZERO;
+                mIntention = INTENTION_ZERO;
                 postInvalidate();
                 mIsMoving = false;
                 break;
@@ -373,16 +373,6 @@ class ItemMainLayout extends FrameLayout {
             mItemCustomLayout.layout(mScroller.getCurrX(), mItemCustomLayout.getTop(),
                     mScroller.getCurrX() + mItemCustomLayout.getWidth(), mItemCustomLayout.getBottom());
             postInvalidate();
-            if (mScroller.isFinished()) {
-                switch (mIntention) {
-                    case INTENTION_LEFT_CLOSE:
-                    case INTENTION_RIGHT_CLOSE:
-                    case INTENTION_SCROLL_BACK:
-                        setBackGroundVisible(false, false);
-                        break;
-                }
-                mIntention = INTENTION_ZERO;
-            }
         }
         super.computeScroll();
     }
