@@ -74,25 +74,25 @@ menu.addItem(new MenuItem.Builder().setWidth(120)
                 .setIcon(getResources().getDrawable(R.drawable.ic_launcher))// set icon
                 .build());
 //set in sdlv
-listView.setMenu(menu);
+slideAndDragListView.setMenu(menu);
 ```
 
 The class `Menu`, the construct function `Menu(int itemHeight, Drawable itemBackGroundDrawable, boolean wannaOver)`, the third parameter means whether can slide over.
 
 If it’s `true`:
 
-<img width="150" height="60" src="https://raw.githubusercontent.com/yydcdut/SlideAndDragListView/master/gif/wannaOver_true.gif" />
+<img width="350" height="70" src="https://raw.githubusercontent.com/yydcdut/SlideAndDragListView/master/gif/wannaOver_true.gif" />
 
 If it’s `false`:
 
-<img width="150" height="60" src="https://raw.githubusercontent.com/yydcdut/SlideAndDragListView/master/gif/wannaOver_false.gif" />
+<img width="350" height="70" src="https://raw.githubusercontent.com/yydcdut/SlideAndDragListView/master/gif/wannaOver_false.gif" />
 
 ### Step 3
 
 - Implement menu item click listener
 
 ``` java
-listView.setOnSlideListener(new SlideAndDragListView.OnSlideListener() {
+slideAndDragListView.setOnSlideListener(new SlideAndDragListView.OnSlideListener() {
             @Override
             public void onSlideOpen(View view, View parentView, int position, int direction) {
 
@@ -103,7 +103,7 @@ listView.setOnSlideListener(new SlideAndDragListView.OnSlideListener() {
 
             }
         });
-listView.setOnMenuItemClickListener(new SlideAndDragListView.OnMenuItemClickListener() {
+slideAndDragListView.setOnMenuItemClickListener(new SlideAndDragListView.OnMenuItemClickListener() {
             @Override
             public int onMenuItemClick(View v, int itemPosition, int buttonPosition, int direction) {
                 switch (direction) {
@@ -130,20 +130,20 @@ Have to set `OnSlideListener`!!!!!!
 
 `Menu.ITEM_NOTHING`:
 
-<img width="150" height="60" src="https://raw.githubusercontent.com/yydcdut/SlideAndDragListView/master/gif/ITEM_NOTHING`.gif" />
+<img width="350" height="70" src="https://raw.githubusercontent.com/yydcdut/SlideAndDragListView/master/gif/ITEM_NOTHING.gif" />
 
-Menu.ITEM_SCROLL_BACK`:
+`Menu.ITEM_SCROLL_BACK`:
 
-<img width="150" height="60" src="https://raw.githubusercontent.com/yydcdut/SlideAndDragListView/master/gif/ITEM_SCROLL_BACK.gif" />
+<img width="350" height="70" src="https://raw.githubusercontent.com/yydcdut/SlideAndDragListView/master/gif/ITEM_SCROLL_BACK.gif" />
 
-Menu.ITEM_DELETE_FROM_BOTTOM_TO_TOP`:
+`Menu.ITEM_DELETE_FROM_BOTTOM_TO_TOP`:
 
-<img width="150" height="60" src="https://raw.githubusercontent.com/yydcdut/SlideAndDragListView/master/gif/ITEM_DELETE_FROM_BOTTOM_TO_TOP" />
+<img width="350" height="70" src="https://raw.githubusercontent.com/yydcdut/SlideAndDragListView/master/gif/ITEM_DELETE_FROM_BOTTOM_TO_TOP.gif" />
 
 ## Drag
 
 ``` java
-listView.setOnDragListener(new SlideAndDragListView.OnDragListener() {
+slideAndDragListView.setOnDragListener(new SlideAndDragListView.OnDragListener() {
             @Override
             public void onDragViewStart(int position) {
 
@@ -172,7 +172,7 @@ listView.setOnDragListener(new SlideAndDragListView.OnDragListener() {
 ### ListView Item Click Listener
 
 ``` java
-listView.setOnListItemClickListener(new SlideAndDragListView.OnListItemClickListener() {
+slideAndDragListView.setOnListItemClickListener(new SlideAndDragListView.OnListItemClickListener() {
             @Override
             public void onListItemClick(View v, int position) {
 
@@ -185,7 +185,7 @@ listView.setOnListItemClickListener(new SlideAndDragListView.OnListItemClickList
 ### ListView Item Long Click Listener
 
 ``` java
-listView.setOnListItemLongClickListener(new SlideAndDragListView.OnListItemLongClickListener() {
+slideAndDragListView.setOnListItemLongClickListener(new SlideAndDragListView.OnListItemLongClickListener() {
             @Override
             public void onListItemLongClick(View view, int position) {
 
@@ -198,7 +198,7 @@ listView.setOnListItemLongClickListener(new SlideAndDragListView.OnListItemLongC
 ### Item Slide Listener
 
 ``` java
-SlideAndDragListView.OnSlideListener() {
+slideAndDragListView.OnSlideListener() {
             @Override
             public void onSlideOpen(View view, View parentView, int position, int direction) {
 
@@ -214,6 +214,19 @@ SlideAndDragListView.OnSlideListener() {
 `public void onSlideOpen(View view, View parentView, int position, int direction)`. The parameter `view` is the ListView item that is slide open, `parentView` here is SDLV, `position` is the position of the view in the list, and the parameter `direction` is the item slided direction.
 
 `public void onSlideClose(View view, View parentView, int position, int direction)`. The parameter `view` is the ListView item that is slide close,`parentView` here is SDLV, `position` is the position of the view in the list, and the parameter `direction` is the item slided direction.
+
+### Item Delete Listener
+
+``` java
+slideAndDragListView.setOnItemDeleteListener(new SlideAndDragListView.OnItemDeleteListener() {
+            @Override
+            public void onItemDelete(View view, int position) {
+                
+            }
+        });
+```
+
+`public void onItemDelete(View view, int position)` will invoked after `int onMenuItemClick(View v, int itemPosition, int buttonPosition, int direction)` return `Menu.ITEM_DELETE_FROM_BOTTOM_TO_TOP`.
 
 # Permission
 

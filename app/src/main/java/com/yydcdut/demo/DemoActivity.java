@@ -11,7 +11,6 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.yydcdut.sdlv.Menu;
 import com.yydcdut.sdlv.MenuItem;
@@ -37,7 +36,6 @@ public class DemoActivity extends AppCompatActivity implements SlideAndDragListV
         initData();
         initMenu();
         initUiAndListener();
-//        ViewDragHelper
     }
 
     public void initData() {
@@ -77,7 +75,7 @@ public class DemoActivity extends AppCompatActivity implements SlideAndDragListV
         listView.setMenu(mMenu);
         listView.setAdapter(mAdapter);
         listView.setOnListItemLongClickListener(this);
-//        listView.setOnDragListener(this, mAppList);
+        listView.setOnDragListener(this, mAppList);
         listView.setOnListItemClickListener(this);
         listView.setOnSlideListener(this);
         listView.setOnMenuItemClickListener(this);
@@ -129,12 +127,12 @@ public class DemoActivity extends AppCompatActivity implements SlideAndDragListV
 
     @Override
     public void onListItemLongClick(View view, int position) {
-        Toast.makeText(DemoActivity.this, "onItemLongClick   position--->" + position, Toast.LENGTH_SHORT).show();
+//        Toast.makeText(DemoActivity.this, "onItemLongClick   position--->" + position, Toast.LENGTH_SHORT).show();
     }
 
     @Override
     public void onDragViewStart(int position) {
-        Toast.makeText(DemoActivity.this, "onDragViewStart   position--->" + position, Toast.LENGTH_SHORT).show();
+//        Toast.makeText(DemoActivity.this, "onDragViewStart   position--->" + position, Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -149,7 +147,7 @@ public class DemoActivity extends AppCompatActivity implements SlideAndDragListV
 
     @Override
     public void onListItemClick(View v, int position) {
-        Toast.makeText(DemoActivity.this, "onItemClick   position--->" + position, Toast.LENGTH_SHORT).show();
+//        Toast.makeText(DemoActivity.this, "onItemClick   position--->" + position, Toast.LENGTH_SHORT).show();
     }
 
     @Override
