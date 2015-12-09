@@ -1,6 +1,8 @@
 package com.yydcdut.sdlv;
 
 import android.content.Context;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,14 +13,15 @@ import android.widget.ImageView;
  * Created by yuyidong on 15/9/25.
  */
 class ItemCustomLayout extends FrameLayout {
-    private boolean mIsFirstTimeRefresh = true;
     private ImageView mBGImage;
     private Drawable mDrawable;
+    private Drawable mTransparentDrawable;
 
     public ItemCustomLayout(Context context) {
         super(context);
         mBGImage = new ImageView(context);
         addView(mBGImage, 0, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+        mTransparentDrawable = new ColorDrawable(Color.TRANSPARENT);
     }
 
     public void addCustomView(View customView) {
@@ -35,14 +38,19 @@ class ItemCustomLayout extends FrameLayout {
 
     public void hideBackground() {
         mBGImage.setVisibility(GONE);
+        Compat.setBackgroundDrawable(this, mTransparentDrawable);
+
     }
 
     public void showBackground() {
         mBGImage.setVisibility(VISIBLE);
+        Compat.setBackgroundDrawable(this, mDrawable);
+
     }
 
     public void saveBackground(Drawable drawable) {
         mDrawable = drawable;
+        Compat.setBackgroundDrawable(this, mDrawable);
         mBGImage.setImageDrawable(mDrawable);
         showBackground();
     }
@@ -52,11 +60,7 @@ class ItemCustomLayout extends FrameLayout {
     }
 
     public void refreshBackground() {
-        //// FIXME: 15/12/8 第一次进行deleteItem的时候总是会有bug
-        if (mIsFirstTimeRefresh) {
-            hideBackground();
-            showBackground();
-            mIsFirstTimeRefresh = false;
-        }
+        hideBackground();
+        showBackground();
     }
 }
