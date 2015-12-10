@@ -1,5 +1,7 @@
 # SlideAndDragListView
 
+ [ ![Download](https://api.bintray.com/packages/yydcdut/maven/sdlv/images/download.svg) ](https://bintray.com/yydcdut/maven/sdlv/_latestVersion)          <img src="https://camo.githubusercontent.com/8bf81d4b6a63eaf6f712e3092fe7238f8716e615/687474703a2f2f696d672e736869656c64732e696f2f3a6c6963656e73652d6170616368652d626c75652e737667" alt="License" data-canonical-src="http://img.shields.io/:license-apache-blue.svg" style="max-width:100%;"> [![API](https://img.shields.io/badge/API-11%2B-brightgreen.svg?style=flat)](https://android-arsenal.com/api?level=11)
+
 A ListView that you can slide(or swipe) the item, drag the item and drop it to another position.
 
 <img width="300" height="553" src="https://raw.githubusercontent.com/yydcdut/SlideAndDragListView/master/gif/v1.1.gif" />
@@ -24,8 +26,6 @@ SlideAndDragListView (SDLV) is an extension of the Android ListView that enables
 SlideAndDragListView is useful for all kinds of prioritized lists: favorites, playlists, checklists, etc. Would love to hear about your use case or app by email. I hope you find it useful; and please, help me improve the thing!
 
 # Binaries
-
- [ ![Download](https://api.bintray.com/packages/yydcdut/maven/sdlv/images/download.svg) ](https://bintray.com/yydcdut/maven/sdlv/_latestVersion)
 
 ## Gradle
 
