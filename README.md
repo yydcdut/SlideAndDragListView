@@ -30,7 +30,7 @@ SlideAndDragListView is useful for all kinds of prioritized lists: favorites, pl
 ## Gradle
 
 ``` groovy
-compile 'com.yydcdut.sdlv:sdlv:0.3.1@aar'
+compile 'com.yydcdut.sdlv:sdlv:0.3.2@aar'
 ```
 
 ## aar

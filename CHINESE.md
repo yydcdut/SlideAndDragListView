@@ -28,7 +28,7 @@ SlideAndDragListView 用于各种优先级列表：收藏夹，播放列表，�
 ## Gradle
 
 ``` groovy
-compile 'com.yydcdut.sdlv:sdlv:0.3.1@aar'
+compile 'com.yydcdut.sdlv:sdlv:0.3.2@aar'
 ```
 
 ## aar
