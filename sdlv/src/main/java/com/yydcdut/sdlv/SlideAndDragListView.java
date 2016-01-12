@@ -40,6 +40,9 @@ public class SlideAndDragListView<T> extends DragListView<T> implements WrapperA
     private Menu mMenu;
     /* WrapperAdapter */
     private WrapperAdapter mWrapperAdapter;
+    /* 手指滑动的最短距离 */
+    private int mShortestDistance = 25;
+
     /* 监听器 */
     private OnSlideListener mOnSlideListener;
     private OnMenuItemClickListener mOnMenuItemClickListener;
@@ -59,6 +62,7 @@ public class SlideAndDragListView<T> extends DragListView<T> implements WrapperA
         super(context, attrs, defStyleAttr);
         mVibrator = (Vibrator) getContext().getSystemService(Context.VIBRATOR_SERVICE);
         mHandler = new Handler(this);
+//        mShortestDistance = ViewConfiguration.get(context).getScaledDoubleTapSlop();
     }
 
     @Override
@@ -114,7 +118,6 @@ public class SlideAndDragListView<T> extends DragListView<T> implements WrapperA
                 }
                 break;
             case MotionEvent.ACTION_UP:
-            case MotionEvent.ACTION_CANCEL:
                 if (mState == STATE_DOWN || mState == STATE_LONG_CLICK) {
                     int position = pointToPosition(mXDown, mYDown);
                     //是否ScrollBack了，是的话就不去执行onListItemClick操作了
@@ -132,6 +135,7 @@ public class SlideAndDragListView<T> extends DragListView<T> implements WrapperA
                 removeLongClickMessage();
                 mState = STATE_NOTHING;
                 break;
+            case MotionEvent.ACTION_CANCEL:
             default:
                 break;
         }
@@ -200,8 +204,8 @@ public class SlideAndDragListView<T> extends DragListView<T> implements WrapperA
      * @return
      */
     private boolean fingerNotMove(MotionEvent ev) {
-        return (mXDown - ev.getX() < 25 && mXDown - ev.getX() > -25 &&
-                mYDown - ev.getY() < 25 && mYDown - ev.getY() > -25);
+        return (mXDown - ev.getX() < mShortestDistance && mXDown - ev.getX() > -mShortestDistance &&
+                mYDown - ev.getY() < mShortestDistance && mYDown - ev.getY() > -mShortestDistance);
     }
 
     /**
@@ -211,8 +215,8 @@ public class SlideAndDragListView<T> extends DragListView<T> implements WrapperA
      * @return
      */
     private boolean fingerLeftAndRightMove(MotionEvent ev) {
-        return ((ev.getX() - mXDown > 25 || ev.getX() - mXDown < -25) &&
-                ev.getY() - mYDown < 25 && ev.getY() - mYDown > -25);
+        return ((ev.getX() - mXDown > mShortestDistance || ev.getX() - mXDown < -mShortestDistance) &&
+                ev.getY() - mYDown < mShortestDistance && ev.getY() - mYDown > -mShortestDistance);
     }
 
     /**
@@ -247,8 +251,8 @@ public class SlideAndDragListView<T> extends DragListView<T> implements WrapperA
 
             @Override
             public void onItemDelete(View view, int position) {
-                if (mOnItemDeleteListener != null){
-                    mOnItemDeleteListener.onItemDelete(view,position);
+                if (mOnItemDeleteListener != null) {
+                    mOnItemDeleteListener.onItemDelete(view, position);
                 }
             }
 
@@ -384,8 +388,8 @@ public class SlideAndDragListView<T> extends DragListView<T> implements WrapperA
         mOnItemDeleteListener = onItemDeleteListener;
     }
 
-    public interface OnItemDeleteListener{
-        void onItemDelete(View view,int position);
+    public interface OnItemDeleteListener {
+        void onItemDelete(View view, int position);
     }
 
 }
