@@ -2,6 +2,7 @@ package com.yydcdut.sdlv;
 
 import android.content.Context;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewConfiguration;
@@ -384,6 +385,30 @@ class ItemMainLayout extends FrameLayout {
         mIntention = INTENTION_SCROLL_BACK;
         mScroller.startScroll(mItemCustomLayout.getLeft(), 0, -mItemCustomLayout.getLeft(), 0, SCROLL_BACK);
         postInvalidate();
+    }
+
+    /**
+     * @param x
+     * @return 是不是滑动了
+     */
+    protected boolean scrollBack(float x) {
+        if (mItemCustomLayout.getLeft() > 0) {
+            //已经向右滑动了
+            if (x > mItemCustomLayout.getLeft()) {
+                //没有点击到menu的button
+                scrollBack();
+                return true;
+            }
+        } else if (mItemCustomLayout.getLeft() < 0) {
+            //已经向左滑动了
+            if (x < mItemCustomLayout.getRight()) {
+                //没有点击到menu的button
+                scrollBack();
+                return true;
+            }
+        }
+        Log.i("yuyidong", "mItemCustomLayout.getLeft()--->" + mItemCustomLayout.getLeft() + "   x--->" + x + "  right--->" + mItemCustomLayout.getRight());
+        return false;
     }
 
     /**

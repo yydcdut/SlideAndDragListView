@@ -121,7 +121,7 @@ public class SlideAndDragListView<T> extends DragListView<T> implements WrapperA
                 if (mState == STATE_DOWN || mState == STATE_LONG_CLICK) {
                     int position = pointToPosition(mXDown, mYDown);
                     //是否ScrollBack了，是的话就不去执行onListItemClick操作了
-                    boolean bool = scrollBack(position);
+                    boolean bool = scrollBack(position, ev.getX());
                     if (bool) {
                         removeLongClickMessage();
                         mState = STATE_NOTHING;
@@ -136,6 +136,8 @@ public class SlideAndDragListView<T> extends DragListView<T> implements WrapperA
                 mState = STATE_NOTHING;
                 break;
             case MotionEvent.ACTION_CANCEL:
+                mState = STATE_NOTHING;
+                break;
             default:
                 break;
         }
@@ -146,12 +148,14 @@ public class SlideAndDragListView<T> extends DragListView<T> implements WrapperA
      * 将滑开的item归位
      *
      * @param position
+     * @param x        坐标
      * @return true--->有归位操作，false--->没有归位操作，也就是没有滑开的item
      */
-    private boolean scrollBack(int position) {
+    private boolean scrollBack(int position, float x) {
         //是不是当前滑开的这个
         if (mWrapperAdapter.getSlideItemPosition() == position) {
-            return true;
+            boolean isScrollBack = mWrapperAdapter.returnSlideItemPosition(x);
+            return isScrollBack;
         } else if (mWrapperAdapter.getSlideItemPosition() != -1) {
             mWrapperAdapter.returnSlideItemPosition();
             return true;

@@ -197,6 +197,32 @@ abstract class WrapperAdapter implements WrapperListAdapter, ItemMainLayout.OnIt
     }
 
     /**
+     * @param x
+     * @return 是否滑动归位了
+     */
+    public boolean returnSlideItemPosition(float x) {
+        if (mSlideItemPosition != -1) {
+            ItemMainLayout itemMainLayout = (ItemMainLayout) mListView.getChildAt(mSlideItemPosition - mListView.getFirstVisiblePosition());
+            if (itemMainLayout != null) {
+                boolean isScrollBack = itemMainLayout.scrollBack(x);
+                if (isScrollBack) {
+                    for (View v : itemMainLayout.getItemLeftBackGroundLayout().getBtnViews()) {
+                        v.setClickable(false);
+                    }
+                    for (View v : itemMainLayout.getItemRightBackGroundLayout().getBtnViews()) {
+                        v.setClickable(false);
+                    }
+                } else {
+                    return false;
+                }
+            }
+            mSlideItemPosition = -1;
+            return true;
+        }
+        return false;
+    }
+
+    /**
      * 设置监听器
      *
      * @param onAdapterSlideListenerProxy
