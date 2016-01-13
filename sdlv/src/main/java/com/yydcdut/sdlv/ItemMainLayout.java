@@ -2,6 +2,7 @@ package com.yydcdut.sdlv;
 
 import android.content.Context;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewConfiguration;
@@ -24,6 +25,7 @@ class ItemMainLayout extends FrameLayout {
     private static final int INTENTION_ZERO = 0;
     private int mIntention = INTENTION_ZERO;
 
+    /* 判断当前是否滑出，若为滑出，则是SCROLL_STATE_OPEN，则过度的滑动都不会去触发slideOpen接口，同理SCROLL_STATE_CLOSE */
     private static final int SCROLL_STATE_OPEN = 1;
     private static final int SCROLL_STATE_CLOSE = 0;
     private int mScrollState = SCROLL_STATE_CLOSE;
@@ -239,6 +241,7 @@ class ItemMainLayout extends FrameLayout {
                     case INTENTION_RIGHT_CLOSE:
                     case INTENTION_RIGHT_OPEN:
                     case INTENTION_RIGHT_ALREADY_OPEN:
+                        Log.i("yuyidong", "mScrollState--->" + mScrollState);
                         if (Math.abs(mItemCustomLayout.getLeft()) > mBtnRightTotalWidth / 2) {
                             //滑出
                             mIntention = INTENTION_RIGHT_OPEN;
@@ -384,6 +387,7 @@ class ItemMainLayout extends FrameLayout {
         mIntention = INTENTION_SCROLL_BACK;
         mScroller.startScroll(mItemCustomLayout.getLeft(), 0, -mItemCustomLayout.getLeft(), 0, SCROLL_BACK);
         postInvalidate();
+        mScrollState = SCROLL_STATE_CLOSE;
     }
 
     /**
@@ -396,6 +400,7 @@ class ItemMainLayout extends FrameLayout {
             if (x > mItemCustomLayout.getLeft()) {
                 //没有点击到menu的button
                 scrollBack();
+                mScrollState = SCROLL_STATE_CLOSE;
                 return true;
             }
         } else if (mItemCustomLayout.getLeft() < 0) {
@@ -403,6 +408,7 @@ class ItemMainLayout extends FrameLayout {
             if (x < mItemCustomLayout.getRight()) {
                 //没有点击到menu的button
                 scrollBack();
+                mScrollState = SCROLL_STATE_CLOSE;
                 return true;
             }
         }
