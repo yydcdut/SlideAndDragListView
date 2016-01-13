@@ -5,6 +5,7 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -128,40 +129,48 @@ public class DemoActivity extends AppCompatActivity implements SlideAndDragListV
     @Override
     public void onListItemLongClick(View view, int position) {
 //        Toast.makeText(DemoActivity.this, "onItemLongClick   position--->" + position, Toast.LENGTH_SHORT).show();
+        Log.i("yuyidong", "onListItemLongClick   " + position);
     }
 
     @Override
     public void onDragViewStart(int position) {
 //        Toast.makeText(DemoActivity.this, "onDragViewStart   position--->" + position, Toast.LENGTH_SHORT).show();
+        Log.i("yuyidong", "onDragViewStart   " + position);
     }
 
     @Override
     public void onDragViewMoving(int position) {
 //        Toast.makeText(DemoActivity.this, "onDragViewMoving   position--->" + position, Toast.LENGTH_SHORT).show();
+        Log.i("yuyidong", "onDragViewMoving   " + position);
     }
 
     @Override
     public void onDragViewDown(int position) {
 //        Toast.makeText(DemoActivity.this, "onDragViewDown   position--->" + position, Toast.LENGTH_SHORT).show();
+        Log.i("yuyidong", "onDragViewDown   " + position);
     }
 
     @Override
     public void onListItemClick(View v, int position) {
 //        Toast.makeText(DemoActivity.this, "onItemClick   position--->" + position, Toast.LENGTH_SHORT).show();
+        Log.i("yuyidong", "onListItemClick   " + position);
     }
 
     @Override
     public void onSlideOpen(View view, View parentView, int position, int direction) {
 //        Toast.makeText(DemoActivity.this, "onSlideOpen   position--->" + position + "  direction--->" + direction, Toast.LENGTH_SHORT).show();
+        Log.i("yuyidong", "onSlideOpen   " + position);
     }
 
     @Override
     public void onSlideClose(View view, View parentView, int position, int direction) {
 //        Toast.makeText(DemoActivity.this, "onSlideClose   position--->" + position + "  direction--->" + direction, Toast.LENGTH_SHORT).show();
+        Log.i("yuyidong", "onSlideClose   " + position);
     }
 
     @Override
     public int onMenuItemClick(View v, int itemPosition, int buttonPosition, int direction) {
+        Log.i("yuyidong", "onMenuItemClick   " + itemPosition + "   " + buttonPosition + "   " + direction);
         switch (direction) {
             case MenuItem.DIRECTION_LEFT:
                 switch (buttonPosition) {
