@@ -2,7 +2,6 @@ package com.yydcdut.sdlv;
 
 import android.content.Context;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewConfiguration;
@@ -407,7 +406,6 @@ class ItemMainLayout extends FrameLayout {
                 return true;
             }
         }
-        Log.i("yuyidong", "mItemCustomLayout.getLeft()--->" + mItemCustomLayout.getLeft() + "   x--->" + x + "  right--->" + mItemCustomLayout.getRight());
         return false;
     }
 
