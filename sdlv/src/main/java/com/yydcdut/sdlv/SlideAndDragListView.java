@@ -26,10 +26,11 @@ public class SlideAndDragListView<T> extends DragListView<T> implements WrapperA
     private static final int STATE_LONG_CLICK = 1;//长点击状态
     private static final int STATE_SCROLL = 2;//SCROLL状态
     private static final int STATE_LONG_CLICK_FINISH = 3;//长点击已经触发完成
+    private static final int STATE_MORE_FINGERS = 4;//多个手指
     private int mState = STATE_NOTHING;
 
     private static final int RETURN_SCROLL_BACK_OWN = 1;//自己有归位操作
-    private static final int RETURN_SCROLL_BACK_OHTER = 2;//其他位置有归位操作
+    private static final int RETURN_SCROLL_BACK_OTHER = 2;//其他位置有归位操作
     private static final int RETURN_SCROLL_BACK_CLICK_MENU_BUTTON = 3;//点击到了滑开的item的menuButton上
     private static final int RETURN_SCROLL_BACK_NOTHING = 0;//所以位置都没有回归操作
 
@@ -108,6 +109,13 @@ public class SlideAndDragListView<T> extends DragListView<T> implements WrapperA
                 //当前state状态为按下
                 mState = STATE_DOWN;
                 break;
+            case MotionEvent.ACTION_POINTER_DOWN:
+            case MotionEvent.ACTION_POINTER_2_DOWN:
+            case MotionEvent.ACTION_POINTER_3_DOWN:
+                removeLongClickMessage();
+                mState = STATE_MORE_FINGERS;
+                //消耗掉，不传递下去了
+                return true;
             case MotionEvent.ACTION_MOVE:
                 if (fingerNotMove(ev) && mState != STATE_SCROLL) {//手指的范围在50以内
                     sendLongClickMessage(pointToPosition(mXDown, mYDown));
@@ -139,6 +147,9 @@ public class SlideAndDragListView<T> extends DragListView<T> implements WrapperA
                 removeLongClickMessage();
                 mState = STATE_NOTHING;
                 break;
+            case MotionEvent.ACTION_POINTER_3_UP:
+            case MotionEvent.ACTION_POINTER_2_UP:
+            case MotionEvent.ACTION_POINTER_UP:
             case MotionEvent.ACTION_CANCEL:
                 mState = STATE_NOTHING;
                 break;
@@ -166,7 +177,7 @@ public class SlideAndDragListView<T> extends DragListView<T> implements WrapperA
             }
         } else if (mWrapperAdapter.getSlideItemPosition() != -1) {
             mWrapperAdapter.returnSlideItemPosition();
-            return RETURN_SCROLL_BACK_OHTER;
+            return RETURN_SCROLL_BACK_OTHER;
         }
         return RETURN_SCROLL_BACK_NOTHING;
     }
@@ -273,6 +284,30 @@ public class SlideAndDragListView<T> extends DragListView<T> implements WrapperA
         mWrapperAdapter.setOnAdapterMenuClickListenerProxy(this);
         setRawAdapter(adapter);
         super.setAdapter(mWrapperAdapter);
+    }
+
+    @Override
+    public void addHeaderView(View v, Object data, boolean isSelectable) {
+        v.setTag(WrapperAdapter.TAG_HEADER_FOOTER, WrapperAdapter.TAG_HEADER);
+        super.addHeaderView(v, data, isSelectable);
+    }
+
+    @Override
+    public void addHeaderView(View v) {
+        v.setTag(WrapperAdapter.TAG_HEADER_FOOTER, WrapperAdapter.TAG_HEADER);
+        super.addHeaderView(v);
+    }
+
+    @Override
+    public void addFooterView(View v, Object data, boolean isSelectable) {
+        v.setTag(WrapperAdapter.TAG_HEADER_FOOTER, WrapperAdapter.TAG_FOOTER);
+        super.addFooterView(v, data, isSelectable);
+    }
+
+    @Override
+    public void addFooterView(View v) {
+        v.setTag(WrapperAdapter.TAG_HEADER_FOOTER, WrapperAdapter.TAG_FOOTER);
+        super.addFooterView(v);
     }
 
     /**
