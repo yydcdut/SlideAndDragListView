@@ -288,25 +288,25 @@ public class SlideAndDragListView<T> extends DragListView<T> implements WrapperA
 
     @Override
     public void addHeaderView(View v, Object data, boolean isSelectable) {
-        v.setTag(WrapperAdapter.TAG_HEADER_FOOTER, WrapperAdapter.TAG_HEADER);
+//        v.setTag(WrapperAdapter.TAG_HEADER_FOOTER, WrapperAdapter.TAG_HEADER);
         super.addHeaderView(v, data, isSelectable);
     }
 
     @Override
     public void addHeaderView(View v) {
-        v.setTag(WrapperAdapter.TAG_HEADER_FOOTER, WrapperAdapter.TAG_HEADER);
+//        v.setTag(WrapperAdapter.TAG_HEADER_FOOTER, WrapperAdapter.TAG_HEADER);
         super.addHeaderView(v);
     }
 
     @Override
     public void addFooterView(View v, Object data, boolean isSelectable) {
-        v.setTag(WrapperAdapter.TAG_HEADER_FOOTER, WrapperAdapter.TAG_FOOTER);
+//        v.setTag(WrapperAdapter.TAG_HEADER_FOOTER, WrapperAdapter.TAG_FOOTER);
         super.addFooterView(v, data, isSelectable);
     }
 
     @Override
     public void addFooterView(View v) {
-        v.setTag(WrapperAdapter.TAG_HEADER_FOOTER, WrapperAdapter.TAG_FOOTER);
+//        v.setTag(WrapperAdapter.TAG_HEADER_FOOTER, WrapperAdapter.TAG_FOOTER);
         super.addFooterView(v);
     }
 
