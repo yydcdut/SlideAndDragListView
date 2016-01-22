@@ -126,10 +126,19 @@ public class SlideAndDragListView<T> extends DragListView<T> implements WrapperA
                     //将当前想要滑动哪一个传递给wrapperAdapter
                     int position = pointToPosition(mXDown, mYDown);
                     if (position != AdapterView.INVALID_POSITION) {
-                        mWrapperAdapter.setSlideItemPosition(position);
+                        View view = getChildAt(position - getFirstVisiblePosition());
+                        if (view instanceof ItemMainLayout) {
+                            mWrapperAdapter.setSlideItemPosition(position);
+                            //将事件传递下去
+                            return super.dispatchTouchEvent(ev);
+                        } else {
+                            //消耗事件
+                            return true;
+                        }
+                    } else {
+                        //消耗事件
+                        return true;
                     }
-                    //将事件传递下去
-                    return super.dispatchTouchEvent(ev);
                 }
                 break;
             case MotionEvent.ACTION_UP:
@@ -284,30 +293,6 @@ public class SlideAndDragListView<T> extends DragListView<T> implements WrapperA
         mWrapperAdapter.setOnAdapterMenuClickListenerProxy(this);
         setRawAdapter(adapter);
         super.setAdapter(mWrapperAdapter);
-    }
-
-    @Override
-    public void addHeaderView(View v, Object data, boolean isSelectable) {
-//        v.setTag(WrapperAdapter.TAG_HEADER_FOOTER, WrapperAdapter.TAG_HEADER);
-        super.addHeaderView(v, data, isSelectable);
-    }
-
-    @Override
-    public void addHeaderView(View v) {
-//        v.setTag(WrapperAdapter.TAG_HEADER_FOOTER, WrapperAdapter.TAG_HEADER);
-        super.addHeaderView(v);
-    }
-
-    @Override
-    public void addFooterView(View v, Object data, boolean isSelectable) {
-//        v.setTag(WrapperAdapter.TAG_HEADER_FOOTER, WrapperAdapter.TAG_FOOTER);
-        super.addFooterView(v, data, isSelectable);
-    }
-
-    @Override
-    public void addFooterView(View v) {
-//        v.setTag(WrapperAdapter.TAG_HEADER_FOOTER, WrapperAdapter.TAG_FOOTER);
-        super.addFooterView(v);
     }
 
     /**

@@ -29,6 +29,7 @@ public class DemoActivity extends AppCompatActivity implements SlideAndDragListV
 
     private Menu mMenu;
     private List<ApplicationInfo> mAppList;
+    private SlideAndDragListView<ApplicationInfo> mListView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,15 +73,20 @@ public class DemoActivity extends AppCompatActivity implements SlideAndDragListV
     }
 
     public void initUiAndListener() {
-        SlideAndDragListView listView = (SlideAndDragListView) findViewById(R.id.lv_edit);
-        listView.setMenu(mMenu);
-        listView.setAdapter(mAdapter);
-        listView.setOnListItemLongClickListener(this);
-        listView.setOnDragListener(this, mAppList);
-        listView.setOnListItemClickListener(this);
-        listView.setOnSlideListener(this);
-        listView.setOnMenuItemClickListener(this);
-        listView.setOnItemDeleteListener(this);
+        mListView = (SlideAndDragListView) findViewById(R.id.lv_edit);
+        View header = LayoutInflater.from(this).inflate(R.layout.item_header_footer, null);
+        View footer = LayoutInflater.from(this).inflate(R.layout.item_header_footer, null);
+        footer.setBackgroundColor(0xff0000bb);
+        mListView.addHeaderView(header);
+        mListView.addFooterView(footer);
+        mListView.setMenu(mMenu);
+        mListView.setAdapter(mAdapter);
+        mListView.setOnListItemLongClickListener(this);
+//        mListView.setOnDragListener(this, mAppList);
+        mListView.setOnListItemClickListener(this);
+        mListView.setOnSlideListener(this);
+        mListView.setOnMenuItemClickListener(this);
+        mListView.setOnItemDeleteListener(this);
     }
 
     private BaseAdapter mAdapter = new BaseAdapter() {
@@ -193,7 +199,8 @@ public class DemoActivity extends AppCompatActivity implements SlideAndDragListV
 
     @Override
     public void onItemDelete(View view, int position) {
-        mAppList.remove(position);
+        mAppList.remove(position - mListView.getHeaderViewsCount());
         mAdapter.notifyDataSetChanged();
     }
+
 }
