@@ -280,6 +280,12 @@ abstract class WrapperAdapter implements WrapperListAdapter, ItemMainLayout.OnIt
                     if (mSlideItemPosition != -1) {
                         ItemMainLayout itemMainLayout = (ItemMainLayout) mListView.getChildAt(mSlideItemPosition - mListView.getFirstVisiblePosition());
                         if (itemMainLayout != null) {
+                            for (View v1 : itemMainLayout.getItemLeftBackGroundLayout().getBtnViews()) {
+                                v1.setClickable(false);
+                            }
+                            for (View v1 : itemMainLayout.getItemRightBackGroundLayout().getBtnViews()) {
+                                v1.setClickable(false);
+                            }
                             itemMainLayout.deleteItem(this);
                         }
                     }
@@ -307,8 +313,10 @@ abstract class WrapperAdapter implements WrapperListAdapter, ItemMainLayout.OnIt
     @Override
     public void onDelete(View view) {
         int position = mSlideItemPosition;
-        onItemDelete(view, position);
-        mSlideItemPosition = -1;
+        if (mSlideItemPosition != -1) {
+            onItemDelete(view, position);
+            mSlideItemPosition = -1;
+        }
     }
 
     public interface OnAdapterMenuClickListenerProxy {
