@@ -73,34 +73,44 @@ public class DragListView<T> extends ListView implements View.OnDragListener {
                     //判断是不是已经换过位置了，如果没有换过，则进去换
                     if (position != mCurrentPosition) {
                         if (mUp) {//往上
-                            //只是移动了一格
-                            if (position - mBeforeBeforePosition == -1) {
-                                T t = mDataList.get(position);
-                                mDataList.set(position, mDataList.get(position + 1));
-                                mDataList.set(position + 1, t);
-                            } else {//一下子移动了好几个位置，其实可以和上面那个方法合并起来的
-                                T t = mDataList.get(mBeforeBeforePosition);
-                                for (int i = mBeforeBeforePosition; i > position; i--) {
-                                    mDataList.set(i, mDataList.get(i - 1));
+                            int realPosition = position - getHeaderViewsCount();
+                            if (realPosition >= 0 && realPosition < mDataList.size()) {//这里判断就忽略了drag到header的情况
+                                //只是移动了一格
+                                if (position - mBeforeBeforePosition == -1) {
+                                    T t = mDataList.get(realPosition);
+                                    mDataList.set(realPosition, mDataList.get(realPosition + 1));
+                                    mDataList.set(realPosition + 1, t);
+                                } else {//一下子移动了好几个位置，其实可以和上面那个方法合并起来的
+                                    T t = mDataList.get(mBeforeBeforePosition - getHeaderViewsCount());
+                                    for (int i = mBeforeBeforePosition - getHeaderViewsCount(); i > realPosition; i--) {
+                                        mDataList.set(i, mDataList.get(i - 1));
+                                    }
+                                    mDataList.set(realPosition, t);
                                 }
-                                mDataList.set(position, t);
+                                mSDAdapter.notifyDataSetChanged();
+                                //更新位置
+                                mCurrentPosition = position;
                             }
                         } else {
-                            if (position - mBeforeBeforePosition == 1) {
-                                T t = mDataList.get(position);
-                                mDataList.set(position, mDataList.get(position - 1));
-                                mDataList.set(position - 1, t);
-                            } else {
-                                T t = mDataList.get(mBeforeBeforePosition);
-                                for (int i = mBeforeBeforePosition; i < position; i++) {
-                                    mDataList.set(i, mDataList.get(i + 1));
+                            //header部分不算，footer部分不算
+                            int realPosition = position - getHeaderViewsCount();
+                            if (realPosition > 0 && realPosition < mDataList.size()) {
+                                if (position - mBeforeBeforePosition == 1) {
+                                    T t = mDataList.get(realPosition);
+                                    mDataList.set(realPosition, mDataList.get(realPosition - 1));
+                                    mDataList.set(realPosition - 1, t);
+                                } else {
+                                    T t = mDataList.get(mBeforeBeforePosition - getHeaderViewsCount());
+                                    for (int i = mBeforeBeforePosition - getHeaderViewsCount(); i < realPosition; i++) {
+                                        mDataList.set(i, mDataList.get(i + 1));
+                                    }
+                                    mDataList.set(realPosition, t);
                                 }
-                                mDataList.set(position, t);
+                                mSDAdapter.notifyDataSetChanged();
+                                //更新位置
+                                mCurrentPosition = position;
                             }
                         }
-                        mSDAdapter.notifyDataSetChanged();
-                        //更新位置
-                        mCurrentPosition = position;
                     }
                 }
                 if (mOnDragListener != null) {
@@ -112,8 +122,10 @@ public class DragListView<T> extends ListView implements View.OnDragListener {
             case DragEvent.ACTION_DROP:
                 mSDAdapter.notifyDataSetChanged();
                 for (int i = 0; i < getLastVisiblePosition() - getFirstVisiblePosition(); i++) {
-                    ItemMainLayout view = (ItemMainLayout) getChildAt(i);
-                    setItemVisible(view);
+                    if (getChildAt(i) instanceof ItemMainLayout) {
+                        ItemMainLayout view = (ItemMainLayout) getChildAt(i);
+                        setItemVisible(view);
+                    }
                 }
                 if (mOnDragListener != null) {
                     mOnDragListener.onDragViewDown(mCurrentPosition);
@@ -167,16 +179,17 @@ public class DragListView<T> extends ListView implements View.OnDragListener {
         mCurrentPosition = position;
         mBeforeCurrentPosition = position;
         mBeforeBeforePosition = position;
-        if (mOnDragListener != null) {
-            ItemMainLayout view = (ItemMainLayout) getChildAt(position - getFirstVisiblePosition());
-            view.getItemCustomLayout().hideBackground();
-            view.getItemLeftBackGroundLayout().setVisibility(GONE);
-            view.getItemRightBackGroundLayout().setVisibility(GONE);
+        View view = getChildAt(position - getFirstVisiblePosition());
+        if (mOnDragListener != null && view instanceof ItemMainLayout) {
+            ItemMainLayout itemMainLayout = (ItemMainLayout) getChildAt(position - getFirstVisiblePosition());
+            itemMainLayout.getItemCustomLayout().hideBackground();
+            itemMainLayout.getItemLeftBackGroundLayout().setVisibility(GONE);
+            itemMainLayout.getItemRightBackGroundLayout().setVisibility(GONE);
             ClipData.Item item = new ClipData.Item("1");
             ClipData data = new ClipData("1", new String[]{ClipDescription.MIMETYPE_TEXT_PLAIN}, item);
-            view.startDrag(data, new View.DragShadowBuilder(view), null, 0);
+            itemMainLayout.startDrag(data, new View.DragShadowBuilder(itemMainLayout), null, 0);
             mOnDragListener.onDragViewStart(position);
-            view.getItemCustomLayout().showBackground();
+            itemMainLayout.getItemCustomLayout().showBackground();
         }
     }
 

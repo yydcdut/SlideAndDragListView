@@ -90,7 +90,7 @@ public class SlideAndDragListView<T> extends DragListView<T> implements WrapperA
                         mOnListItemLongClickListener.onListItemLongClick(view, position);
                     }
                     boolean canDrag = scrollBackByDrag(position);
-                    if (canDrag) {
+                    if (canDrag && view instanceof ItemMainLayout) {
                         setDragPosition(position);
                     }
                 }

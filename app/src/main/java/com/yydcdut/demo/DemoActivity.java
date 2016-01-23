@@ -78,11 +78,13 @@ public class DemoActivity extends AppCompatActivity implements SlideAndDragListV
         View footer = LayoutInflater.from(this).inflate(R.layout.item_header_footer, null);
         footer.setBackgroundColor(0xff0000bb);
         mListView.addHeaderView(header);
+        mListView.addHeaderView(footer);
+//        mListView.addFooterView(header);
         mListView.addFooterView(footer);
         mListView.setMenu(mMenu);
         mListView.setAdapter(mAdapter);
         mListView.setOnListItemLongClickListener(this);
-//        mListView.setOnDragListener(this, mAppList);
+        mListView.setOnDragListener(this, mAppList);
         mListView.setOnListItemClickListener(this);
         mListView.setOnSlideListener(this);
         mListView.setOnMenuItemClickListener(this);
