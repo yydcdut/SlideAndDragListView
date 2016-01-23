@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-          package="com.yydcdut.demo">
+<manifest package="com.yydcdut.demo"
+          xmlns:android="http://schemas.android.com/apk/res/android">
 
     <application
         android:allowBackup="true"
@@ -8,7 +8,7 @@
         android:label="@string/app_name"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".DemoActivity"
+            android:name=".MainActivity"
             android:label="@string/app_name">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
@@ -16,6 +16,18 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
+        <activity
+            android:name=".DemoActivity"
+            android:label="SDLV with header and footer"/>
+        <activity
+            android:name=".DifferentActivity"
+            android:label="SDLV with different menus"/>
+        <activity
+            android:name=".NormalActivity"
+            android:label="Normal ListView"/>
+        <activity
+            android:name=".SimpleActivity"
+            android:label="SDLV"/>
     </application>
 
 </manifest>

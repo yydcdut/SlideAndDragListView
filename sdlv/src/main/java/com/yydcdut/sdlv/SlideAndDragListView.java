@@ -11,6 +11,10 @@ import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ListAdapter;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 /**
  * Created by yuyidong on 15/9/28.
  */
@@ -34,7 +38,6 @@ public class SlideAndDragListView<T> extends DragListView<T> implements WrapperA
     private static final int RETURN_SCROLL_BACK_CLICK_MENU_BUTTON = 3;//点击到了滑开的item的menuButton上
     private static final int RETURN_SCROLL_BACK_NOTHING = 0;//所以位置都没有回归操作
 
-
     /* 振动 */
     private Vibrator mVibrator;
     /* handler */
@@ -45,7 +48,7 @@ public class SlideAndDragListView<T> extends DragListView<T> implements WrapperA
     private int mXDown;
     private int mYDown;
     /* Menu */
-    private Menu mMenu;
+    private Map<Integer, Menu> mMenuMap;
     /* WrapperAdapter */
     private WrapperAdapter mWrapperAdapter;
     /* 手指滑动的最短距离 */
@@ -257,15 +260,52 @@ public class SlideAndDragListView<T> extends DragListView<T> implements WrapperA
      * @param menu
      */
     public void setMenu(Menu menu) {
-        mMenu = menu;
+        if (mMenuMap != null) {
+            mMenuMap.clear();
+        } else {
+            mMenuMap = new HashMap<>(1);
+        }
+        mMenuMap.put(menu.getMenuViewType(), menu);
+    }
+
+    /**
+     * 设置menu
+     *
+     * @param list
+     */
+    public void setMenu(List<Menu> list) {
+        if (mMenuMap != null) {
+            mMenuMap.clear();
+        } else {
+            mMenuMap = new HashMap<>(list.size());
+        }
+        for (Menu menu : list) {
+            mMenuMap.put(menu.getMenuViewType(), menu);
+        }
+    }
+
+    /**
+     * 设置Menu
+     *
+     * @param menus
+     */
+    public void setMenu(Menu... menus) {
+        if (mMenuMap != null) {
+            mMenuMap.clear();
+        } else {
+            mMenuMap = new HashMap<>(menus.length);
+        }
+        for (Menu menu : menus) {
+            mMenuMap.put(menu.getMenuViewType(), menu);
+        }
     }
 
     @Override
     public void setAdapter(final ListAdapter adapter) {
-        if (mMenu == null) {
+        if (mMenuMap == null || mMenuMap.size() == 0) {
             throw new IllegalArgumentException("先设置Menu");
         }
-        mWrapperAdapter = new WrapperAdapter(getContext(), this, adapter, mMenu) {
+        mWrapperAdapter = new WrapperAdapter(getContext(), this, adapter, mMenuMap) {
 
             @Override
             public void onScrollStateChangedProxy(AbsListView view, int scrollState) {

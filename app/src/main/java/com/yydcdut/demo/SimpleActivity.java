@@ -4,6 +4,7 @@ import android.content.pm.ApplicationInfo;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -20,20 +21,20 @@ import com.yydcdut.sdlv.SlideAndDragListView;
 import java.util.List;
 
 /**
- * Created by yuyidong on 15/7/31.
+ * Created by yuyidong on 16/1/23.
  */
-public class DemoActivity extends AppCompatActivity implements SlideAndDragListView.OnListItemLongClickListener,
+public class SimpleActivity extends AppCompatActivity implements SlideAndDragListView.OnListItemLongClickListener,
         SlideAndDragListView.OnDragListener, SlideAndDragListView.OnSlideListener,
         SlideAndDragListView.OnListItemClickListener, SlideAndDragListView.OnMenuItemClickListener,
         SlideAndDragListView.OnItemDeleteListener {
-    private static final String TAG = DemoActivity.class.getSimpleName();
+    private static final String TAG = SimpleActivity.class.getSimpleName();
 
     private Menu mMenu;
     private List<ApplicationInfo> mAppList;
     private SlideAndDragListView<ApplicationInfo> mListView;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit);
         initData();
@@ -75,16 +76,6 @@ public class DemoActivity extends AppCompatActivity implements SlideAndDragListV
 
     public void initUiAndListener() {
         mListView = (SlideAndDragListView) findViewById(R.id.lv_edit);
-        View header = LayoutInflater.from(this).inflate(R.layout.item_header_footer, null);
-        View footer = LayoutInflater.from(this).inflate(R.layout.item_header_footer, null);
-        View footer2 = LayoutInflater.from(this).inflate(R.layout.item_header_footer, null);
-        footer.setBackgroundColor(0xff0000bb);
-        mListView.addHeaderView(header);
-        mListView.addHeaderView(footer);
-        mListView.addHeaderView(footer2);
-        mListView.addFooterView(header);
-        mListView.addFooterView(footer);
-        mListView.addFooterView(footer2);
         mListView.setMenu(mMenu);
         mListView.setAdapter(mAdapter);
         mListView.setOnListItemLongClickListener(this);
@@ -116,7 +107,7 @@ public class DemoActivity extends AppCompatActivity implements SlideAndDragListV
             CustomViewHolder cvh;
             if (convertView == null) {
                 cvh = new CustomViewHolder();
-                convertView = LayoutInflater.from(DemoActivity.this).inflate(R.layout.item_custom, null);
+                convertView = LayoutInflater.from(SimpleActivity.this).inflate(R.layout.item_custom, null);
                 cvh.imgLogo = (ImageView) convertView.findViewById(R.id.img_item_edit);
                 cvh.txtName = (TextView) convertView.findViewById(R.id.txt_item_edit);
                 cvh.imgLogo2 = (ImageView) convertView.findViewById(R.id.img_item_edit2);
@@ -153,7 +144,7 @@ public class DemoActivity extends AppCompatActivity implements SlideAndDragListV
     @Override
     public void onDragViewMoving(int position) {
 //        Toast.makeText(DemoActivity.this, "onDragViewMoving   position--->" + position, Toast.LENGTH_SHORT).show();
-        Log.i(TAG, "onDragViewMoving   " + position);
+        Log.i("yuyidong", "onDragViewMoving   " + position);
     }
 
     @Override
@@ -208,5 +199,4 @@ public class DemoActivity extends AppCompatActivity implements SlideAndDragListV
         mAppList.remove(position - mListView.getHeaderViewsCount());
         mAdapter.notifyDataSetChanged();
     }
-
 }

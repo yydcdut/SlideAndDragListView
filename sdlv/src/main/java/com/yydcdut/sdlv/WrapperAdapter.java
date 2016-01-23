@@ -8,6 +8,8 @@ import android.widget.AbsListView;
 import android.widget.ListAdapter;
 import android.widget.WrapperListAdapter;
 
+import java.util.Map;
+
 /**
  * Created by yuyidong on 15/9/28.
  */
@@ -20,7 +22,7 @@ abstract class WrapperAdapter implements WrapperListAdapter, ItemMainLayout.OnIt
     /* 适配器 */
     private ListAdapter mAdapter;
     /* 用户自定义参数 */
-    private Menu mMenu;
+    private Map<Integer, Menu> mMenuMap;
     /* SDLV */
     private SlideAndDragListView mListView;
     /* 当前滑动的item的位置 */
@@ -29,12 +31,12 @@ abstract class WrapperAdapter implements WrapperListAdapter, ItemMainLayout.OnIt
     private OnAdapterSlideListenerProxy mOnAdapterSlideListenerProxy;
     private OnAdapterMenuClickListenerProxy mOnAdapterMenuClickListenerProxy;
 
-    public WrapperAdapter(Context context, SlideAndDragListView listView, ListAdapter adapter, Menu menu) {
+    public WrapperAdapter(Context context, SlideAndDragListView listView, ListAdapter adapter, Map<Integer, Menu> map) {
         mContext = context;
         mListView = listView;
         mListView.setOnScrollListener(this);
         mAdapter = adapter;
-        mMenu = menu;
+        mMenuMap = map;
     }
 
     @Override
@@ -88,10 +90,15 @@ abstract class WrapperAdapter implements WrapperListAdapter, ItemMainLayout.OnIt
         if (convertView == null) {
             View contentView = mAdapter.getView(position, convertView, parent);
             itemMainLayout = new ItemMainLayout(mContext);
-            itemMainLayout.setParams(mMenu.getItemHeight(), mMenu.getTotalBtnLength(MenuItem.DIRECTION_LEFT),
-                    mMenu.getTotalBtnLength(MenuItem.DIRECTION_RIGHT), mMenu.isWannaOver());
-            createMenu(itemMainLayout);
-            itemMainLayout.getItemCustomLayout().saveBackground(mMenu.getItemBackGroundDrawable());
+            int type = mAdapter.getItemViewType(position);
+            Menu menu = mMenuMap.get(type);
+            if (menu == null) {
+                throw new IllegalArgumentException("没有这个ViewType");
+            }
+            itemMainLayout.setParams(menu.getItemHeight(), menu.getTotalBtnLength(MenuItem.DIRECTION_LEFT),
+                    menu.getTotalBtnLength(MenuItem.DIRECTION_RIGHT), menu.isWannaOver());
+            createMenu(menu, itemMainLayout);
+            itemMainLayout.getItemCustomLayout().saveBackground(menu.getItemBackGroundDrawable());
             itemMainLayout.setOnItemSlideListenerProxy(this);
             itemMainLayout.getItemCustomLayout().addCustomView(contentView);
         } else {
@@ -106,11 +113,11 @@ abstract class WrapperAdapter implements WrapperListAdapter, ItemMainLayout.OnIt
      *
      * @param itemMainLayout
      */
-    private void createMenu(ItemMainLayout itemMainLayout) {
-        if (mMenu.getTotalBtnLength(MenuItem.DIRECTION_LEFT) > 0) {
-            Compat.setBackgroundDrawable(itemMainLayout.getItemLeftBackGroundLayout().getBackGroundImage(), mMenu.getItemBackGroundDrawable());
-            for (int i = 0; i < mMenu.getMenuItems(MenuItem.DIRECTION_LEFT).size(); i++) {
-                View v = itemMainLayout.getItemLeftBackGroundLayout().addMenuItem(mMenu.getMenuItems(MenuItem.DIRECTION_LEFT).get(i));
+    private void createMenu(Menu menu, ItemMainLayout itemMainLayout) {
+        if (menu.getTotalBtnLength(MenuItem.DIRECTION_LEFT) > 0) {
+            Compat.setBackgroundDrawable(itemMainLayout.getItemLeftBackGroundLayout().getBackGroundImage(), menu.getItemBackGroundDrawable());
+            for (int i = 0; i < menu.getMenuItems(MenuItem.DIRECTION_LEFT).size(); i++) {
+                View v = itemMainLayout.getItemLeftBackGroundLayout().addMenuItem(menu.getMenuItems(MenuItem.DIRECTION_LEFT).get(i));
                 v.setOnClickListener(this);
                 v.setClickable(false);
                 v.setTag(TAG_LEFT, i);
@@ -118,10 +125,10 @@ abstract class WrapperAdapter implements WrapperListAdapter, ItemMainLayout.OnIt
         } else {
             itemMainLayout.getItemLeftBackGroundLayout().setVisibility(View.GONE);
         }
-        if (mMenu.getTotalBtnLength(MenuItem.DIRECTION_RIGHT) > 0) {
-            Compat.setBackgroundDrawable(itemMainLayout.getItemRightBackGroundLayout().getBackGroundImage(), mMenu.getItemBackGroundDrawable());
-            for (int i = 0; i < mMenu.getMenuItems(MenuItem.DIRECTION_RIGHT).size(); i++) {
-                View v = itemMainLayout.getItemRightBackGroundLayout().addMenuItem(mMenu.getMenuItems(MenuItem.DIRECTION_RIGHT).get(i));
+        if (menu.getTotalBtnLength(MenuItem.DIRECTION_RIGHT) > 0) {
+            Compat.setBackgroundDrawable(itemMainLayout.getItemRightBackGroundLayout().getBackGroundImage(), menu.getItemBackGroundDrawable());
+            for (int i = 0; i < menu.getMenuItems(MenuItem.DIRECTION_RIGHT).size(); i++) {
+                View v = itemMainLayout.getItemRightBackGroundLayout().addMenuItem(menu.getMenuItems(MenuItem.DIRECTION_RIGHT).get(i));
                 v.setOnClickListener(this);
                 v.setClickable(false);
                 v.setTag(TAG_RIGHT, i);

@@ -19,6 +19,8 @@ import java.util.List;
  * Created by yuyidong on 16/1/22.
  */
 public class NormalActivity extends AppCompatActivity {
+    private static final String TAG = NormalActivity.class.getSimpleName();
+
     private List<ApplicationInfo> mAppList;
 
     @Override
@@ -36,13 +38,13 @@ public class NormalActivity extends AppCompatActivity {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Log.i("yuyidong", "setOnItemClickListener   position--->" + position);
+                Log.i(TAG, "setOnItemClickListener   position--->" + position);
             }
         });
         listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-                Log.i("yuyidong", "onItemLongClick   position--->" + position);
+                Log.i(TAG, "onItemLongClick   position--->" + position);
                 return false;
             }
         });
