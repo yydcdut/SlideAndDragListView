@@ -8,6 +8,7 @@
         android:id="@+id/btn_normal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="5dp"
         android:gravity="center"
         android:text="Normal ListView"/>
 
@@ -15,6 +16,7 @@
         android:id="@+id/btn_simple"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="5dp"
         android:gravity="center"
         android:text="SlideAndDragList"/>
 
@@ -22,14 +24,17 @@
         android:id="@+id/btn_header_footer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="5dp"
         android:gravity="center"
-        android:text="SlideAndDragList with Header and Footer"/>
+        android:text="SDLV with Header and Footer"/>
 
     <Button
         android:id="@+id/btn_view_type"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="5dp"
         android:gravity="center"
-        android:text="SlideAndDragListView with Different Menu"/>
+        android:text="SDLV with Different Menu"
+        />
 
 </LinearLayout>
