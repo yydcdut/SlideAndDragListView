@@ -61,7 +61,7 @@ compile 'com.yydcdut.sdlv:sdlv:0.3.5@aar'
 - Create a `Menu` and add `MenuItem`
 
 ``` java
-Menu menu = new Menu((int) getResources().getDimension(R.dimen.slv_item_height), new ColorDrawable(Color.WHITE), true);//the third parameter is whether can slide over
+Menu menu = new Menu(60, new ColorDrawable(Color.WHITE), true, 0);//the third parameter is whether can slide over
 menu.addItem(new MenuItem.Builder().setWidth(90)//set Width
                 .setBackground(new ColorDrawable(Color.RED))// set background
                 .setText("One")//set text string
@@ -77,7 +77,7 @@ menu.addItem(new MenuItem.Builder().setWidth(120)
 slideAndDragListView.setMenu(menu);
 ```
 
-The class `Menu`, the construct function `Menu(int itemHeight, Drawable itemBackGroundDrawable, boolean wannaOver)`, the third parameter means whether can slide over.
+The class `Menu`, the construct function `Menu(int itemHeight, Drawable itemBackGroundDrawable, boolean wannaOver, int menuViewType)`, the third parameter means whether can slide over.
 
 If it’s `true`:
 
@@ -86,6 +86,8 @@ If it’s `true`:
 If it’s `false`:
 
 <img width="350" height="70" src="https://raw.githubusercontent.com/yydcdut/SlideAndDragListView/master/gif/wannaOver_false.gif" />
+
+The fourth parameter stands for view type, the value of `int getItemViewType(int )` in `BaseAdapter`.
 
 ### Step 3
 
@@ -139,6 +141,65 @@ Have to set `OnSlideListener`!!!!!!
 `Menu.ITEM_DELETE_FROM_BOTTOM_TO_TOP`:
 
 <img width="350" height="70" src="https://raw.githubusercontent.com/yydcdut/SlideAndDragListView/master/gif/ITEM_DELETE_FROM_BOTTOM_TO_TOP.gif" />
+
+## Create Different Menu
+
+* Use the ViewType of adapter
+
+``` java
+private BaseAdapter mAdapter = new BaseAdapter() {
+        // .......
+        @Override
+        public int getItemViewType(int position) {
+            return position % 2;//current menu type
+        }
+
+        @Override
+        public int getViewTypeCount() {
+            return 2;//menu type count
+        }
+  		// ......
+}
+```
+
+* Create different menus depending on the view type
+
+``` java
+List<Menu> menuList = new ArrayList<>(2);
+Menu menu0 = new Menu(60, new ColorDrawable(Color.WHITE), true, 0);
+menu0.addItem(new MenuItem.Builder().setWidth(90)//set Width
+                .setBackground(new ColorDrawable(Color.RED))// set background
+                .setText("One")//set text string
+                .setTextColor(Color.GRAY)//set text color
+                .setTextSize(20)//set text color
+                .build());
+menu0.addItem(new MenuItem.Builder().setWidth(120)
+                .setBackground(new ColorDrawable(Color.BLACK))
+                .setDirection(MenuItem.DIRECTION_RIGHT)//set direction (default DIRECTION_LEFT)
+                .setIcon(getResources().getDrawable(R.drawable.ic_launcher))// set icon
+                .build());
+Menu menu1 = new Menu(80, new ColorDrawable(Color.YELLOW), false, 1);
+menu1.addItem(new MenuItem.Builder().setWidth(60)
+                .setBackground(new ColorDrawable(Color.RED))
+                .setText("Two")
+                .setTextColor(Color.GRAY)
+                .setTextSize(25)
+                .build());
+menu1.addItem(new MenuItem.Builder().setWidth(70)
+                .setBackground(new ColorDrawable(Color.BLUE))
+                .setText("Three")
+                .setDirection(MenuItem.DIRECTION_RIGHT)
+                .setTextColor(Color.BLACK)
+                .setTextSize(20)
+                .build());
+menuList.add(menu0);
+menuList.add(menu1);
+listView.setMenu(menuList)
+```
+
+* See the demo
+
+<img width="350" height="140" src="https://raw.githubusercontent.com/yydcdut/SlideAndDragListView/master/gif/deferrentMenu.gif" />
 
 ## Drag
 

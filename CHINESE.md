@@ -26,6 +26,7 @@ SlideAndDragListView 用于各种优先级列表：收藏夹，播放列表，�
 # 引用
 
 
+
 ## Gradle
 
 ``` groovy
@@ -60,7 +61,7 @@ compile 'com.yydcdut.sdlv:sdlv:0.3.5@aar'
 - 创建`Menu`并添加`MenuItem`
 
 ``` java
-Menu menu = new Menu((int) getResources().getDimension(R.dimen.slv_item_height), new ColorDrawable(Color.WHITE), true);//第三个参数表示滑动item是否能滑的过量(true表示过量，就像Gif中显示的那样；false表示不过量，就像QQ中的那样)
+Menu menu = new Menu((int) getResources().getDimension(R.dimen.slv_item_height), new ColorDrawable(Color.WHITE), true, 0);//第三个参数表示滑动item是否能滑的过量(true表示过量，就像Gif中显示的那样；false表示不过量，就像QQ中的那样)
 menu.addItem(new MenuItem.Builder().setWidth(90)//单个菜单button的宽度
                 .setBackground(new ColorDrawable(Color.RED))//设置菜单的背景
                 .setText("One")//set text string
@@ -86,7 +87,7 @@ listView.setMenu(menu);
 
 <img width="350" height="70" src="https://raw.githubusercontent.com/yydcdut/SlideAndDragListView/master/gif/wannaOver_false.gif" />
 
-
+第四个参数表示ItemViewType类型，也就是`BaseAdapter`中的`int getItemViewType(int )`。
 
 ### 步骤3
 
@@ -140,6 +141,65 @@ Menu.ITEM_NOTHING`:
 `Menu.ITEM_DELETE_FROM_BOTTOM_TO_TOP`:
 
 <img width="350" height="70" src="https://raw.githubusercontent.com/yydcdut/SlideAndDragListView/master/gif/ITEM_DELETE_FROM_BOTTOM_TO_TOP.gif" />
+
+## 创建不同类型的Menu
+
+- 设置adapter中的ViewType
+
+``` java
+private BaseAdapter mAdapter = new BaseAdapter() {
+        // .......
+        @Override
+        public int getItemViewType(int position) {
+            return position % 2;//current menu type
+        }
+
+        @Override
+        public int getViewTypeCount() {
+            return 2;//menu type count
+        }
+  		// ......
+}
+```
+
+- 通过adapter中设置的来创建不同的Menu
+
+``` java
+List<Menu> menuList = new ArrayList<>(2);
+Menu menu0 = new Menu(60, new ColorDrawable(Color.WHITE), true, 0);
+menu0.addItem(new MenuItem.Builder().setWidth(90)//set Width
+                .setBackground(new ColorDrawable(Color.RED))// set background
+                .setText("One")//set text string
+                .setTextColor(Color.GRAY)//set text color
+                .setTextSize(20)//set text color
+                .build());
+menu0.addItem(new MenuItem.Builder().setWidth(120)
+                .setBackground(new ColorDrawable(Color.BLACK))
+                .setDirection(MenuItem.DIRECTION_RIGHT)//set direction (default DIRECTION_LEFT)
+                .setIcon(getResources().getDrawable(R.drawable.ic_launcher))// set icon
+                .build());
+Menu menu1 = new Menu(80, new ColorDrawable(Color.YELLOW), false, 1);
+menu1.addItem(new MenuItem.Builder().setWidth(60)
+                .setBackground(new ColorDrawable(Color.RED))
+                .setText("Two")
+                .setTextColor(Color.GRAY)
+                .setTextSize(25)
+                .build());
+menu1.addItem(new MenuItem.Builder().setWidth(70)
+                .setBackground(new ColorDrawable(Color.BLUE))
+                .setText("Three")
+                .setDirection(MenuItem.DIRECTION_RIGHT)
+                .setTextColor(Color.BLACK)
+                .setTextSize(20)
+                .build());
+menuList.add(menu0);
+menuList.add(menu1);
+listView.setMenu(menuList)
+```
+
+- Demo效果
+
+<img width="350" height="140" src="https://raw.githubusercontent.com/yydcdut/SlideAndDragListView/master/gif/deferrentMenu.gif" />
 
 ## 拖放
 
