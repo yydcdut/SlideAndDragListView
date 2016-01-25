@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.yydcdut.demo.model.QQ;
 import com.yydcdut.sdlv.Menu;
@@ -220,43 +221,43 @@ public class DifferentActivity extends AppCompatActivity implements SlideAndDrag
 
     @Override
     public void onListItemLongClick(View view, int position) {
-//        Toast.makeText(DemoActivity.this, "onItemLongClick   position--->" + position, Toast.LENGTH_SHORT).show();
+        Toast.makeText(DifferentActivity.this, "onItemLongClick   position--->" + position, Toast.LENGTH_SHORT).show();
         Log.i(TAG, "onListItemLongClick   " + position);
     }
 
     @Override
     public void onDragViewStart(int position) {
-//        Toast.makeText(DemoActivity.this, "onDragViewStart   position--->" + position, Toast.LENGTH_SHORT).show();
+        Toast.makeText(DifferentActivity.this, "onDragViewStart   position--->" + position, Toast.LENGTH_SHORT).show();
         Log.i(TAG, "onDragViewStart   " + position);
     }
 
     @Override
     public void onDragViewMoving(int position) {
-//        Toast.makeText(DemoActivity.this, "onDragViewMoving   position--->" + position, Toast.LENGTH_SHORT).show();
+//        Toast.makeText(DifferentActivity.this, "onDragViewMoving   position--->" + position, Toast.LENGTH_SHORT).show();
         Log.i(TAG, "onDragViewMoving   " + position);
     }
 
     @Override
     public void onDragViewDown(int position) {
-//        Toast.makeText(DemoActivity.this, "onDragViewDown   position--->" + position, Toast.LENGTH_SHORT).show();
+        Toast.makeText(DifferentActivity.this, "onDragViewDown   position--->" + position, Toast.LENGTH_SHORT).show();
         Log.i(TAG, "onDragViewDown   " + position);
     }
 
     @Override
     public void onListItemClick(View v, int position) {
-//        Toast.makeText(DemoActivity.this, "onItemClick   position--->" + position, Toast.LENGTH_SHORT).show();
+        Toast.makeText(DifferentActivity.this, "onItemClick   position--->" + position, Toast.LENGTH_SHORT).show();
         Log.i(TAG, "onListItemClick   " + position);
     }
 
     @Override
     public void onSlideOpen(View view, View parentView, int position, int direction) {
-//        Toast.makeText(DemoActivity.this, "onSlideOpen   position--->" + position + "  direction--->" + direction, Toast.LENGTH_SHORT).show();
+        Toast.makeText(DifferentActivity.this, "onSlideOpen   position--->" + position + "  direction--->" + direction, Toast.LENGTH_SHORT).show();
         Log.i(TAG, "onSlideOpen   " + position);
     }
 
     @Override
     public void onSlideClose(View view, View parentView, int position, int direction) {
-//        Toast.makeText(DemoActivity.this, "onSlideClose   position--->" + position + "  direction--->" + direction, Toast.LENGTH_SHORT).show();
+        Toast.makeText(DifferentActivity.this, "onSlideClose   position--->" + position + "  direction--->" + direction, Toast.LENGTH_SHORT).show();
         Log.i(TAG, "onSlideClose   " + position);
     }
 

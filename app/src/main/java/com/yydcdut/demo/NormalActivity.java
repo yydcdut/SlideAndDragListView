@@ -12,6 +12,7 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.List;
 
@@ -38,13 +39,16 @@ public class NormalActivity extends AppCompatActivity {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Log.i(TAG, "setOnItemClickListener   position--->" + position);
+                Log.i(TAG, "onItemClick   position--->" + position);
+                Toast.makeText(NormalActivity.this, "onItemClick   position--->" + position, Toast.LENGTH_SHORT).show();
+
             }
         });
         listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
                 Log.i(TAG, "onItemLongClick   position--->" + position);
+                Toast.makeText(NormalActivity.this, "onItemLongClick   position--->" + position, Toast.LENGTH_SHORT).show();
                 return false;
             }
         });
