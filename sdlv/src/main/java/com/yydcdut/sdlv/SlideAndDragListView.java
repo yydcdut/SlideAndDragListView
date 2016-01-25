@@ -142,6 +142,8 @@ public class SlideAndDragListView<T> extends DragListView<T> implements WrapperA
                         //消耗事件
                         return true;
                     }
+                } else {
+                    removeLongClickMessage();
                 }
                 break;
             case MotionEvent.ACTION_UP:
