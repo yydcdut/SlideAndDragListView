@@ -8,7 +8,7 @@ A ListView that you can slide(or swipe) the item, drag the item and drop it to a
 
 中文：<a href="https://github.com/yydcdut/SlideAndDragListView/blob/master/CHINESE.md">CHINESE.md</a>
 
-Demo: <a href="https://github.com/yydcdut/SlideAndDragListView/blob/master/apk/sdlv.apk?raw=true">DOWNLOAD</a>
+Demo: <a href="https://github.com/yydcdut/SlideAndDragListView/blob/master/apk/sdlv.apk?raw=true">DOWNLOAD</a> or <a href="http://fir.im/sjfh">QR Code</a>
 
 # Overview
 
