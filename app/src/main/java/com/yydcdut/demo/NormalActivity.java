@@ -1,8 +1,5 @@
 package com.yydcdut.demo;
 
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
-import android.animation.ValueAnimator;
 import android.content.pm.ApplicationInfo;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -45,39 +42,39 @@ public class NormalActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, final int position, long id) {
                 Log.i(TAG, "onItemClick   position--->" + position);
-//                Toast.makeText(NormalActivity.this, "onItemClick   position--->" + position, Toast.LENGTH_SHORT).show();
-                final View viewTop = listView.getChildAt(position - listView.getFirstVisiblePosition());
-                Log.i(TAG, "" + viewTop.getLeft() + "  " + viewTop.getTop() + "  " + viewTop.getRight() + "  " + viewTop.getBottom());
-                final View viewBottom = listView.getChildAt(position - listView.getFirstVisiblePosition() + 1);
-                Log.i(TAG, "" + viewBottom.getLeft() + "  " + viewBottom.getTop() + "  " + viewBottom.getRight() + "  " + viewBottom.getBottom());
-                final int delta = viewBottom.getTop() - viewTop.getTop();
-//                UDAnimation animation = new UDAnimation(delta, viewTop, viewBottom);
-//                animation.start();
-                ValueAnimator animator = ValueAnimator.ofFloat(0.0f, 1.0f);
-                animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-                    @Override
-                    public void onAnimationUpdate(ValueAnimator animation) {
-                        float disF = delta * ((Float) animation.getAnimatedValue());
-                        viewTop.setTranslationY(disF);
-                        viewBottom.setTranslationY(-disF);
-                        viewTop.invalidate();
-                        viewBottom.invalidate();
-                    }
-
-                });
-                animator.addListener(new AnimatorListenerAdapter() {
-                    @Override
-                    public void onAnimationEnd(Animator animation) {
-                        super.onAnimationEnd(animation);
-                        viewTop.setTranslationY(0);
-                        viewBottom.setTranslationY(0);
-                        ApplicationInfo applicationInfo = mAppList.get(position - listView.getHeaderViewsCount());
-                        mAppList.set(position - listView.getHeaderViewsCount(), mAppList.get(position + 1 - listView.getHeaderViewsCount()));
-                        mAppList.set(position + 1 - listView.getHeaderViewsCount(), applicationInfo);
-                        mAdapter.notifyDataSetChanged();
-                    }
-                });
-                animator.setDuration(250).start();
+                Toast.makeText(NormalActivity.this, "onItemClick   position--->" + position, Toast.LENGTH_SHORT).show();
+//                final View viewTop = listView.getChildAt(position - listView.getFirstVisiblePosition());
+//                Log.i(TAG, "" + viewTop.getLeft() + "  " + viewTop.getTop() + "  " + viewTop.getRight() + "  " + viewTop.getBottom());
+//                final View viewBottom = listView.getChildAt(position - listView.getFirstVisiblePosition() + 1);
+//                Log.i(TAG, "" + viewBottom.getLeft() + "  " + viewBottom.getTop() + "  " + viewBottom.getRight() + "  " + viewBottom.getBottom());
+//                final int delta = viewBottom.getTop() - viewTop.getTop();
+////                UDAnimation animation = new UDAnimation(delta, viewTop, viewBottom);
+////                animation.start();
+//                ValueAnimator animator = ValueAnimator.ofFloat(0.0f, 1.0f);
+//                animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+//                    @Override
+//                    public void onAnimationUpdate(ValueAnimator animation) {
+//                        float disF = delta * ((Float) animation.getAnimatedValue());
+//                        viewTop.setTranslationY(disF);
+//                        viewBottom.setTranslationY(-disF);
+//                        viewTop.invalidate();
+//                        viewBottom.invalidate();
+//                    }
+//
+//                });
+//                animator.addListener(new AnimatorListenerAdapter() {
+//                    @Override
+//                    public void onAnimationEnd(Animator animation) {
+//                        super.onAnimationEnd(animation);
+//                        viewTop.setTranslationY(0);
+//                        viewBottom.setTranslationY(0);
+//                        ApplicationInfo applicationInfo = mAppList.get(position - listView.getHeaderViewsCount());
+//                        mAppList.set(position - listView.getHeaderViewsCount(), mAppList.get(position + 1 - listView.getHeaderViewsCount()));
+//                        mAppList.set(position + 1 - listView.getHeaderViewsCount(), applicationInfo);
+//                        mAdapter.notifyDataSetChanged();
+//                    }
+//                });
+//                animator.setDuration(250).start();
 
             }
         });
