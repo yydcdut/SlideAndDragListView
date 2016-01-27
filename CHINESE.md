@@ -1,6 +1,6 @@
 # SlideAndDragListView
 
-  [ ![Download](https://api.bintray.com/packages/yydcdut/maven/sdlv/images/download.svg) ](https://bintray.com/yydcdut/maven/sdlv/_latestVersion)       [![License](http://img.shields.io/:license-apache-blue.svg)](LICENSE.txt)  [![Build Status](https://travis-ci.org/yydcdut/SlideAndDragListView.svg?branch=master)](https://travis-ci.org/yydcdut/SlideAndDragListView)    [![API](https://img.shields.io/badge/API-11%2B-brightgreen.svg?style=flat)](https://android-arsenal.com/api?level=11)  <a href="http://www.methodscount.com/?lib=com.yydcdut.sdlv%3Asdlv%3A0.4.0"><img src="https://img.shields.io/badge/Methods count-287-e91e63.svg"></img></a>   <a href="http://www.methodscount.com/?lib=com.yydcdut.sdlv%3Asdlv%3A0.4.0"><img src="https://img.shields.io/badge/Size-29 KB-e91e63.svg"></img></a>  
+  [ ![Download](https://api.bintray.com/packages/yydcdut/maven/sdlv/images/download.svg) ](https://bintray.com/yydcdut/maven/sdlv/_latestVersion)       [![License](http://img.shields.io/:license-apache-blue.svg)](LICENSE.txt)  [![Build Status](https://travis-ci.org/yydcdut/SlideAndDragListView.svg?branch=master)](https://travis-ci.org/yydcdut/SlideAndDragListView)    [![API](https://img.shields.io/badge/API-11%2B-brightgreen.svg?style=flat)](https://android-arsenal.com/api?level=11)  <a href="http://www.methodscount.com/?lib=com.yydcdut.sdlv%3Asdlv%3A0.4.1"><img src="https://img.shields.io/badge/Methods count-287-e91e63.svg"></img></a>   <a href="http://www.methodscount.com/?lib=com.yydcdut.sdlv%3Asdlv%3A0.4.1"><img src="https://img.shields.io/badge/Size-29 KB-e91e63.svg"></img></a>  
 
 一个可以左右滑动item和拖放item的ListView。
 
@@ -30,7 +30,7 @@ SlideAndDragListView 用于各种优先级列表：收藏夹，播放列表，�
 ## Gradle
 
 ``` groovy
-compile 'com.yydcdut.sdlv:sdlv:0.4.0@aar'
+compile 'com.yydcdut.sdlv:sdlv:0.4.1@aar'
 ```
 
 ## aar
@@ -61,12 +61,12 @@ compile 'com.yydcdut.sdlv:sdlv:0.4.0@aar'
 - 创建`Menu`并添加`MenuItem`
 
 ``` java
-Menu menu = new Menu((int) getResources().getDimension(R.dimen.slv_item_height), new ColorDrawable(Color.WHITE), true, 0);//第三个参数表示滑动item是否能滑的过量(true表示过量，就像Gif中显示的那样；false表示不过量，就像QQ中的那样)
+Menu menu = new Menu(new ColorDrawable(Color.WHITE), true, 0);//第2个参数表示滑动item是否能滑的过量(true表示过量，就像Gif中显示的那样；false表示不过量，就像QQ中的那样)
 menu.addItem(new MenuItem.Builder().setWidth(90)//单个菜单button的宽度
                 .setBackground(new ColorDrawable(Color.RED))//设置菜单的背景
                 .setText("One")//set text string
                 .setTextColor(Color.GRAY)//set text color
-                .setTextSize(20)//set text color
+                .setTextSize(20)//set text size
                 .build());
 menu.addItem(new MenuItem.Builder().setWidth(120)
                 .setBackground(new ColorDrawable(Color.BLACK))
@@ -77,7 +77,7 @@ menu.addItem(new MenuItem.Builder().setWidth(120)
 listView.setMenu(menu);
 ```
 
-类 `Menu` 的构造函数中的第三个参数表示滑动item是否能滑的过量(true表示过量，就像Gif中显示的那样；false表示不过量。
+类 `Menu` 的构造函数中的第二个参数表示滑动item是否能滑的过量(true表示过量，就像Gif中显示的那样；false表示不过量。
 
 如果是`true`:
 
@@ -87,7 +87,7 @@ listView.setMenu(menu);
 
 <img width="350" height="70" src="https://raw.githubusercontent.com/yydcdut/SlideAndDragListView/master/gif/wannaOver_false.gif" />
 
-第四个参数表示ItemViewType类型，也就是`BaseAdapter`中的`int getItemViewType(int )`。
+第三个参数表示ItemViewType类型，也就是`BaseAdapter`中的`int getItemViewType(int )`。
 
 ### 步骤3
 
@@ -166,19 +166,19 @@ private BaseAdapter mAdapter = new BaseAdapter() {
 
 ``` java
 List<Menu> menuList = new ArrayList<>(2);
-Menu menu0 = new Menu(60, new ColorDrawable(Color.WHITE), true, 0);
+Menu menu0 = new Menu(new ColorDrawable(Color.WHITE), true, 0);
 menu0.addItem(new MenuItem.Builder().setWidth(90)//set Width
                 .setBackground(new ColorDrawable(Color.RED))// set background
                 .setText("One")//set text string
                 .setTextColor(Color.GRAY)//set text color
-                .setTextSize(20)//set text color
+                .setTextSize(20)//set text size
                 .build());
 menu0.addItem(new MenuItem.Builder().setWidth(120)
                 .setBackground(new ColorDrawable(Color.BLACK))
                 .setDirection(MenuItem.DIRECTION_RIGHT)//set direction (default DIRECTION_LEFT)
                 .setIcon(getResources().getDrawable(R.drawable.ic_launcher))// set icon
                 .build());
-Menu menu1 = new Menu(80, new ColorDrawable(Color.YELLOW), false, 1);
+Menu menu1 = new Menu(new ColorDrawable(Color.YELLOW), false, 1);
 menu1.addItem(new MenuItem.Builder().setWidth(60)
                 .setBackground(new ColorDrawable(Color.RED))
                 .setText("Two")
