@@ -95,7 +95,7 @@ abstract class WrapperAdapter implements WrapperListAdapter, ItemMainLayout.OnIt
             if (menu == null) {
                 throw new IllegalArgumentException("没有这个ViewType");
             }
-            itemMainLayout.setParams(menu.getItemHeight(), menu.getTotalBtnLength(MenuItem.DIRECTION_LEFT),
+            itemMainLayout.setParams(menu.getTotalBtnLength(MenuItem.DIRECTION_LEFT),
                     menu.getTotalBtnLength(MenuItem.DIRECTION_RIGHT), menu.isWannaOver());
             createMenu(menu, itemMainLayout);
             itemMainLayout.getItemCustomLayout().saveBackground(menu.getItemBackGroundDrawable());

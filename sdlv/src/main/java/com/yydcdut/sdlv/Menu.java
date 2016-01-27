@@ -16,31 +16,25 @@ public final class Menu {
     private List<MenuItem> mLeftMenuItems;
     private List<MenuItem> mRightMenuItems;
 
-    private int mItemHeight;
     private Drawable mItemBackGroundDrawable;
     private boolean mWannaOver = true;
 
     private int mMenuViewType = 0;
 
-    public Menu(int itemHeight, Drawable itemBackGroundDrawable) {
-        this(itemHeight, itemBackGroundDrawable, true);
+    public Menu(Drawable itemBackGroundDrawable) {
+        this(itemBackGroundDrawable, true);
     }
 
-    public Menu(int itemHeight, Drawable itemBackGroundDrawable, boolean wannaOver) {
-        this(itemHeight, itemBackGroundDrawable, wannaOver, 0);
+    public Menu(Drawable itemBackGroundDrawable, boolean wannaOver) {
+        this(itemBackGroundDrawable, wannaOver, 0);
     }
 
-    public Menu(int itemHeight, Drawable itemBackGroundDrawable, boolean wannaOver, int menuViewType) {
-        mItemHeight = itemHeight;
+    public Menu(Drawable itemBackGroundDrawable, boolean wannaOver, int menuViewType) {
         mItemBackGroundDrawable = itemBackGroundDrawable;
         mWannaOver = wannaOver;
         mLeftMenuItems = new ArrayList<>();
         mRightMenuItems = new ArrayList<>();
         mMenuViewType = menuViewType;
-    }
-
-    public int getItemHeight() {
-        return mItemHeight;
     }
 
     public Drawable getItemBackGroundDrawable() {

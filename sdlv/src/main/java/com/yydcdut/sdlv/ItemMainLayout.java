@@ -2,7 +2,6 @@ package com.yydcdut.sdlv;
 
 import android.content.Context;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewConfiguration;
@@ -35,6 +34,9 @@ class ItemMainLayout extends FrameLayout {
     private static final int SCROLL_DELETE_TIME = 300;//300ms
     /* 控件高度 */
     private int mHeight;
+    /* 删除的时候高度的变换 */
+    private int mDeleteHeight = DEFAULT_DELETE_HEIGHT;
+    private static final int DEFAULT_DELETE_HEIGHT = -4399;
     /* 子控件中button的总宽度 */
     private int mBtnLeftTotalWidth;
     private int mBtnRightTotalWidth;
@@ -106,25 +108,32 @@ class ItemMainLayout extends FrameLayout {
     }
 
     /**
-     * @param height
      * @param btnLeftTotalWidth
      * @param btnRightTotalWidth
      * @param wannaOver
      */
-    public void setParams(int height, int btnLeftTotalWidth, int btnRightTotalWidth, boolean wannaOver) {
-        mHeight = height;
+    public void setParams(int btnLeftTotalWidth, int btnRightTotalWidth, boolean wannaOver) {
+        requestLayout();
         mBtnLeftTotalWidth = btnLeftTotalWidth;
         mBtnRightTotalWidth = btnRightTotalWidth;
         mWannaOver = wannaOver;
-        requestLayout();
     }
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        setMeasuredDimension(MeasureSpec.getSize(widthMeasureSpec), mHeight);
-        for (int i = 0; i < getChildCount(); i++) {
-            measureChild(getChildAt(i), widthMeasureSpec, MeasureSpec.makeMeasureSpec(mHeight, MeasureSpec.EXACTLY));
+        if (mDeleteHeight == DEFAULT_DELETE_HEIGHT || mDeleteHeight < 0) {
+            super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+            mHeight = getMeasuredHeight();
+            for (int i = 0; i < getChildCount(); i++) {
+                measureChild(getChildAt(i), widthMeasureSpec, MeasureSpec.makeMeasureSpec(mHeight, MeasureSpec.EXACTLY));
+            }
+        } else if (mDeleteHeight >= 0) {
+            setMeasuredDimension(MeasureSpec.getSize(widthMeasureSpec), mDeleteHeight);
+            for (int i = 0; i < getChildCount(); i++) {
+                measureChild(getChildAt(i), widthMeasureSpec, MeasureSpec.makeMeasureSpec(mDeleteHeight, MeasureSpec.EXACTLY));
+            }
         }
+
     }
 
     @Override
@@ -241,7 +250,6 @@ class ItemMainLayout extends FrameLayout {
                     case INTENTION_RIGHT_CLOSE:
                     case INTENTION_RIGHT_OPEN:
                     case INTENTION_RIGHT_ALREADY_OPEN:
-                        Log.i("yuyidong", "mScrollState--->" + mScrollState);
                         if (Math.abs(mItemCustomLayout.getLeft()) > mBtnRightTotalWidth / 2) {
                             //滑出
                             mIntention = INTENTION_RIGHT_OPEN;
@@ -326,7 +334,7 @@ class ItemMainLayout extends FrameLayout {
      */
     public void deleteItem(final OnItemDeleteListenerProxy onItemDeleteListenerProxy) {
         scrollBack();
-        final int originHeight = mHeight;
+        mDeleteHeight = mHeight;
         Animation.AnimationListener animationListener = new Animation.AnimationListener() {
             @Override
             public void onAnimationStart(Animation animation) {
@@ -335,7 +343,7 @@ class ItemMainLayout extends FrameLayout {
 
             @Override
             public void onAnimationEnd(Animation animation) {
-                mHeight = originHeight;
+                mDeleteHeight = DEFAULT_DELETE_HEIGHT;
                 ItemMainLayout.this.requestLayout();
                 ItemMainLayout.this.getItemCustomLayout().refreshBackground();
                 if (onItemDeleteListenerProxy != null) {
@@ -353,9 +361,9 @@ class ItemMainLayout extends FrameLayout {
             @Override
             protected void applyTransformation(float interpolatedTime, Transformation t) {
                 if (interpolatedTime == 1.0f) {
-                    mHeight = originHeight;
+                    mDeleteHeight = mHeight;
                 } else {
-                    mHeight = originHeight - (int) (originHeight * interpolatedTime);
+                    mDeleteHeight = mHeight - (int) (mHeight * interpolatedTime);
                 }
                 ItemMainLayout.this.requestLayout();
             }

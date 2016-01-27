@@ -37,7 +37,7 @@ public class DifferentActivity extends AppCompatActivity implements SlideAndDrag
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_edit);
+        setContentView(R.layout.activity_sdlv);
         initData();
         initMenu();
         initUiAndListener();
@@ -86,7 +86,7 @@ public class DifferentActivity extends AppCompatActivity implements SlideAndDrag
 
     public void initMenu() {
         mMenuList = new ArrayList<>(2);
-        Menu menu0 = new Menu((int) getResources().getDimension(R.dimen.slv_item_height), new ColorDrawable(Color.WHITE), true, 0);
+        Menu menu0 = new Menu(new ColorDrawable(Color.WHITE), true, 0);
         menu0.addItem(new MenuItem.Builder().setWidth((int) getResources().getDimension(R.dimen.slv_item_bg_btn2_width))
                 .setBackground(new ColorDrawable(Color.RED))
                 .setText("删除")
@@ -113,7 +113,7 @@ public class DifferentActivity extends AppCompatActivity implements SlideAndDrag
                 .setDirection(MenuItem.DIRECTION_LEFT)
                 .setIcon(getResources().getDrawable(R.drawable.ic_launcher))
                 .build());
-        Menu menu1 = new Menu((int) getResources().getDimension(R.dimen.slv_item_height), new ColorDrawable(Color.WHITE), false, 1);
+        Menu menu1 = new Menu(new ColorDrawable(Color.WHITE), false, 1);
         menu1.addItem(new MenuItem.Builder().setWidth((int) getResources().getDimension(R.dimen.slv_item_bg_btn2_width))
                 .setBackground(new ColorDrawable(Color.RED))
                 .setText("删除")

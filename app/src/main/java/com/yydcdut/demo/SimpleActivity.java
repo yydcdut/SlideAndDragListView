@@ -37,7 +37,7 @@ public class SimpleActivity extends AppCompatActivity implements SlideAndDragLis
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_edit);
+        setContentView(R.layout.activity_sdlv);
         initData();
         initMenu();
         initUiAndListener();
@@ -48,7 +48,7 @@ public class SimpleActivity extends AppCompatActivity implements SlideAndDragLis
     }
 
     public void initMenu() {
-        mMenu = new Menu((int) getResources().getDimension(R.dimen.slv_item_height), new ColorDrawable(Color.LTGRAY), true);
+        mMenu = new Menu(new ColorDrawable(Color.LTGRAY), true);
         mMenu.addItem(new MenuItem.Builder().setWidth((int) getResources().getDimension(R.dimen.slv_item_bg_btn_width) * 2)
                 .setBackground(new ColorDrawable(Color.RED))
                 .setText("One")
