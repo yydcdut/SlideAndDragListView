@@ -132,19 +132,20 @@ public class SlideAndDragListView<T> extends DragListView<T> implements WrapperA
                         if (view instanceof ItemMainLayout) {
                             ItemMainLayout itemMainLayout = (ItemMainLayout) view;
                             if (isFingerMoving2Right(ev)) {//如果想向右滑动
-                                if (itemMainLayout.getItemLeftBackGroundLayout().getBtnViews().size() == 0) {//但是又没有Left的Menu
+                                if (itemMainLayout.getItemLeftBackGroundLayout().getBtnViews().size() == 0 &&
+                                        itemMainLayout.getScrollState() == ItemMainLayout.SCROLL_STATE_CLOSE) {//但是又没有Left的Menu
                                     mState = STATE_NOTHING;
                                     //消耗事件
                                     return true;
                                 }
-                            } else if (isFingerMoving2Right(ev)) {//如果想向左滑动
-                                if (itemMainLayout.getItemRightBackGroundLayout().getBtnViews().size() == 0) {//但是又没有Right的Menu
+                            } else if (isFingerMoving2Left(ev)) {//如果想向左滑动
+                                if (itemMainLayout.getItemRightBackGroundLayout().getBtnViews().size() == 0 &&
+                                        itemMainLayout.getScrollState() == ItemMainLayout.SCROLL_STATE_CLOSE) {//但是又没有Right的Menu
                                     mState = STATE_NOTHING;
                                     //消耗事件
                                     return true;
                                 }
                             }
-                            //如果都有，那么将事件传递下去
                             mWrapperAdapter.setSlideItemPosition(position);
                             //将事件传递下去
                             mState = STATE_SCROLL;

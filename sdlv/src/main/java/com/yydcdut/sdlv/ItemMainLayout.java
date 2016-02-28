@@ -25,8 +25,8 @@ class ItemMainLayout extends FrameLayout {
     private int mIntention = INTENTION_ZERO;
 
     /* 判断当前是否滑出，若为滑出，则是SCROLL_STATE_OPEN，则过度的滑动都不会去触发slideOpen接口，同理SCROLL_STATE_CLOSE */
-    private static final int SCROLL_STATE_OPEN = 1;
-    private static final int SCROLL_STATE_CLOSE = 0;
+    protected static final int SCROLL_STATE_OPEN = 1;
+    protected static final int SCROLL_STATE_CLOSE = 0;
     private int mScrollState = SCROLL_STATE_CLOSE;
     /* 时间 */
     private static final int SCROLL_TIME = 500;//500ms
@@ -182,6 +182,9 @@ class ItemMainLayout extends FrameLayout {
                     switch (mIntention) {
                         case INTENTION_LEFT_OPEN:
                         case INTENTION_LEFT_ALREADY_OPEN:
+                            if (mItemLeftBackGroundLayout.getBtnViews().size() == 0) {//如果左边没有menu，就不能往左滑动
+                                break;
+                            }
                             //此时moveDistance为正数，mLeftDistance为0
                             float distanceLeftOpen = mLeftDistance + moveDistance;
                             if (!mWannaOver) {
@@ -200,6 +203,9 @@ class ItemMainLayout extends FrameLayout {
                             break;
                         case INTENTION_RIGHT_OPEN:
                         case INTENTION_RIGHT_ALREADY_OPEN:
+                            if (mItemRightBackGroundLayout.getBtnViews().size() == 0) {//如果右边没有menu，就不能往左滑动
+                                break;
+                            }
                             //此时moveDistance为负数，mLeftDistance为0
                             float distanceRightOpen = mLeftDistance + moveDistance;
                             //distanceRightOpen为正数
@@ -440,5 +446,14 @@ class ItemMainLayout extends FrameLayout {
 
     protected interface OnItemDeleteListenerProxy {
         void onDelete(View view);
+    }
+
+    /**
+     * 得到当前itemMainLayout是否是滑开的状态
+     *
+     * @return
+     */
+    public int getScrollState() {
+        return mScrollState;
     }
 }
