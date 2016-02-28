@@ -125,20 +125,37 @@ public class SlideAndDragListView<T> extends DragListView<T> implements WrapperA
                     mState = STATE_LONG_CLICK;
                 } else if (fingerLeftAndRightMove(ev)) {//上下范围在50，主要检测左右滑动
                     removeLongClickMessage();
-                    mState = STATE_SCROLL;
                     //将当前想要滑动哪一个传递给wrapperAdapter
                     int position = pointToPosition(mXDown, mYDown);
                     if (position != AdapterView.INVALID_POSITION) {
                         View view = getChildAt(position - getFirstVisiblePosition());
                         if (view instanceof ItemMainLayout) {
+                            ItemMainLayout itemMainLayout = (ItemMainLayout) view;
+                            if (isFingerMoving2Right(ev)) {//如果想向右滑动
+                                if (itemMainLayout.getItemLeftBackGroundLayout().getBtnViews().size() == 0) {//但是又没有Left的Menu
+                                    mState = STATE_NOTHING;
+                                    //消耗事件
+                                    return true;
+                                }
+                            } else if (isFingerMoving2Right(ev)) {//如果想向左滑动
+                                if (itemMainLayout.getItemRightBackGroundLayout().getBtnViews().size() == 0) {//但是又没有Right的Menu
+                                    mState = STATE_NOTHING;
+                                    //消耗事件
+                                    return true;
+                                }
+                            }
+                            //如果都有，那么将事件传递下去
                             mWrapperAdapter.setSlideItemPosition(position);
                             //将事件传递下去
+                            mState = STATE_SCROLL;
                             return super.dispatchTouchEvent(ev);
                         } else {
+                            mState = STATE_NOTHING;
                             //消耗事件
                             return true;
                         }
                     } else {
+                        mState = STATE_NOTHING;
                         //消耗事件
                         return true;
                     }
@@ -254,6 +271,24 @@ public class SlideAndDragListView<T> extends DragListView<T> implements WrapperA
     private boolean fingerLeftAndRightMove(MotionEvent ev) {
         return ((ev.getX() - mXDown > mShortestDistance || ev.getX() - mXDown < -mShortestDistance) &&
                 ev.getY() - mYDown < mShortestDistance && ev.getY() - mYDown > -mShortestDistance);
+    }
+
+    /**
+     * 是不是向右滑动
+     *
+     * @return
+     */
+    private boolean isFingerMoving2Right(MotionEvent ev) {
+        return (ev.getX() - mXDown > mShortestDistance);
+    }
+
+    /**
+     * 是不是向左滑动
+     *
+     * @return
+     */
+    private boolean isFingerMoving2Left(MotionEvent ev) {
+        return (ev.getX() - mXDown < -mShortestDistance);
     }
 
     /**
