@@ -207,26 +207,30 @@ abstract class WrapperAdapter implements WrapperListAdapter, ItemMainLayout.OnIt
      * @param x
      * @return 是否滑动归位了
      */
-    public boolean returnSlideItemPosition(float x) {
+    public int returnSlideItemPosition(float x) {
         if (mSlideItemPosition != -1) {
             ItemMainLayout itemMainLayout = (ItemMainLayout) mListView.getChildAt(mSlideItemPosition - mListView.getFirstVisiblePosition());
             if (itemMainLayout != null) {
-                boolean isScrollBack = itemMainLayout.scrollBack(x);
-                if (isScrollBack) {
-                    for (View v : itemMainLayout.getItemLeftBackGroundLayout().getBtnViews()) {
-                        v.setClickable(false);
-                    }
-                    for (View v : itemMainLayout.getItemRightBackGroundLayout().getBtnViews()) {
-                        v.setClickable(false);
-                    }
-                } else {
-                    return false;
+                int scrollBackSituation = itemMainLayout.scrollBack(x);
+                switch (scrollBackSituation) {
+                    case ItemMainLayout.SCROLL_BACK_ALREADY_CLOSED:
+                    case ItemMainLayout.SCROLL_BACK_CLICK_OWN:
+                        for (View v : itemMainLayout.getItemLeftBackGroundLayout().getBtnViews()) {
+                            v.setClickable(false);
+                        }
+                        for (View v : itemMainLayout.getItemRightBackGroundLayout().getBtnViews()) {
+                            v.setClickable(false);
+                        }
+                        break;
+                    case ItemMainLayout.SCROLL_BACK_CLICK_MENU_BUTTON:
+                        break;
                 }
+                return scrollBackSituation;
             }
             mSlideItemPosition = -1;
-            return true;
+            return ItemMainLayout.SCROLL_BACK_CLICK_NOTHING;
         }
-        return false;
+        return ItemMainLayout.SCROLL_BACK_CLICK_NOTHING;
     }
 
     /**

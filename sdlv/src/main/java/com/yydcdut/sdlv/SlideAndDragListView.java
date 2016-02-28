@@ -201,11 +201,14 @@ public class SlideAndDragListView<T> extends DragListView<T> implements WrapperA
     private int scrollBack(int position, float x) {
         //是不是当前滑开的这个
         if (mWrapperAdapter.getSlideItemPosition() == position) {
-            boolean isScrollBack = mWrapperAdapter.returnSlideItemPosition(x);
-            if (isScrollBack) {
-                return RETURN_SCROLL_BACK_OWN;
-            } else {
-                return RETURN_SCROLL_BACK_CLICK_MENU_BUTTON;
+            int scrollBackSituation = mWrapperAdapter.returnSlideItemPosition(x);
+            switch (scrollBackSituation) {
+                case ItemMainLayout.SCROLL_BACK_CLICK_OWN:
+                    return RETURN_SCROLL_BACK_OWN;
+                case ItemMainLayout.SCROLL_BACK_ALREADY_CLOSED:
+                    return RETURN_SCROLL_BACK_NOTHING;
+                case ItemMainLayout.SCROLL_BACK_CLICK_MENU_BUTTON:
+                    return RETURN_SCROLL_BACK_CLICK_MENU_BUTTON;
             }
         } else if (mWrapperAdapter.getSlideItemPosition() != -1) {
             mWrapperAdapter.returnSlideItemPosition();

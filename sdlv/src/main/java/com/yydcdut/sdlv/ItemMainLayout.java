@@ -28,9 +28,15 @@ class ItemMainLayout extends FrameLayout {
     protected static final int SCROLL_STATE_OPEN = 1;
     protected static final int SCROLL_STATE_CLOSE = 0;
     private int mScrollState = SCROLL_STATE_CLOSE;
+    /* 需要scroll back的时候返回的状态 */
+    protected static final int SCROLL_BACK_CLICK_NOTHING = 0;
+    protected static final int SCROLL_BACK_CLICK_OWN = 1;
+    protected static final int SCROLL_BACK_ALREADY_CLOSED = 2;
+    protected static final int SCROLL_BACK_CLICK_MENU_BUTTON = 3;
+
     /* 时间 */
     private static final int SCROLL_TIME = 500;//500ms
-    private static final int SCROLL_BACK = 250;//250MS
+    private static final int SCROLL_BACK_TIME = 250;//250MS
     private static final int SCROLL_DELETE_TIME = 300;//300ms
     /* 控件高度 */
     private int mHeight;
@@ -399,34 +405,36 @@ class ItemMainLayout extends FrameLayout {
      */
     protected void scrollBack() {
         mIntention = INTENTION_SCROLL_BACK;
-        mScroller.startScroll(mItemCustomLayout.getLeft(), 0, -mItemCustomLayout.getLeft(), 0, SCROLL_BACK);
+        mScroller.startScroll(mItemCustomLayout.getLeft(), 0, -mItemCustomLayout.getLeft(), 0, SCROLL_BACK_TIME);
         postInvalidate();
         mScrollState = SCROLL_STATE_CLOSE;
     }
 
     /**
-     * @param x
-     * @return 是不是滑动了
+     * @param x 手指点下的位置
+     * @return
      */
-    protected boolean scrollBack(float x) {
-        if (mItemCustomLayout.getLeft() > 0) {
-            //已经向右滑动了
+    protected int scrollBack(float x) {
+        if (mScrollState == SCROLL_STATE_CLOSE) {//没有滑开，其实是滑了但是又滑归位了
+            return SCROLL_BACK_ALREADY_CLOSED;
+        }
+        if (mItemCustomLayout.getLeft() > 0) { //已经向右滑动了，而且滑开了
             if (x > mItemCustomLayout.getLeft()) {
                 //没有点击到menu的button
                 scrollBack();
                 mScrollState = SCROLL_STATE_CLOSE;
-                return true;
+                return SCROLL_BACK_CLICK_OWN;
             }
-        } else if (mItemCustomLayout.getLeft() < 0) {
-            //已经向左滑动了
+
+        } else if (mItemCustomLayout.getLeft() < 0) {//已经向左滑动了，而且滑开了
             if (x < mItemCustomLayout.getRight()) {
                 //没有点击到menu的button
                 scrollBack();
                 mScrollState = SCROLL_STATE_CLOSE;
-                return true;
+                return SCROLL_BACK_CLICK_OWN;
             }
         }
-        return false;
+        return SCROLL_BACK_CLICK_MENU_BUTTON;
     }
 
     /**
