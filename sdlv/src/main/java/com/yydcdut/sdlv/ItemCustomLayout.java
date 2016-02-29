@@ -25,7 +25,11 @@ class ItemCustomLayout extends FrameLayout {
     }
 
     public void addCustomView(View customView) {
-        addView(customView, 1, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+        if (customView.getLayoutParams() == null) {
+            addView(customView, 1, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+        } else {
+            addView(customView, 1, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, customView.getLayoutParams().height));
+        }
     }
 
     public View getCustomView() {
