@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
+import android.widget.SimpleAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -87,6 +88,14 @@ public class DemoActivity extends AppCompatActivity implements SlideAndDragListV
         mListView.addFooterView(footer);
         mListView.addFooterView(footer2);
         mListView.setMenu(mMenu);
+//        List<Map<String, String>> list = new ArrayList<>(mAppList.size());
+//        for (ApplicationInfo applicationInfo : mAppList) {
+//            Map<String,String> map = new HashMap<>();
+//            map.put("text", applicationInfo.loadLabel(getPackageManager()).toString());
+//            list.add(map);
+//        }
+//        mSimpleAdapter = new SimpleAdapter(this, list, R.layout.item_simple_adapter, new String[]{"text"}, new int[]{R.id.txt_simple});
+//        mListView.setAdapter(mSimpleAdapter);
         mListView.setAdapter(mAdapter);
         mListView.setOnListItemLongClickListener(this);
         mListView.setOnDragListener(this, mAppList);
@@ -95,6 +104,8 @@ public class DemoActivity extends AppCompatActivity implements SlideAndDragListV
         mListView.setOnMenuItemClickListener(this);
         mListView.setOnItemDeleteListener(this);
     }
+
+    private SimpleAdapter mSimpleAdapter;
 
     private BaseAdapter mAdapter = new BaseAdapter() {
         @Override
@@ -172,13 +183,13 @@ public class DemoActivity extends AppCompatActivity implements SlideAndDragListV
     @Override
     public void onSlideOpen(View view, View parentView, int position, int direction) {
         Toast.makeText(DemoActivity.this, "onSlideOpen   position--->" + position + "  direction--->" + direction, Toast.LENGTH_SHORT).show();
-        Log.i(TAG, "onSlideOpen   " + position);
+        Log.i(TAG, "onSlideOpen   " + position + "  direction--->" + direction);
     }
 
     @Override
     public void onSlideClose(View view, View parentView, int position, int direction) {
         Toast.makeText(DemoActivity.this, "onSlideClose   position--->" + position + "  direction--->" + direction, Toast.LENGTH_SHORT).show();
-        Log.i(TAG, "onSlideClose   " + position);
+        Log.i(TAG, "onSlideClose   " + position + "  direction--->" + direction);
     }
 
     @Override
