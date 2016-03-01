@@ -60,6 +60,7 @@ public class SlideAndDragListView<T> extends DragListView<T> implements WrapperA
     private OnListItemLongClickListener mOnListItemLongClickListener;
     private OnListItemClickListener mOnListItemClickListener;
     private OnItemDeleteListener mOnItemDeleteListener;
+    private OnListScrollListener mOnListScrollListener;
 
     public SlideAndDragListView(Context context) {
         this(context, null);
@@ -355,11 +356,16 @@ public class SlideAndDragListView<T> extends DragListView<T> implements WrapperA
                 } else {
                     mIsWannaTriggerClick = false;
                 }
+                if (mOnListScrollListener != null) {
+                    mOnListScrollListener.onScrollStateChanged(view, scrollState);
+                }
             }
 
             @Override
             public void onScrollProxy(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
-
+                if (mOnListScrollListener != null) {
+                    mOnListScrollListener.onScroll(view, firstVisibleItem, visibleItemCount, totalItemCount);
+                }
             }
 
             @Override
@@ -476,6 +482,11 @@ public class SlideAndDragListView<T> extends DragListView<T> implements WrapperA
         void onListItemClick(View v, int position);
     }
 
+    /**
+     * {@link #setOnListItemLongClickListener(OnListItemLongClickListener)}
+     *
+     * @param listener
+     */
     @Deprecated
     @Override
     public void setOnItemLongClickListener(OnItemLongClickListener listener) {
@@ -505,4 +516,23 @@ public class SlideAndDragListView<T> extends DragListView<T> implements WrapperA
         void onItemDelete(View view, int position);
     }
 
+    @Deprecated
+    @Override
+    public void setOnScrollListener(OnScrollListener l) {
+        super.setOnScrollListener(l);
+    }
+
+    public void setOnListScrollListener(OnListScrollListener onListScrollListener) {
+        mOnListScrollListener = onListScrollListener;
+    }
+
+    public interface OnListScrollListener {
+        int SCROLL_STATE_IDLE = 0;
+        int SCROLL_STATE_TOUCH_SCROLL = 1;
+        int SCROLL_STATE_FLING = 2;
+
+        void onScrollStateChanged(AbsListView view, int scrollState);
+
+        void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount);
+    }
 }
