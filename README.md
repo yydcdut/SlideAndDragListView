@@ -289,6 +289,29 @@ slideAndDragListView.setOnItemDeleteListener(new SlideAndDragListView.OnItemDele
 
 `public void onItemDelete(View view, int position)` will invoked after `int onMenuItemClick(View v, int itemPosition, int buttonPosition, int direction)` return `Menu.ITEM_DELETE_FROM_BOTTOM_TO_TOP`.
 
+### Scroll Listener
+
+```java
+slideAndDragListView.setOnListScrollListener(new SlideAndDragListView.OnListScrollListener(){
+        @Override
+        public void onScrollStateChanged(AbsListView view,int scrollState){
+            if(scrollState==SlideAndDragListView.OnListScrollListener.SCROLL_STATE_FLING){
+
+            }else if(scrollState==SlideAndDragListView.OnListScrollListener.SCROLL_STATE_FLING){
+
+            }else if(scrollState==SlideAndDragListView.OnListScrollListener.SCROLL_STATE_TOUCH_SCROLL){
+
+            }
+        }
+
+        @Override
+        public void onScroll(AbsListView view,int firstVisibleItem,int visibleItemCount,int totalItemCount){
+        }
+    });
+```
+
+Same as `ListView.OnScrollListener` .
+
 # Permission
 
 ``` xml

@@ -144,7 +144,7 @@ Menu.ITEM_NOTHING`:
 
 ## 创建不同类型的Menu
 
-- 设置adapter中的ViewType
+- 设置 adapter 中的 ViewType
 
 ``` java
 private BaseAdapter mAdapter = new BaseAdapter() {
@@ -162,7 +162,7 @@ private BaseAdapter mAdapter = new BaseAdapter() {
 }
 ```
 
-- 通过adapter中设置的来创建不同的Menu
+- 通过 adapter 中设置的来创建不同的 Menu
 
 ``` java
 List<Menu> menuList = new ArrayList<>(2);
@@ -197,7 +197,7 @@ menuList.add(menu1);
 listView.setMenu(menuList)
 ```
 
-- Demo效果
+- Demo 效果
 
 <img width="350" height="140" src="https://raw.githubusercontent.com/yydcdut/SlideAndDragListView/master/gif/deferrentMenu.gif" />
 
@@ -230,7 +230,7 @@ slideAndDragListView.setOnDragListener(new SlideAndDragListView.OnDragListener()
 
 ## 其他
 
-### Item单击
+### Item 单击
 
 ``` java
 slideAndDragListView.setOnListItemClickListener(new SlideAndDragListView.OnListItemClickListener() {
@@ -241,7 +241,7 @@ slideAndDragListView.setOnListItemClickListener(new SlideAndDragListView.OnListI
         });
 ```
 
-### Item长单击
+### Item 长单击
 
 ``` java
 slideAndDragListView.setOnListItemLongClickListener(new SlideAndDragListView.OnListItemLongClickListener() {
@@ -268,7 +268,7 @@ SlideAndDragListView.OnSlideListener() {
         });
 ```
 
-### Item删除监听器
+### Item 删除监听器
 
 ``` java
 slideAndDragListView.setOnItemDeleteListener(new SlideAndDragListView.OnItemDeleteListener() {
@@ -280,6 +280,29 @@ slideAndDragListView.setOnItemDeleteListener(new SlideAndDragListView.OnItemDele
 ```
 
 `public void onItemDelete(View view, int position)` 的调用是在 `int onMenuItemClick(View v, int itemPosition, int buttonPosition, int direction)` 返回`Menu.ITEM_DELETE_FROM_BOTTOM_TO_TOP`之后.
+
+### 滑动监听器
+
+```java
+slideAndDragListView.setOnListScrollListener(new SlideAndDragListView.OnListScrollListener(){
+        @Override
+        public void onScrollStateChanged(AbsListView view,int scrollState){
+            if(scrollState==SlideAndDragListView.OnListScrollListener.SCROLL_STATE_FLING){
+
+            }else if(scrollState==SlideAndDragListView.OnListScrollListener.SCROLL_STATE_FLING){
+
+            }else if(scrollState==SlideAndDragListView.OnListScrollListener.SCROLL_STATE_TOUCH_SCROLL){
+
+            }
+        }
+
+        @Override
+        public void onScroll(AbsListView view,int firstVisibleItem,int visibleItemCount,int totalItemCount){
+        }
+    });
+```
+
+与 `ListView.OnScrollListener` 相同
 
 # 权限
 
