@@ -10,7 +10,8 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="5dp"
         android:gravity="center"
-        android:text="Normal ListView"/>
+        android:text="Normal ListView"
+        android:textAllCaps="false"/>
 
     <Button
         android:id="@+id/btn_simple"
@@ -18,7 +19,8 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="5dp"
         android:gravity="center"
-        android:text="SlideAndDragList"/>
+        android:text="SlideAndDragList"
+        android:textAllCaps="false"/>
 
     <Button
         android:id="@+id/btn_header_footer"
@@ -26,7 +28,8 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="5dp"
         android:gravity="center"
-        android:text="SDLV with Header and Footer"/>
+        android:text="SDLV with Header and Footer"
+        android:textAllCaps="false"/>
 
     <Button
         android:id="@+id/btn_view_type"
@@ -35,6 +38,6 @@
         android:layout_marginBottom="5dp"
         android:gravity="center"
         android:text="SDLV with Different Menu"
-        />
+        android:textAllCaps="false"/>
 
 </LinearLayout>
