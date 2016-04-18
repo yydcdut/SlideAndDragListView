@@ -145,9 +145,9 @@ public class DragListView<T> extends ListView implements View.OnDragListener {
      * @param itemMainLayout
      */
     private void setItemVisible(ItemMainLayout itemMainLayout) {
-        if (!itemMainLayout.getItemCustomLayout().isBackgroundShowing()) {
-            itemMainLayout.getItemCustomLayout().showBackground();
-        }
+//        if (!itemMainLayout.getItemCustomView().isBackgroundShowing()) {
+//            itemMainLayout.getItemCustomView().showBackground();
+//        }
     }
 
 
@@ -182,14 +182,14 @@ public class DragListView<T> extends ListView implements View.OnDragListener {
         View view = getChildAt(position - getFirstVisiblePosition());
         if (mOnDragListener != null && view instanceof ItemMainLayout) {
             ItemMainLayout itemMainLayout = (ItemMainLayout) getChildAt(position - getFirstVisiblePosition());
-            itemMainLayout.getItemCustomLayout().hideBackground();
+//            itemMainLayout.getItemCustomView().hideBackground();
             itemMainLayout.getItemLeftBackGroundLayout().setVisibility(GONE);
             itemMainLayout.getItemRightBackGroundLayout().setVisibility(GONE);
             ClipData.Item item = new ClipData.Item("1");
             ClipData data = new ClipData("1", new String[]{ClipDescription.MIMETYPE_TEXT_PLAIN}, item);
             itemMainLayout.startDrag(data, new View.DragShadowBuilder(itemMainLayout), null, 0);
             mOnDragListener.onDragViewStart(position);
-            itemMainLayout.getItemCustomLayout().showBackground();
+//            itemMainLayout.getItemCustomView().showBackground();
         }
     }
 

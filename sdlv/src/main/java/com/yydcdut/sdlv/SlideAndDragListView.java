@@ -7,6 +7,7 @@ import android.os.Vibrator;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewConfiguration;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ListAdapter;
@@ -74,7 +75,7 @@ public class SlideAndDragListView<T> extends DragListView<T> implements WrapperA
         super(context, attrs, defStyleAttr);
         mVibrator = (Vibrator) getContext().getSystemService(Context.VIBRATOR_SERVICE);
         mHandler = new Handler(this);
-//        mShortestDistance = ViewConfiguration.get(context).getScaledDoubleTapSlop();
+        mShortestDistance = ViewConfiguration.get(context).getScaledTouchSlop();
     }
 
     @Override
@@ -104,14 +105,60 @@ public class SlideAndDragListView<T> extends DragListView<T> implements WrapperA
     }
 
     @Override
-    public boolean dispatchTouchEvent(MotionEvent ev) {
-        switch (ev.getAction()) {
+    public boolean onInterceptTouchEvent(MotionEvent ev) {
+        switch (ev.getAction() & MotionEvent.ACTION_MASK) {
             case MotionEvent.ACTION_DOWN:
                 //获取出坐标来
                 mXDown = (int) ev.getX();
                 mYDown = (int) ev.getY();
                 //当前state状态为按下
                 mState = STATE_DOWN;
+
+                int position = pointToPosition(mXDown, mYDown);
+                View view = getChildAt(position - getFirstVisiblePosition());
+                if (view instanceof ItemMainLayout) {
+                    ItemMainLayout itemMainLayout = (ItemMainLayout) view;
+                }
+
+                break;
+            case MotionEvent.ACTION_MOVE:
+                if (fingerNotMove(ev) && mState != STATE_SCROLL) {//手指的范围在50以内
+                    sendLongClickMessage(pointToPosition(mXDown, mYDown));
+                    mState = STATE_LONG_CLICK;
+                } else if (fingerLeftAndRightMove(ev)) {//上下范围在50，主要检测左右滑动
+                    removeLongClickMessage();
+                    //拦截
+                    return true;
+                }
+                break;
+        }
+        return super.onInterceptTouchEvent(ev);
+    }
+
+    private int mItemLeftDistance = -1;
+    private boolean isItemViewHandlingMotionEvent = false;
+
+    @Override
+    public boolean onTouchEvent(MotionEvent ev) {
+        switch (ev.getAction() & MotionEvent.ACTION_MASK) {
+            case MotionEvent.ACTION_DOWN:
+                //获取出坐标来
+                mXDown = (int) ev.getX();
+                mYDown = (int) ev.getY();
+                //当前state状态为按下
+                mState = STATE_DOWN;
+                int positionDown = pointToPosition(mXDown, mYDown);
+                if (positionDown != AdapterView.INVALID_POSITION) {
+                    View view = getChildAt(positionDown - getFirstVisiblePosition());
+                    if (view instanceof ItemMainLayout) {
+                        ItemMainLayout itemMainLayout = (ItemMainLayout) view;
+                        mItemLeftDistance = itemMainLayout.getItemCustomView().getLeft();
+                    } else {
+                        mItemLeftDistance = -1;
+                    }
+                } else {
+                    mItemLeftDistance = -1;
+                }
                 break;
             case MotionEvent.ACTION_POINTER_DOWN:
             case MotionEvent.ACTION_POINTER_2_DOWN:
@@ -124,7 +171,7 @@ public class SlideAndDragListView<T> extends DragListView<T> implements WrapperA
                 if (fingerNotMove(ev) && mState != STATE_SCROLL) {//手指的范围在50以内
                     sendLongClickMessage(pointToPosition(mXDown, mYDown));
                     mState = STATE_LONG_CLICK;
-                } else if (fingerLeftAndRightMove(ev)) {//上下范围在50，主要检测左右滑动
+                } else if (fingerLeftAndRightMove(ev) && !isItemViewHandlingMotionEvent) {//上下范围在50，主要检测左右滑动
                     removeLongClickMessage();
                     //将当前想要滑动哪一个传递给wrapperAdapter
                     int position = pointToPosition(mXDown, mYDown);
@@ -148,9 +195,11 @@ public class SlideAndDragListView<T> extends DragListView<T> implements WrapperA
                                 }
                             }
                             mWrapperAdapter.setSlideItemPosition(position);
+                            isItemViewHandlingMotionEvent = true;
+                            itemMainLayout.handleMotionEvent(ev, mXDown, mYDown, mItemLeftDistance);
                             //将事件传递下去
                             mState = STATE_SCROLL;
-                            return super.dispatchTouchEvent(ev);
+                            return true;
                         } else {
                             mState = STATE_NOTHING;
                             //消耗事件
@@ -162,34 +211,55 @@ public class SlideAndDragListView<T> extends DragListView<T> implements WrapperA
                         return true;
                     }
                 } else {
-                    removeLongClickMessage();
+                    if (isItemViewHandlingMotionEvent) {
+                        ItemMainLayout itemMainLayout = getItemMainLayoutByPosition(mXDown, mYDown);
+                        if (itemMainLayout != null) {
+                            itemMainLayout.handleMotionEvent(ev, mXDown, mYDown, mItemLeftDistance);
+                            return true;
+                        }
+                    } else {
+                        removeLongClickMessage();
+                    }
                 }
                 break;
             case MotionEvent.ACTION_UP:
-                if (mState == STATE_DOWN || mState == STATE_LONG_CLICK) {
-                    int position = pointToPosition(mXDown, mYDown);
-                    //是否ScrollBack了，是的话就不去执行onListItemClick操作了
-                    int scrollBackState = scrollBack(position, ev.getX());
-                    if (scrollBackState == RETURN_SCROLL_BACK_NOTHING) {
-                        if (mOnListItemClickListener != null && mIsWannaTriggerClick) {
-                            View v = getChildAt(position - getFirstVisiblePosition());
-                            mOnListItemClickListener.onListItemClick(v, position);
+                int position = pointToPosition(mXDown, mYDown);
+                if (position != AdapterView.INVALID_POSITION) {
+                    if (mState == STATE_DOWN || mState == STATE_LONG_CLICK) {
+                        //是否ScrollBack了，是的话就不去执行onListItemClick操作了
+                        int scrollBackState = scrollBack(position, ev.getX());
+                        if (scrollBackState == RETURN_SCROLL_BACK_NOTHING) {
+                            if (mOnListItemClickListener != null && mIsWannaTriggerClick) {
+                                View v = getChildAt(position - getFirstVisiblePosition());
+                                mOnListItemClickListener.onListItemClick(v, position);
+                            }
+                        }
+                    } else {
+                        View view = getChildAt(position - getFirstVisiblePosition());
+                        if (view instanceof ItemMainLayout) {
+                            ItemMainLayout itemMainLayout = (ItemMainLayout) view;
+                            itemMainLayout.handleMotionEvent(ev, mXDown, mYDown, -1);
                         }
                     }
                 }
                 removeLongClickMessage();
                 mState = STATE_NOTHING;
+                mItemLeftDistance = -1;
+                isItemViewHandlingMotionEvent = false;
                 break;
             case MotionEvent.ACTION_POINTER_3_UP:
             case MotionEvent.ACTION_POINTER_2_UP:
             case MotionEvent.ACTION_POINTER_UP:
             case MotionEvent.ACTION_CANCEL:
                 mState = STATE_NOTHING;
+                mItemLeftDistance = -1;
+                isItemViewHandlingMotionEvent = false;
                 break;
             default:
                 break;
+
         }
-        return super.dispatchTouchEvent(ev);
+        return super.onTouchEvent(ev);
     }
 
     /**
@@ -294,6 +364,18 @@ public class SlideAndDragListView<T> extends DragListView<T> implements WrapperA
      */
     private boolean isFingerMoving2Left(MotionEvent ev) {
         return (ev.getX() - mXDown < -mShortestDistance);
+    }
+
+    private ItemMainLayout getItemMainLayoutByPosition(int x, int y) {
+        int position = pointToPosition(x, y);
+        if (position != AdapterView.INVALID_POSITION) {
+            View view = getChildAt(position - getFirstVisiblePosition());
+            if (view instanceof ItemMainLayout) {
+                ItemMainLayout itemMainLayout = (ItemMainLayout) view;
+                return itemMainLayout;
+            }
+        }
+        return null;
     }
 
     /**

@@ -1,7 +1,6 @@
 package com.yydcdut.sdlv;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.Gravity;
@@ -17,8 +16,6 @@ import java.util.List;
  * Created by yuyidong on 15/9/24.
  */
 class ItemBackGroundLayout extends ViewGroup {
-    /* 背景的颜色 */
-    private ImageView mBGImage;
     /* 下一个View的距离 */
     private int mMarginLeft = 0;
     private int mMarginRight = 0;
@@ -35,9 +32,6 @@ class ItemBackGroundLayout extends ViewGroup {
 
     public ItemBackGroundLayout(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        mBGImage = new ImageView(context);
-        mBGImage.setBackgroundColor(Color.TRANSPARENT);
-        addView(mBGImage, 0, new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
         mBtnViews = new ArrayList<>();
         setVisibility(GONE);
     }
@@ -77,13 +71,9 @@ class ItemBackGroundLayout extends ViewGroup {
         int total = getChildCount();
         for (int i = 0; i < total; i++) {
             View view = getChildAt(i);
-            if (view == mBGImage) {
-                measureChild(view, widthMeasureSpec, heightMeasureSpec);
-            } else {
-                MenuItem menuItem = (MenuItem) view.getTag();
-                measureChild(view, MeasureSpec.makeMeasureSpec(menuItem.width, MeasureSpec.EXACTLY),
-                        heightMeasureSpec);
-            }
+            MenuItem menuItem = (MenuItem) view.getTag();
+            measureChild(view, MeasureSpec.makeMeasureSpec(menuItem.width, MeasureSpec.EXACTLY),
+                    heightMeasureSpec);
         }
     }
 
@@ -94,23 +84,15 @@ class ItemBackGroundLayout extends ViewGroup {
         mMarginRight = getMeasuredWidth();
         for (int i = 0; i < total; i++) {
             View view = getChildAt(i);
-            if (view == mBGImage) {
-                view.layout(l, t, r, b);
+            MenuItem menuItem = (MenuItem) view.getTag();
+            if (menuItem.direction == MenuItem.DIRECTION_LEFT) {
+                view.layout(mMarginLeft, t, menuItem.width + mMarginLeft, b);
+                mMarginLeft += menuItem.width;
             } else {
-                MenuItem menuItem = (MenuItem) view.getTag();
-                if (menuItem.direction == MenuItem.DIRECTION_LEFT) {
-                    view.layout(mMarginLeft, t, menuItem.width + mMarginLeft, b);
-                    mMarginLeft += menuItem.width;
-                } else {
-                    view.layout(mMarginRight - menuItem.width, t, mMarginRight, b);
-                    mMarginRight -= menuItem.width;
-                }
+                view.layout(mMarginRight - menuItem.width, t, mMarginRight, b);
+                mMarginRight -= menuItem.width;
             }
         }
-    }
-
-    public ImageView getBackGroundImage() {
-        return mBGImage;
     }
 
     public List<View> getBtnViews() {

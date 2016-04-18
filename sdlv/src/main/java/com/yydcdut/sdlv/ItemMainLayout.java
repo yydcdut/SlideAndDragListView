@@ -1,7 +1,7 @@
 package com.yydcdut.sdlv;
 
 import android.content.Context;
-import android.util.AttributeSet;
+import android.graphics.drawable.Drawable;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewConfiguration;
@@ -36,7 +36,7 @@ class ItemMainLayout extends FrameLayout {
 
     /* 时间 */
     private static final int SCROLL_TIME = 500;//500ms
-    private static final int SCROLL_BACK_TIME = 250;//250MS
+    private static final int SCROLL_BACK_TIME = 250;//250ms
     private static final int SCROLL_DELETE_TIME = 300;//300ms
     /* 控件高度 */
     private int mHeight;
@@ -49,50 +49,38 @@ class ItemMainLayout extends FrameLayout {
     /* 子view */
     private ItemBackGroundLayout mItemLeftBackGroundLayout;
     private ItemBackGroundLayout mItemRightBackGroundLayout;
-    private ItemCustomLayout mItemCustomLayout;
+    private View mItemCustomView;
     /* Scroller */
     private Scroller mScroller;
     /* 控件是否滑动 */
     private boolean mIsMoving = false;
     /* 是不是要滑过(over) */
     private boolean mWannaOver = true;
-    /* 坐标 */
-    private float mXDown;
-    private float mYDown;
     /* 最小滑动距离，超过了，才认为开始滑动 */
     private int mTouchSlop = 0;
-    /* X方向滑动距离 */
-    private float mLeftDistance;
     /* 滑动的监听器 */
     private OnItemSlideListenerProxy mOnItemSlideListenerProxy;
 
-    public ItemMainLayout(Context context) {
-        this(context, null);
-    }
-
-    public ItemMainLayout(Context context, AttributeSet attrs) {
-        this(context, attrs, 0);
-    }
-
-    public ItemMainLayout(Context context, AttributeSet attrs, int defStyleAttr) {
-        super(context, attrs, defStyleAttr);
+    public ItemMainLayout(Context context, View customView) {
+        super(context);
         mScroller = new Scroller(context);
         mItemRightBackGroundLayout = new ItemBackGroundLayout(context);
         addView(mItemRightBackGroundLayout, new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
         mItemLeftBackGroundLayout = new ItemBackGroundLayout(context);
         addView(mItemLeftBackGroundLayout, new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
-        mItemCustomLayout = new ItemCustomLayout(context);
-        addView(mItemCustomLayout, new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
+        mItemCustomView = customView;
+        addView(mItemCustomView, new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
         mTouchSlop = ViewConfiguration.get(getContext()).getScaledTouchSlop();
     }
+
 
     /**
      * 得到CustomView
      *
      * @return
      */
-    public ItemCustomLayout getItemCustomLayout() {
-        return mItemCustomLayout;
+    public View getItemCustomView() {
+        return mItemCustomView;
     }
 
     /**
@@ -125,6 +113,11 @@ class ItemMainLayout extends FrameLayout {
         mWannaOver = wannaOver;
     }
 
+    public void setSelector(Drawable drawable) {
+        Compat.setBackgroundDrawable(mItemLeftBackGroundLayout, drawable);
+        Compat.setBackgroundDrawable(mItemRightBackGroundLayout, drawable);
+    }
+
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         if (mDeleteHeight == DEFAULT_DELETE_HEIGHT || mDeleteHeight < 0) {
@@ -139,48 +132,38 @@ class ItemMainLayout extends FrameLayout {
                 measureChild(getChildAt(i), widthMeasureSpec, MeasureSpec.makeMeasureSpec(mDeleteHeight, MeasureSpec.EXACTLY));
             }
         }
-
     }
 
-    @Override
-    public boolean onTouchEvent(MotionEvent ev) {
+    public void handleMotionEvent(MotionEvent ev, final float xDown, final float yDown, final int leftDistance) {
         getParent().requestDisallowInterceptTouchEvent(false);
-        switch (ev.getAction()) {
-            case MotionEvent.ACTION_DOWN:
-                mXDown = ev.getX();
-                mYDown = ev.getY();
-                //控件初始距离
-                mLeftDistance = mItemCustomLayout.getLeft();
-                //是否有要scroll的动向，目前没有
-                mIsMoving = false;
-                break;
+        switch (ev.getAction() & MotionEvent.ACTION_MASK) {
             case MotionEvent.ACTION_MOVE:
-                if (fingerNotMove(ev) && !mIsMoving) {//手指的范围在50以内
+                if (fingerNotMove(ev, xDown, yDown) && !mIsMoving) {//手指的范围在50以内
                     //执行ListView的手势操作
                     getParent().requestDisallowInterceptTouchEvent(false);
-                } else if (fingerLeftAndRightMove(ev) || mIsMoving) {//上下范围在50，主要检测左右滑动
+                } else if (fingerLeftAndRightMove(ev, xDown, yDown) || mIsMoving) {//上下范围在50，主要检测左右滑动
                     //是否有要scroll的动向
                     mIsMoving = true;
                     //执行控件的手势操作
                     getParent().requestDisallowInterceptTouchEvent(true);
-                    float moveDistance = ev.getX() - mXDown;//这个往右是正，往左是负
+                    float moveDistance = ev.getX() - xDown;//这个往右是正，往左是负
                     //判断意图
                     if (moveDistance > 0) {//往右
-                        if (mLeftDistance == 0) {//关闭状态
+                        if (leftDistance == 0) {//关闭状态
                             mIntention = INTENTION_LEFT_OPEN;
                             setBackGroundVisible(true, false);
-                        } else if (mLeftDistance < 0) {//右边的btn显示出来的
+                        } else if (leftDistance < 0) {//右边的btn显示出来的
                             mIntention = INTENTION_RIGHT_CLOSE;
-                        } else if (mLeftDistance > 0) {//左边的btn显示出来的
+                        } else if (leftDistance > 0) {//左边的btn显示出来的
                             mIntention = INTENTION_LEFT_ALREADY_OPEN;
                         }
                     } else if (moveDistance < 0) {//往左
-                        if (mLeftDistance == 0) {//关闭状态
+                        if (leftDistance == 0) {//关闭状态
                             mIntention = INTENTION_RIGHT_OPEN;
                             setBackGroundVisible(false, true);
-                        } else if (mLeftDistance < 0) {//右边的btn显示出来的
+                        } else if (leftDistance < 0) {//右边的btn显示出来的
                             mIntention = INTENTION_RIGHT_ALREADY_OPEN;
-                        } else if (mLeftDistance > 0) {//左边的btn显示出来的
+                        } else if (leftDistance > 0) {//左边的btn显示出来的
                             mIntention = INTENTION_LEFT_CLOSE;
                         }
                     }
@@ -192,20 +175,20 @@ class ItemMainLayout extends FrameLayout {
                                 break;
                             }
                             //此时moveDistance为正数，mLeftDistance为0
-                            float distanceLeftOpen = mLeftDistance + moveDistance;
+                            float distanceLeftOpen = leftDistance + moveDistance;
                             if (!mWannaOver) {
                                 distanceLeftOpen = distanceLeftOpen > mBtnLeftTotalWidth ? mBtnLeftTotalWidth : distanceLeftOpen;
                             }
                             //滑动
-                            mItemCustomLayout.layout((int) distanceLeftOpen, mItemCustomLayout.getTop(),
-                                    mItemCustomLayout.getWidth() + (int) distanceLeftOpen, mItemCustomLayout.getBottom());
+                            mItemCustomView.layout((int) distanceLeftOpen, mItemCustomView.getTop(),
+                                    mItemCustomView.getWidth() + (int) distanceLeftOpen, mItemCustomView.getBottom());
                             break;
                         case INTENTION_LEFT_CLOSE:
                             //此时moveDistance为负数，mLeftDistance为正数
-                            float distanceLeftClose = mLeftDistance + moveDistance < 0 ? 0 : mLeftDistance + moveDistance;
+                            float distanceLeftClose = leftDistance + moveDistance < 0 ? 0 : leftDistance + moveDistance;
                             //滑动
-                            mItemCustomLayout.layout((int) distanceLeftClose, mItemCustomLayout.getTop(),
-                                    mItemCustomLayout.getWidth() + (int) distanceLeftClose, mItemCustomLayout.getBottom());
+                            mItemCustomView.layout((int) distanceLeftClose, mItemCustomView.getTop(),
+                                    mItemCustomView.getWidth() + (int) distanceLeftClose, mItemCustomView.getBottom());
                             break;
                         case INTENTION_RIGHT_OPEN:
                         case INTENTION_RIGHT_ALREADY_OPEN:
@@ -213,21 +196,21 @@ class ItemMainLayout extends FrameLayout {
                                 break;
                             }
                             //此时moveDistance为负数，mLeftDistance为0
-                            float distanceRightOpen = mLeftDistance + moveDistance;
+                            float distanceRightOpen = leftDistance + moveDistance;
                             //distanceRightOpen为正数
                             if (!mWannaOver) {
                                 distanceRightOpen = -distanceRightOpen > mBtnRightTotalWidth ? -mBtnRightTotalWidth : distanceRightOpen;
                             }
                             //滑动
-                            mItemCustomLayout.layout((int) distanceRightOpen, mItemCustomLayout.getTop(),
-                                    mItemCustomLayout.getWidth() + (int) distanceRightOpen, mItemCustomLayout.getBottom());
+                            mItemCustomView.layout((int) distanceRightOpen, mItemCustomView.getTop(),
+                                    mItemCustomView.getWidth() + (int) distanceRightOpen, mItemCustomView.getBottom());
                             break;
                         case INTENTION_RIGHT_CLOSE:
                             //此时moveDistance为正数，mLeftDistance为负数
-                            float distanceRightClose = mLeftDistance + moveDistance > 0 ? 0 : mLeftDistance + moveDistance;
+                            float distanceRightClose = leftDistance + moveDistance > 0 ? 0 : leftDistance + moveDistance;
                             //滑动
-                            mItemCustomLayout.layout((int) distanceRightClose, mItemCustomLayout.getTop(),
-                                    mItemCustomLayout.getWidth() + (int) distanceRightClose, mItemCustomLayout.getBottom());
+                            mItemCustomView.layout((int) distanceRightClose, mItemCustomView.getTop(),
+                                    mItemCustomView.getWidth() + (int) distanceRightClose, mItemCustomView.getBottom());
 
                             break;
                     }
@@ -240,11 +223,11 @@ class ItemMainLayout extends FrameLayout {
                     case INTENTION_LEFT_OPEN:
                     case INTENTION_LEFT_ALREADY_OPEN:
                         //如果滑出的话，那么就滑到固定位置(只要滑出了 mBtnLeftTotalWidth / 2 ，就算滑出去了)
-                        if (Math.abs(mItemCustomLayout.getLeft()) > mBtnLeftTotalWidth / 2) {
+                        if (Math.abs(mItemCustomView.getLeft()) > mBtnLeftTotalWidth / 2) {
                             //滑出
                             mIntention = INTENTION_LEFT_OPEN;
-                            int delta = mBtnLeftTotalWidth - Math.abs(mItemCustomLayout.getLeft());
-                            mScroller.startScroll(mItemCustomLayout.getLeft(), 0, delta, 0, SCROLL_TIME);
+                            int delta = mBtnLeftTotalWidth - Math.abs(mItemCustomView.getLeft());
+                            mScroller.startScroll(mItemCustomView.getLeft(), 0, delta, 0, SCROLL_TIME);
                             if (mOnItemSlideListenerProxy != null && mScrollState != SCROLL_STATE_OPEN) {
                                 mOnItemSlideListenerProxy.onSlideOpen(this, MenuItem.DIRECTION_LEFT);
                             }
@@ -252,7 +235,7 @@ class ItemMainLayout extends FrameLayout {
                         } else {
                             mIntention = INTENTION_LEFT_CLOSE;
                             //滑回去,归位
-                            mScroller.startScroll(mItemCustomLayout.getLeft(), 0, -mItemCustomLayout.getLeft(), 0, SCROLL_TIME);
+                            mScroller.startScroll(mItemCustomView.getLeft(), 0, -mItemCustomView.getLeft(), 0, SCROLL_TIME);
                             if (mOnItemSlideListenerProxy != null && mScrollState != SCROLL_STATE_CLOSE) {
                                 mOnItemSlideListenerProxy.onSlideClose(this, MenuItem.DIRECTION_LEFT);
                             }
@@ -262,18 +245,18 @@ class ItemMainLayout extends FrameLayout {
                     case INTENTION_RIGHT_CLOSE:
                     case INTENTION_RIGHT_OPEN:
                     case INTENTION_RIGHT_ALREADY_OPEN:
-                        if (Math.abs(mItemCustomLayout.getLeft()) > mBtnRightTotalWidth / 2) {
+                        if (Math.abs(mItemCustomView.getLeft()) > mBtnRightTotalWidth / 2) {
                             //滑出
                             mIntention = INTENTION_RIGHT_OPEN;
-                            int delta = mBtnRightTotalWidth - Math.abs(mItemCustomLayout.getLeft());
-                            mScroller.startScroll(mItemCustomLayout.getLeft(), 0, -delta, 0, SCROLL_TIME);
+                            int delta = mBtnRightTotalWidth - Math.abs(mItemCustomView.getLeft());
+                            mScroller.startScroll(mItemCustomView.getLeft(), 0, -delta, 0, SCROLL_TIME);
                             if (mOnItemSlideListenerProxy != null && mScrollState != SCROLL_STATE_OPEN) {
                                 mOnItemSlideListenerProxy.onSlideOpen(this, MenuItem.DIRECTION_RIGHT);
                             }
                             mScrollState = SCROLL_STATE_OPEN;
                         } else {
                             mIntention = INTENTION_RIGHT_CLOSE;
-                            mScroller.startScroll(mItemCustomLayout.getLeft(), 0, -mItemCustomLayout.getLeft(), 0, SCROLL_TIME);
+                            mScroller.startScroll(mItemCustomView.getLeft(), 0, -mItemCustomView.getLeft(), 0, SCROLL_TIME);
                             //滑回去,归位
                             if (mOnItemSlideListenerProxy != null && mScrollState != SCROLL_STATE_CLOSE) {
                                 mOnItemSlideListenerProxy.onSlideClose(this, MenuItem.DIRECTION_RIGHT);
@@ -289,8 +272,9 @@ class ItemMainLayout extends FrameLayout {
             default:
                 break;
         }
-        return true;
+
     }
+
 
     /**
      * 设置哪边显示哪边不显示
@@ -325,9 +309,9 @@ class ItemMainLayout extends FrameLayout {
      * @param ev
      * @return
      */
-    private boolean fingerNotMove(MotionEvent ev) {
-        return (mXDown - ev.getX() < mTouchSlop && mXDown - ev.getX() > -mTouchSlop &&
-                mYDown - ev.getY() < mTouchSlop && mYDown - ev.getY() > -mTouchSlop);
+    private boolean fingerNotMove(MotionEvent ev, final float xDown, final float yDown) {
+        return (xDown - ev.getX() < mTouchSlop && xDown - ev.getX() > -mTouchSlop &&
+                yDown - ev.getY() < mTouchSlop && yDown - ev.getY() > -mTouchSlop);
     }
 
     /**
@@ -336,9 +320,9 @@ class ItemMainLayout extends FrameLayout {
      * @param ev
      * @return
      */
-    private boolean fingerLeftAndRightMove(MotionEvent ev) {
-        return ((ev.getX() - mXDown > mTouchSlop || ev.getX() - mXDown < -mTouchSlop) &&
-                ev.getY() - mYDown < mTouchSlop && ev.getY() - mYDown > -mTouchSlop);
+    private boolean fingerLeftAndRightMove(MotionEvent ev, final float xDown, final float yDown) {
+        return ((ev.getX() - xDown > mTouchSlop || ev.getX() - xDown < -mTouchSlop) &&
+                ev.getY() - yDown < mTouchSlop && ev.getY() - yDown > -mTouchSlop);
     }
 
     /**
@@ -357,7 +341,7 @@ class ItemMainLayout extends FrameLayout {
             public void onAnimationEnd(Animation animation) {
                 mDeleteHeight = DEFAULT_DELETE_HEIGHT;
                 ItemMainLayout.this.requestLayout();
-                ItemMainLayout.this.getItemCustomLayout().refreshBackground();
+                ItemMainLayout.this.getItemCustomView().invalidate();
                 if (onItemDeleteListenerProxy != null) {
                     onItemDeleteListenerProxy.onDelete(ItemMainLayout.this);
                 }
@@ -393,8 +377,8 @@ class ItemMainLayout extends FrameLayout {
     @Override
     public void computeScroll() {
         if (mScroller.computeScrollOffset()) {
-            mItemCustomLayout.layout(mScroller.getCurrX(), mItemCustomLayout.getTop(),
-                    mScroller.getCurrX() + mItemCustomLayout.getWidth(), mItemCustomLayout.getBottom());
+            mItemCustomView.layout(mScroller.getCurrX(), mItemCustomView.getTop(),
+                    mScroller.getCurrX() + mItemCustomView.getWidth(), mItemCustomView.getBottom());
             postInvalidate();
         }
         super.computeScroll();
@@ -405,7 +389,7 @@ class ItemMainLayout extends FrameLayout {
      */
     protected void scrollBack() {
         mIntention = INTENTION_SCROLL_BACK;
-        mScroller.startScroll(mItemCustomLayout.getLeft(), 0, -mItemCustomLayout.getLeft(), 0, SCROLL_BACK_TIME);
+        mScroller.startScroll(mItemCustomView.getLeft(), 0, -mItemCustomView.getLeft(), 0, SCROLL_BACK_TIME);
         postInvalidate();
         mScrollState = SCROLL_STATE_CLOSE;
     }
@@ -418,16 +402,16 @@ class ItemMainLayout extends FrameLayout {
         if (mScrollState == SCROLL_STATE_CLOSE) {//没有滑开，其实是滑了但是又滑归位了
             return SCROLL_BACK_ALREADY_CLOSED;
         }
-        if (mItemCustomLayout.getLeft() > 0) { //已经向右滑动了，而且滑开了
-            if (x > mItemCustomLayout.getLeft()) {
+        if (mItemCustomView.getLeft() > 0) { //已经向右滑动了，而且滑开了
+            if (x > mItemCustomView.getLeft()) {
                 //没有点击到menu的button
                 scrollBack();
                 mScrollState = SCROLL_STATE_CLOSE;
                 return SCROLL_BACK_CLICK_OWN;
             }
 
-        } else if (mItemCustomLayout.getLeft() < 0) {//已经向左滑动了，而且滑开了
-            if (x < mItemCustomLayout.getRight()) {
+        } else if (mItemCustomView.getLeft() < 0) {//已经向左滑动了，而且滑开了
+            if (x < mItemCustomView.getRight()) {
                 //没有点击到menu的button
                 scrollBack();
                 mScrollState = SCROLL_STATE_CLOSE;

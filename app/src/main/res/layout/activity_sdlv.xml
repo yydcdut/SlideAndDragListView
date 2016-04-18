@@ -2,7 +2,6 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="@android:color/white"
                 android:orientation="vertical">
 
     <com.yydcdut.sdlv.SlideAndDragListView
@@ -11,6 +10,7 @@
         android:layout_height="fill_parent"
         android:divider="@android:color/black"
         android:dividerHeight="0.5dip"
+        android:listSelector="@drawable/list_selector"
         android:paddingLeft="8dip"
         android:paddingRight="8dip">
     </com.yydcdut.sdlv.SlideAndDragListView>
