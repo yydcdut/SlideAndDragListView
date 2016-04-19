@@ -2,6 +2,7 @@ package com.yydcdut.sdlv;
 
 import android.content.Context;
 import android.graphics.drawable.Drawable;
+import android.graphics.drawable.StateListDrawable;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewConfiguration;
@@ -60,6 +61,11 @@ class ItemMainLayout extends FrameLayout {
     private int mTouchSlop = 0;
     /* 滑动的监听器 */
     private OnItemSlideListenerProxy mOnItemSlideListenerProxy;
+    /* Drawable */
+    private Drawable mNormalCustomBackgroundDrawable;
+    private Drawable mTotalCustomBackgroundDrawable;
+    private Drawable mNormalListSelectorDrawable;
+    private Drawable mTotalListSelectorDrawable;
 
     public ItemMainLayout(Context context, View customView) {
         super(context);
@@ -71,6 +77,7 @@ class ItemMainLayout extends FrameLayout {
         mItemCustomView = customView;
         addView(mItemCustomView, new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
         mTouchSlop = ViewConfiguration.get(getContext()).getScaledTouchSlop();
+        initBackgroundDrawable();
     }
 
 
@@ -142,6 +149,8 @@ class ItemMainLayout extends FrameLayout {
                     //执行ListView的手势操作
                     getParent().requestDisallowInterceptTouchEvent(false);
                 } else if (fingerLeftAndRightMove(ev, xDown, yDown) || mIsMoving) {//上下范围在50，主要检测左右滑动
+                    //禁止StateListDrawable
+                    disableBackgroundDrawable();
                     //是否有要scroll的动向
                     mIsMoving = true;
                     //执行控件的手势操作
@@ -218,6 +227,11 @@ class ItemMainLayout extends FrameLayout {
                 break;
             case MotionEvent.ACTION_UP:
             case MotionEvent.ACTION_CANCEL:
+                //当item归位的时候才将drawable设置回去
+                if (mIntention == INTENTION_LEFT_CLOSE ||
+                        mIntention == INTENTION_RIGHT_CLOSE) {
+                    enableBackgroundDrawable();
+                }
                 switch (mIntention) {
                     case INTENTION_LEFT_CLOSE:
                     case INTENTION_LEFT_OPEN:
@@ -272,7 +286,6 @@ class ItemMainLayout extends FrameLayout {
             default:
                 break;
         }
-
     }
 
 
@@ -420,6 +433,38 @@ class ItemMainLayout extends FrameLayout {
         }
         return SCROLL_BACK_CLICK_MENU_BUTTON;
     }
+
+    /**
+     * 初始化Drawable
+     */
+    private void initBackgroundDrawable() {
+        Drawable drawable = getItemCustomView().getBackground();
+        if (drawable == null) {
+            return;
+        }
+        if (drawable instanceof StateListDrawable) {
+            StateListDrawable stateListDrawable = (StateListDrawable) drawable;
+            mNormalCustomBackgroundDrawable = stateListDrawable.getCurrent();
+        } else {
+            mNormalCustomBackgroundDrawable = drawable;
+        }
+        mTotalCustomBackgroundDrawable = drawable;
+    }
+
+    /**
+     * 在滑动的时候禁止掉StateListDrawable
+     */
+    private void disableBackgroundDrawable() {
+        Compat.setBackgroundDrawable(getItemCustomView(), mNormalCustomBackgroundDrawable);
+    }
+
+    /**
+     * 在没有滑动的时候恢复StateListDrawable
+     */
+    private void enableBackgroundDrawable() {
+        Compat.setBackgroundDrawable(getItemCustomView(), mTotalCustomBackgroundDrawable);
+    }
+
 
     /**
      * 设置item滑动的监听器
