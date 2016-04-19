@@ -6,6 +6,7 @@ import android.graphics.drawable.StateListDrawable;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewConfiguration;
+import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.Transformation;
 import android.widget.FrameLayout;
@@ -39,11 +40,6 @@ class ItemMainLayout extends FrameLayout {
     private static final int SCROLL_TIME = 500;//500ms
     private static final int SCROLL_BACK_TIME = 250;//250ms
     private static final int SCROLL_DELETE_TIME = 300;//300ms
-    /* 控件高度 */
-    private int mHeight;
-    /* 删除的时候高度的变换 */
-    private int mDeleteHeight = DEFAULT_DELETE_HEIGHT;
-    private static final int DEFAULT_DELETE_HEIGHT = -4399;
     /* 子控件中button的总宽度 */
     private int mBtnLeftTotalWidth;
     private int mBtnRightTotalWidth;
@@ -125,21 +121,21 @@ class ItemMainLayout extends FrameLayout {
         Compat.setBackgroundDrawable(mItemRightBackGroundLayout, drawable);
     }
 
-    @Override
-    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        if (mDeleteHeight == DEFAULT_DELETE_HEIGHT || mDeleteHeight < 0) {
-            super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-            mHeight = getMeasuredHeight();
-            for (int i = 0; i < getChildCount(); i++) {
-                measureChild(getChildAt(i), widthMeasureSpec, MeasureSpec.makeMeasureSpec(mHeight, MeasureSpec.EXACTLY));
-            }
-        } else if (mDeleteHeight >= 0) {
-            setMeasuredDimension(MeasureSpec.getSize(widthMeasureSpec), mDeleteHeight);
-            for (int i = 0; i < getChildCount(); i++) {
-                measureChild(getChildAt(i), widthMeasureSpec, MeasureSpec.makeMeasureSpec(mDeleteHeight, MeasureSpec.EXACTLY));
-            }
-        }
-    }
+//    @Override
+//    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+//        if (mDeleteHeight == DEFAULT_DELETE_HEIGHT || mDeleteHeight < 0) {
+//            super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+//            mHeight = getMeasuredHeight();
+//            for (int i = 0; i < getChildCount(); i++) {
+//                measureChild(getChildAt(i), widthMeasureSpec, MeasureSpec.makeMeasureSpec(mHeight, MeasureSpec.EXACTLY));
+//            }
+//        } else if (mDeleteHeight >= 0) {
+//            setMeasuredDimension(MeasureSpec.getSize(widthMeasureSpec), mDeleteHeight);
+//            for (int i = 0; i < getChildCount(); i++) {
+//                measureChild(getChildAt(i), widthMeasureSpec, MeasureSpec.makeMeasureSpec(mDeleteHeight, MeasureSpec.EXACTLY));
+//            }
+//        }
+//    }
 
     public void handleMotionEvent(MotionEvent ev, final float xDown, final float yDown, final int leftDistance) {
         getParent().requestDisallowInterceptTouchEvent(false);
@@ -341,9 +337,9 @@ class ItemMainLayout extends FrameLayout {
     /**
      * 删除Item
      */
-    public void deleteItem(final OnItemDeleteListenerProxy onItemDeleteListenerProxy) {
+    protected void deleteItem(final OnItemDeleteListenerProxy onItemDeleteListenerProxy) {
         scrollBack();
-        mDeleteHeight = mHeight;
+        final int height = getMeasuredHeight();
         Animation.AnimationListener animationListener = new Animation.AnimationListener() {
             @Override
             public void onAnimationStart(Animation animation) {
@@ -352,9 +348,9 @@ class ItemMainLayout extends FrameLayout {
 
             @Override
             public void onAnimationEnd(Animation animation) {
-                mDeleteHeight = DEFAULT_DELETE_HEIGHT;
-                ItemMainLayout.this.requestLayout();
-                ItemMainLayout.this.getItemCustomView().invalidate();
+                ViewGroup.LayoutParams layoutParams = ItemMainLayout.this.getLayoutParams();
+                layoutParams.height = height;
+                ItemMainLayout.this.setLayoutParams(layoutParams);
                 if (onItemDeleteListenerProxy != null) {
                     onItemDeleteListenerProxy.onDelete(ItemMainLayout.this);
                 }
@@ -369,17 +365,10 @@ class ItemMainLayout extends FrameLayout {
         Animation animation = new Animation() {
             @Override
             protected void applyTransformation(float interpolatedTime, Transformation t) {
-                if (interpolatedTime == 1.0f) {
-                    mDeleteHeight = mHeight;
-                } else {
-                    mDeleteHeight = mHeight - (int) (mHeight * interpolatedTime);
-                }
+                ViewGroup.LayoutParams layoutParams = ItemMainLayout.this.getLayoutParams();
+                layoutParams.height = height - (int) (height * interpolatedTime);
+                ItemMainLayout.this.setLayoutParams(layoutParams);
                 ItemMainLayout.this.requestLayout();
-            }
-
-            @Override
-            public boolean willChangeBounds() {
-                return true;
             }
         };
         animation.setAnimationListener(animationListener);
@@ -490,7 +479,7 @@ class ItemMainLayout extends FrameLayout {
      *
      * @return
      */
-    public int getScrollState() {
+    protected int getScrollState() {
         return mScrollState;
     }
 }
