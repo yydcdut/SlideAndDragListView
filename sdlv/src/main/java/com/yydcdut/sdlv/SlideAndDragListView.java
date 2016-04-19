@@ -107,26 +107,8 @@ public class SlideAndDragListView<T> extends DragListView<T> implements WrapperA
     @Override
     public boolean onInterceptTouchEvent(MotionEvent ev) {
         switch (ev.getAction() & MotionEvent.ACTION_MASK) {
-            case MotionEvent.ACTION_DOWN:
-                //获取出坐标来
-                mXDown = (int) ev.getX();
-                mYDown = (int) ev.getY();
-                //当前state状态为按下
-                mState = STATE_DOWN;
-
-                int position = pointToPosition(mXDown, mYDown);
-                View view = getChildAt(position - getFirstVisiblePosition());
-                if (view instanceof ItemMainLayout) {
-                    ItemMainLayout itemMainLayout = (ItemMainLayout) view;
-                }
-
-                break;
             case MotionEvent.ACTION_MOVE:
-                if (fingerNotMove(ev) && mState != STATE_SCROLL) {//手指的范围在50以内
-                    sendLongClickMessage(pointToPosition(mXDown, mYDown));
-                    mState = STATE_LONG_CLICK;
-                } else if (fingerLeftAndRightMove(ev)) {//上下范围在50，主要检测左右滑动
-                    removeLongClickMessage();
+                if (fingerLeftAndRightMove(ev)) {//上下范围在50，主要检测左右滑动
                     //拦截
                     return true;
                 }
@@ -147,64 +129,50 @@ public class SlideAndDragListView<T> extends DragListView<T> implements WrapperA
                 mYDown = (int) ev.getY();
                 //当前state状态为按下
                 mState = STATE_DOWN;
-                int positionDown = pointToPosition(mXDown, mYDown);
-                if (positionDown != AdapterView.INVALID_POSITION) {
-                    View view = getChildAt(positionDown - getFirstVisiblePosition());
-                    if (view instanceof ItemMainLayout) {
-                        ItemMainLayout itemMainLayout = (ItemMainLayout) view;
-                        mItemLeftDistance = itemMainLayout.getItemCustomView().getLeft();
-                    } else {
-                        mItemLeftDistance = -1;
-                    }
+                //得到当前Item滑动了多少
+                ItemMainLayout itemMainLayoutDown = getItemMainLayoutByPosition(mXDown, mYDown);
+                if (itemMainLayoutDown != null) {
+                    mItemLeftDistance = itemMainLayoutDown.getItemCustomView().getLeft();
                 } else {
-                    mItemLeftDistance = -1;
+                    mItemLeftDistance = 0;
                 }
                 break;
             case MotionEvent.ACTION_POINTER_DOWN:
-            case MotionEvent.ACTION_POINTER_2_DOWN:
-            case MotionEvent.ACTION_POINTER_3_DOWN:
                 removeLongClickMessage();
                 mState = STATE_MORE_FINGERS;
-                //消耗掉，不传递下去了
-                return true;
+                return false;
             case MotionEvent.ACTION_MOVE:
                 if (fingerNotMove(ev) && mState != STATE_SCROLL) {//手指的范围在50以内
-                    sendLongClickMessage(pointToPosition(mXDown, mYDown));
-                    mState = STATE_LONG_CLICK;
+                    if (mItemLeftDistance == 0) {
+                        sendLongClickMessage(pointToPosition(mXDown, mYDown));
+                        mState = STATE_LONG_CLICK;
+                    }
                 } else if (fingerLeftAndRightMove(ev) && !isItemViewHandlingMotionEvent) {//上下范围在50，主要检测左右滑动
                     removeLongClickMessage();
                     //将当前想要滑动哪一个传递给wrapperAdapter
                     int position = pointToPosition(mXDown, mYDown);
-                    if (position != AdapterView.INVALID_POSITION) {
-                        View view = getChildAt(position - getFirstVisiblePosition());
-                        if (view instanceof ItemMainLayout) {
-                            ItemMainLayout itemMainLayout = (ItemMainLayout) view;
-                            if (isFingerMoving2Right(ev)) {//如果想向右滑动
-                                if (itemMainLayout.getItemLeftBackGroundLayout().getBtnViews().size() == 0 &&
-                                        itemMainLayout.getScrollState() == ItemMainLayout.SCROLL_STATE_CLOSE) {//但是又没有Left的Menu
-                                    mState = STATE_NOTHING;
-                                    //消耗事件
-                                    return true;
-                                }
-                            } else if (isFingerMoving2Left(ev)) {//如果想向左滑动
-                                if (itemMainLayout.getItemRightBackGroundLayout().getBtnViews().size() == 0 &&
-                                        itemMainLayout.getScrollState() == ItemMainLayout.SCROLL_STATE_CLOSE) {//但是又没有Right的Menu
-                                    mState = STATE_NOTHING;
-                                    //消耗事件
-                                    return true;
-                                }
+                    ItemMainLayout itemMainLayout = getItemMainLayoutByPosition(mXDown, mYDown);
+                    if (itemMainLayout != null) {
+                        if (isFingerMoving2Right(ev)) {//如果想向右滑动
+                            if (itemMainLayout.getItemLeftBackGroundLayout().getBtnViews().size() == 0 &&
+                                    itemMainLayout.getScrollState() == ItemMainLayout.SCROLL_STATE_CLOSE) {//但是又没有Left的Menu
+                                mState = STATE_NOTHING;
+                                //消耗事件
+                                return true;
                             }
-                            mWrapperAdapter.setSlideItemPosition(position);
-                            isItemViewHandlingMotionEvent = true;
-                            itemMainLayout.handleMotionEvent(ev, mXDown, mYDown, mItemLeftDistance);
-                            //将事件传递下去
-                            mState = STATE_SCROLL;
-                            return true;
-                        } else {
-                            mState = STATE_NOTHING;
-                            //消耗事件
-                            return true;
+                        } else if (isFingerMoving2Left(ev)) {//如果想向左滑动
+                            if (itemMainLayout.getItemRightBackGroundLayout().getBtnViews().size() == 0 &&
+                                    itemMainLayout.getScrollState() == ItemMainLayout.SCROLL_STATE_CLOSE) {//但是又没有Right的Menu
+                                mState = STATE_NOTHING;
+                                //消耗事件
+                                return true;
+                            }
                         }
+                        mWrapperAdapter.setSlideItemPosition(position);
+                        isItemViewHandlingMotionEvent = true;
+                        mState = STATE_SCROLL;
+                        itemMainLayout.handleMotionEvent(ev, mXDown, mYDown, mItemLeftDistance);
+                        return true;
                     } else {
                         mState = STATE_NOTHING;
                         //消耗事件
@@ -235,9 +203,8 @@ public class SlideAndDragListView<T> extends DragListView<T> implements WrapperA
                             }
                         }
                     } else {
-                        View view = getChildAt(position - getFirstVisiblePosition());
-                        if (view instanceof ItemMainLayout) {
-                            ItemMainLayout itemMainLayout = (ItemMainLayout) view;
+                        ItemMainLayout itemMainLayout = getItemMainLayoutByPosition(mXDown, mYDown);
+                        if (itemMainLayout != null) {
                             itemMainLayout.handleMotionEvent(ev, mXDown, mYDown, -1);
                         }
                     }
@@ -247,8 +214,6 @@ public class SlideAndDragListView<T> extends DragListView<T> implements WrapperA
                 mItemLeftDistance = -1;
                 isItemViewHandlingMotionEvent = false;
                 break;
-            case MotionEvent.ACTION_POINTER_3_UP:
-            case MotionEvent.ACTION_POINTER_2_UP:
             case MotionEvent.ACTION_POINTER_UP:
             case MotionEvent.ACTION_CANCEL:
                 mState = STATE_NOTHING;

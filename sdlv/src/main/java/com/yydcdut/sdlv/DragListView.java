@@ -3,6 +3,9 @@ package com.yydcdut.sdlv;
 import android.content.ClipData;
 import android.content.ClipDescription;
 import android.content.Context;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.view.DragEvent;
 import android.view.View;
@@ -182,14 +185,15 @@ public class DragListView<T> extends ListView implements View.OnDragListener {
         View view = getChildAt(position - getFirstVisiblePosition());
         if (mOnDragListener != null && view instanceof ItemMainLayout) {
             ItemMainLayout itemMainLayout = (ItemMainLayout) getChildAt(position - getFirstVisiblePosition());
-//            itemMainLayout.getItemCustomView().hideBackground();
+            Drawable backgroundDrawable = itemMainLayout.getItemCustomView().getBackground();
+            Compat.setBackgroundDrawable(itemMainLayout.getItemCustomView(), new ColorDrawable(Color.TRANSPARENT));
             itemMainLayout.getItemLeftBackGroundLayout().setVisibility(GONE);
             itemMainLayout.getItemRightBackGroundLayout().setVisibility(GONE);
             ClipData.Item item = new ClipData.Item("1");
             ClipData data = new ClipData("1", new String[]{ClipDescription.MIMETYPE_TEXT_PLAIN}, item);
             itemMainLayout.startDrag(data, new View.DragShadowBuilder(itemMainLayout), null, 0);
             mOnDragListener.onDragViewStart(position);
-//            itemMainLayout.getItemCustomView().showBackground();
+            Compat.setBackgroundDrawable(itemMainLayout.getItemCustomView(), backgroundDrawable);
         }
     }
 

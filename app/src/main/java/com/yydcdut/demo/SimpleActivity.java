@@ -48,7 +48,7 @@ public class SimpleActivity extends AppCompatActivity implements SlideAndDragLis
     }
 
     public void initMenu() {
-        mMenu = new Menu(new ColorDrawable(Color.LTGRAY), true);
+        mMenu = new Menu(true, true);
         mMenu.addItem(new MenuItem.Builder().setWidth((int) getResources().getDimension(R.dimen.slv_item_bg_btn_width) * 2)
                 .setBackground(new ColorDrawable(Color.RED))
                 .setText("One")

@@ -6,4 +6,5 @@
     <color name="holo_blue_dark">#ff0099cc</color>
     <color name="holo_green_dark">#ff669900</color>
     <color name="holo_red_dark">#ffcc0000</color>
+    <color name="holo_gray_light">#33999999</color>
 </resources>
