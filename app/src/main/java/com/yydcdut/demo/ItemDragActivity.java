@@ -31,7 +31,6 @@ public class ItemDragActivity extends AppCompatActivity implements SlideAndDragL
         SlideAndDragListView.OnItemDeleteListener, SlideAndDragListView.OnListScrollListener {
     private static final String TAG = ItemDragActivity.class.getSimpleName();
 
-
     private Menu mMenu;
     private List<ApplicationInfo> mAppList;
     private SlideAndDragListView<ApplicationInfo> mListView;
@@ -124,6 +123,7 @@ public class ItemDragActivity extends AppCompatActivity implements SlideAndDragL
             cvh.txtName.setText(item.loadLabel(getPackageManager()));
             cvh.imgLogo.setImageDrawable(item.loadIcon(getPackageManager()));
             cvh.imgLogo2.setImageDrawable(Utils.getDrawable(ItemDragActivity.this, R.drawable.ic_reorder_grey_500_24dp));
+            cvh.imgLogo2.setTag(Integer.parseInt(position + ""));
             return convertView;
         }
 
@@ -136,7 +136,10 @@ public class ItemDragActivity extends AppCompatActivity implements SlideAndDragL
         private View.OnTouchListener mOnTouchListener = new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-
+                Object o = v.getTag();
+                if (o != null && o instanceof Integer) {
+                    mListView.startDrag(((Integer) o).intValue());
+                }
                 return false;
             }
         };
