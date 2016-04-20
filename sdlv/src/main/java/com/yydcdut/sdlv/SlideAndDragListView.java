@@ -447,6 +447,12 @@ public class SlideAndDragListView<T> extends DragListView<T> implements WrapperA
         super.setAdapter(mWrapperAdapter);
     }
 
+    /**
+     * 添加Drag
+     *
+     * @param position
+     * @return
+     */
     public boolean startDrag(int position) {
         boolean canDrag = scrollBackByDrag(position);
         //找到那个位置的view
