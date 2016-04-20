@@ -3,15 +3,14 @@ package com.yydcdut.demo;
 import android.content.pm.ApplicationInfo;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AbsListView;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
+import android.widget.SimpleAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -22,20 +21,20 @@ import com.yydcdut.sdlv.SlideAndDragListView;
 import java.util.List;
 
 /**
- * Created by yuyidong on 16/1/23.
+ * Created by yuyidong on 15/7/31.
  */
-public class SimpleActivity extends AppCompatActivity implements SlideAndDragListView.OnListItemLongClickListener,
+public class HeaderFooterActivity extends AppCompatActivity implements SlideAndDragListView.OnListItemLongClickListener,
         SlideAndDragListView.OnDragListener, SlideAndDragListView.OnSlideListener,
         SlideAndDragListView.OnListItemClickListener, SlideAndDragListView.OnMenuItemClickListener,
-        SlideAndDragListView.OnItemDeleteListener, SlideAndDragListView.OnListScrollListener {
-    private static final String TAG = SimpleActivity.class.getSimpleName();
+        SlideAndDragListView.OnItemDeleteListener {
+    private static final String TAG = HeaderFooterActivity.class.getSimpleName();
 
     private Menu mMenu;
     private List<ApplicationInfo> mAppList;
     private SlideAndDragListView<ApplicationInfo> mListView;
 
     @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sdlv);
         initData();
@@ -77,7 +76,25 @@ public class SimpleActivity extends AppCompatActivity implements SlideAndDragLis
 
     public void initUiAndListener() {
         mListView = (SlideAndDragListView) findViewById(R.id.lv_edit);
+        View header = LayoutInflater.from(this).inflate(R.layout.item_header_footer, null);
+        View footer = LayoutInflater.from(this).inflate(R.layout.item_header_footer, null);
+        View footer2 = LayoutInflater.from(this).inflate(R.layout.item_header_footer, null);
+        footer.setBackgroundColor(0xff0000bb);
+        mListView.addHeaderView(header);
+        mListView.addHeaderView(footer);
+        mListView.addHeaderView(footer2);
+        mListView.addFooterView(header);
+        mListView.addFooterView(footer);
+        mListView.addFooterView(footer2);
         mListView.setMenu(mMenu);
+//        List<Map<String, String>> list = new ArrayList<>(mAppList.size());
+//        for (ApplicationInfo applicationInfo : mAppList) {
+//            Map<String,String> map = new HashMap<>();
+//            map.put("text", applicationInfo.loadLabel(getPackageManager()).toString());
+//            list.add(map);
+//        }
+//        mSimpleAdapter = new SimpleAdapter(this, list, R.layout.item_simple_adapter, new String[]{"text"}, new int[]{R.id.txt_simple});
+//        mListView.setAdapter(mSimpleAdapter);
         mListView.setAdapter(mAdapter);
         mListView.setOnListItemLongClickListener(this);
         mListView.setOnDragListener(this, mAppList);
@@ -85,8 +102,9 @@ public class SimpleActivity extends AppCompatActivity implements SlideAndDragLis
         mListView.setOnSlideListener(this);
         mListView.setOnMenuItemClickListener(this);
         mListView.setOnItemDeleteListener(this);
-        mListView.setOnListScrollListener(this);
     }
+
+    private SimpleAdapter mSimpleAdapter;
 
     private BaseAdapter mAdapter = new BaseAdapter() {
         @Override
@@ -109,7 +127,7 @@ public class SimpleActivity extends AppCompatActivity implements SlideAndDragLis
             CustomViewHolder cvh;
             if (convertView == null) {
                 cvh = new CustomViewHolder();
-                convertView = LayoutInflater.from(SimpleActivity.this).inflate(R.layout.item_custom, null);
+                convertView = LayoutInflater.from(HeaderFooterActivity.this).inflate(R.layout.item_custom, null);
                 cvh.imgLogo = (ImageView) convertView.findViewById(R.id.img_item_edit);
                 cvh.txtName = (TextView) convertView.findViewById(R.id.txt_item_edit);
                 cvh.imgLogo2 = (ImageView) convertView.findViewById(R.id.img_item_edit2);
@@ -134,44 +152,44 @@ public class SimpleActivity extends AppCompatActivity implements SlideAndDragLis
     @Override
     public void onListItemLongClick(View view, int position) {
         boolean bool = mListView.startDrag(position);
-        Toast.makeText(SimpleActivity.this, "onItemLongClick   position--->" + position + "   drag-->" + bool, Toast.LENGTH_SHORT).show();
+        Toast.makeText(HeaderFooterActivity.this, "onItemLongClick   position--->" + position + "   drag-->" + bool, Toast.LENGTH_SHORT).show();
         Log.i(TAG, "onListItemLongClick   " + position);
     }
 
     @Override
     public void onDragViewStart(int position) {
-        Toast.makeText(SimpleActivity.this, "onDragViewStart   position--->" + position, Toast.LENGTH_SHORT).show();
+        Toast.makeText(HeaderFooterActivity.this, "onDragViewStart   position--->" + position, Toast.LENGTH_SHORT).show();
         Log.i(TAG, "onDragViewStart   " + position);
     }
 
     @Override
     public void onDragViewMoving(int position) {
 //        Toast.makeText(DemoActivity.this, "onDragViewMoving   position--->" + position, Toast.LENGTH_SHORT).show();
-        Log.i("yuyidong", "onDragViewMoving   " + position);
+        Log.i(TAG, "onDragViewMoving   " + position);
     }
 
     @Override
     public void onDragViewDown(int position) {
-        Toast.makeText(SimpleActivity.this, "onDragViewDown   position--->" + position, Toast.LENGTH_SHORT).show();
+        Toast.makeText(HeaderFooterActivity.this, "onDragViewDown   position--->" + position, Toast.LENGTH_SHORT).show();
         Log.i(TAG, "onDragViewDown   " + position);
     }
 
     @Override
     public void onListItemClick(View v, int position) {
-        Toast.makeText(SimpleActivity.this, "onItemClick   position--->" + position, Toast.LENGTH_SHORT).show();
+        Toast.makeText(HeaderFooterActivity.this, "onItemClick   position--->" + position, Toast.LENGTH_SHORT).show();
         Log.i(TAG, "onListItemClick   " + position);
     }
 
     @Override
     public void onSlideOpen(View view, View parentView, int position, int direction) {
-        Toast.makeText(SimpleActivity.this, "onSlideOpen   position--->" + position + "  direction--->" + direction, Toast.LENGTH_SHORT).show();
-        Log.i(TAG, "onSlideOpen   " + position);
+        Toast.makeText(HeaderFooterActivity.this, "onSlideOpen   position--->" + position + "  direction--->" + direction, Toast.LENGTH_SHORT).show();
+        Log.i(TAG, "onSlideOpen   " + position + "  direction--->" + direction);
     }
 
     @Override
     public void onSlideClose(View view, View parentView, int position, int direction) {
-        Toast.makeText(SimpleActivity.this, "onSlideClose   position--->" + position + "  direction--->" + direction, Toast.LENGTH_SHORT).show();
-        Log.i(TAG, "onSlideClose   " + position);
+        Toast.makeText(HeaderFooterActivity.this, "onSlideClose   position--->" + position + "  direction--->" + direction, Toast.LENGTH_SHORT).show();
+        Log.i(TAG, "onSlideClose   " + position + "  direction--->" + direction);
     }
 
     @Override
@@ -203,20 +221,4 @@ public class SimpleActivity extends AppCompatActivity implements SlideAndDragLis
         mAdapter.notifyDataSetChanged();
     }
 
-    @Override
-    public void onScrollStateChanged(AbsListView view, int scrollState) {
-        switch (scrollState) {
-            case SlideAndDragListView.OnListScrollListener.SCROLL_STATE_IDLE:
-                break;
-            case SlideAndDragListView.OnListScrollListener.SCROLL_STATE_TOUCH_SCROLL:
-                break;
-            case SlideAndDragListView.OnListScrollListener.SCROLL_STATE_FLING:
-                break;
-        }
-    }
-
-    @Override
-    public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
-
-    }
 }

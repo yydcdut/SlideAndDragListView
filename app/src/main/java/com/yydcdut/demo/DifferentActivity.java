@@ -221,7 +221,8 @@ public class DifferentActivity extends AppCompatActivity implements SlideAndDrag
 
     @Override
     public void onListItemLongClick(View view, int position) {
-        Toast.makeText(DifferentActivity.this, "onItemLongClick   position--->" + position, Toast.LENGTH_SHORT).show();
+        boolean bool = mListView.startDrag(position);
+        Toast.makeText(DifferentActivity.this, "onItemLongClick   position--->" + position + "   drag-->" + bool, Toast.LENGTH_SHORT).show();
         Log.i(TAG, "onListItemLongClick   " + position);
     }
 

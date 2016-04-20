@@ -86,12 +86,9 @@ public class SlideAndDragListView<T> extends DragListView<T> implements WrapperA
                     //找到那个位置的view
                     View view = getChildAt(position - getFirstVisiblePosition());
                     //如果设置了监听器的话，就触发
-                    if (mOnListItemLongClickListener != null) {
-                        mOnListItemLongClickListener.onListItemLongClick(view, position);
-                    }
-                    boolean canDrag = scrollBackByDrag(position);
-                    if (canDrag && view instanceof ItemMainLayout) {
-                        setDragPosition(position);
+                    if (mOnListItemLongClickListener != null && view instanceof ItemMainLayout) {
+                        ItemMainLayout itemMainLayout = (ItemMainLayout) view;
+                        mOnListItemLongClickListener.onListItemLongClick(itemMainLayout.getItemCustomView(), position);
                     }
                 }
                 break;
@@ -216,7 +213,10 @@ public class SlideAndDragListView<T> extends DragListView<T> implements WrapperA
                         if (scrollBackState == RETURN_SCROLL_BACK_NOTHING) {
                             if (mOnListItemClickListener != null && mIsWannaTriggerClick) {
                                 View v = getChildAt(position - getFirstVisiblePosition());
-                                mOnListItemClickListener.onListItemClick(v, position);
+                                if (v instanceof ItemMainLayout) {
+                                    ItemMainLayout itemMainLayout = (ItemMainLayout) v;
+                                    mOnListItemClickListener.onListItemClick(itemMainLayout.getItemCustomView(), position);
+                                }
                             }
                         }
                     } else {
@@ -434,8 +434,9 @@ public class SlideAndDragListView<T> extends DragListView<T> implements WrapperA
 
             @Override
             public void onItemDelete(View view, int position) {
-                if (mOnItemDeleteListener != null) {
-                    mOnItemDeleteListener.onItemDelete(view, position);
+                if (mOnItemDeleteListener != null && view instanceof ItemMainLayout) {
+                    ItemMainLayout itemMainLayout = (ItemMainLayout) view;
+                    mOnItemDeleteListener.onItemDelete(itemMainLayout.getItemCustomView(), position);
                 }
             }
 
@@ -444,6 +445,16 @@ public class SlideAndDragListView<T> extends DragListView<T> implements WrapperA
         mWrapperAdapter.setOnAdapterMenuClickListenerProxy(this);
         setRawAdapter(adapter);
         super.setAdapter(mWrapperAdapter);
+    }
+
+    public boolean startDrag(int position) {
+        boolean canDrag = scrollBackByDrag(position);
+        //找到那个位置的view
+        View view = getChildAt(position - getFirstVisiblePosition());
+        if (canDrag && view instanceof ItemMainLayout) {
+            setDragPosition(position);
+        }
+        return canDrag && view instanceof ItemMainLayout;
     }
 
     /**
@@ -480,15 +491,17 @@ public class SlideAndDragListView<T> extends DragListView<T> implements WrapperA
 
     @Override
     public void onSlideOpen(View view, int position, int direction) {
-        if (mOnSlideListener != null) {
-            mOnSlideListener.onSlideOpen(view, this, position, direction);
+        if (mOnSlideListener != null && view instanceof ItemMainLayout) {
+            ItemMainLayout itemMainLayout = (ItemMainLayout) view;
+            mOnSlideListener.onSlideOpen(itemMainLayout.getItemCustomView(), this, position, direction);
         }
     }
 
     @Override
     public void onSlideClose(View view, int position, int direction) {
-        if (mOnSlideListener != null) {
-            mOnSlideListener.onSlideClose(view, this, position, direction);
+        if (mOnSlideListener != null && view instanceof ItemMainLayout) {
+            ItemMainLayout itemMainLayout = (ItemMainLayout) view;
+            mOnSlideListener.onSlideClose(itemMainLayout.getItemCustomView(), this, position, direction);
         }
     }
 

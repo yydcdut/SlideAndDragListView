@@ -40,4 +40,13 @@
         android:text="SDLV with Different Menu"
         android:textAllCaps="false"/>
 
+    <Button
+        android:id="@+id/btn_touch_drag"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="5dp"
+        android:gravity="center"
+        android:text="Touch Item to Drag"
+        android:textAllCaps="false"/>
+
 </LinearLayout>
