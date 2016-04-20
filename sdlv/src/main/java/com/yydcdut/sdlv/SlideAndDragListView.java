@@ -5,6 +5,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.os.Vibrator;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewConfiguration;
@@ -108,27 +109,29 @@ public class SlideAndDragListView<T> extends DragListView<T> implements WrapperA
     public boolean onInterceptTouchEvent(MotionEvent ev) {
         switch (ev.getAction() & MotionEvent.ACTION_MASK) {
             case MotionEvent.ACTION_DOWN:
-//                Log.i("yuyidong111","onInterceptTouchEvent   ACTION_DOWN");
-                ItemMainLayout itemMainLayout = getItemMainLayoutByPosition((int) ev.getX(), (int) ev.getY());
-                if (itemMainLayout != null) {
-                    int left = itemMainLayout.getItemCustomView().getLeft();
-//                    Log.i("yuyidong111","onInterceptTouchEvent   ACTION_DOWN    left--->"+left);
+                //当Menu滑开，然后在Menu的位置滑动，是不会经过onTouchEvent的ACTION_DOWN的
+                //获取出坐标来
+                mXDown = (int) ev.getX();
+                mYDown = (int) ev.getY();
+                //当前state状态为按下
+                mState = STATE_DOWN;
+                ItemMainLayout itemMainLayoutDown = getItemMainLayoutByPosition((int) ev.getX(), (int) ev.getY());
+                if (itemMainLayoutDown != null) {
+                    mItemLeftDistance = itemMainLayoutDown.getItemCustomView().getLeft();
+                } else {
+                    mItemLeftDistance = 0;
                 }
-                return false;
+                break;
             case MotionEvent.ACTION_MOVE:
-//                Log.i("yuyidong111","onInterceptTouchEvent   ACTION_MOVE");
                 if (fingerLeftAndRightMove(ev)) {//上下范围在50，主要检测左右滑动
-//                    Log.i("yuyidong111","拦截拦截");
-                    //拦截
                     return true;
                 }
                 break;
         }
-//        Log.i("yuyidong111","no no no没有拦截");
         return super.onInterceptTouchEvent(ev);
     }
 
-    private int mItemLeftDistance = -1;
+    private int mItemLeftDistance = 0;
     private boolean isItemViewHandlingMotionEvent = false;
 
     @Override
@@ -164,6 +167,21 @@ public class SlideAndDragListView<T> extends DragListView<T> implements WrapperA
                     int position = pointToPosition(mXDown, mYDown);
                     ItemMainLayout itemMainLayout = getItemMainLayoutByPosition(mXDown, mYDown);
                     if (itemMainLayout != null) {
+                        //判断是不是点在menu上面了
+                        Log.i("yuyidong111", "ev.getX()--->" + ev.getX() + "   mItemLeftDistance--->" + mItemLeftDistance);
+                        if (mItemLeftDistance > 0) { //已经向右滑动了，而且滑开了
+                            if (ev.getX() < mItemLeftDistance) {//手指的位置再Menu
+                                Log.i("yuyidong111", "1111111");
+                                return true;
+                            }
+                        } else if (mItemLeftDistance < 0) {//已经向左滑动了，而且滑开了
+                            if (ev.getX() > mItemLeftDistance + itemMainLayout.getItemCustomView().getWidth()) {
+                                Log.i("yuyidong111", "222222222");
+                                return true;
+                            }
+                        }
+
+                        //没有点在menu上面
                         if (isFingerMoving2Right(ev)) {//如果想向右滑动
                             if (itemMainLayout.getItemLeftBackGroundLayout().getBtnViews().size() == 0 &&
                                     itemMainLayout.getScrollState() == ItemMainLayout.SCROLL_STATE_CLOSE) {//但是又没有Left的Menu
@@ -219,13 +237,13 @@ public class SlideAndDragListView<T> extends DragListView<T> implements WrapperA
                 }
                 removeLongClickMessage();
                 mState = STATE_NOTHING;
-                mItemLeftDistance = -1;
+                mItemLeftDistance = 0;
                 isItemViewHandlingMotionEvent = false;
                 break;
             case MotionEvent.ACTION_POINTER_UP:
             case MotionEvent.ACTION_CANCEL:
                 mState = STATE_NOTHING;
-                mItemLeftDistance = -1;
+                mItemLeftDistance = 0;
                 isItemViewHandlingMotionEvent = false;
                 break;
             default:

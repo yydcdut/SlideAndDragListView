@@ -207,7 +207,6 @@ class ItemMainLayout extends FrameLayout {
                 break;
             case MotionEvent.ACTION_UP:
             case MotionEvent.ACTION_CANCEL:
-
                 switch (mIntention) {
                     case INTENTION_LEFT_CLOSE:
                     case INTENTION_LEFT_OPEN:
@@ -352,7 +351,6 @@ class ItemMainLayout extends FrameLayout {
                 ViewGroup.LayoutParams layoutParams = ItemMainLayout.this.getLayoutParams();
                 layoutParams.height = height - (int) (height * interpolatedTime);
                 ItemMainLayout.this.setLayoutParams(layoutParams);
-                ItemMainLayout.this.requestLayout();
             }
         };
         animation.setAnimationListener(animationListener);
