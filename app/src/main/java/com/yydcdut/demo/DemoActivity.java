@@ -2,7 +2,6 @@ package com.yydcdut.demo;
 
 import android.content.pm.ApplicationInfo;
 import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -50,26 +49,26 @@ public class DemoActivity extends AppCompatActivity implements SlideAndDragListV
     public void initMenu() {
         mMenu = new Menu(true, true);
         mMenu.addItem(new MenuItem.Builder().setWidth((int) getResources().getDimension(R.dimen.slv_item_bg_btn_width) * 2)
-                .setBackground(new ColorDrawable(Color.RED))
+                .setBackground(Utils.getDrawable(this, R.drawable.btn_left0))
                 .setText("One")
                 .setTextColor(Color.GRAY)
                 .setTextSize((int) getResources().getDimension(R.dimen.txt_size))
                 .build());
         mMenu.addItem(new MenuItem.Builder().setWidth((int) getResources().getDimension(R.dimen.slv_item_bg_btn_width))
-                .setBackground(new ColorDrawable(Color.GREEN))
+                .setBackground(Utils.getDrawable(this, R.drawable.btn_left1))
                 .setText("Two")
                 .setTextColor(Color.BLACK)
                 .setTextSize((int) getResources().getDimension(R.dimen.txt_size))
                 .build());
         mMenu.addItem(new MenuItem.Builder().setWidth((int) getResources().getDimension(R.dimen.slv_item_bg_btn_width) + 30)
-                .setBackground(new ColorDrawable(Color.BLUE))
+                .setBackground(Utils.getDrawable(this, R.drawable.btn_right0))
                 .setText("Three")
                 .setDirection(MenuItem.DIRECTION_RIGHT)
                 .setTextColor(Color.BLACK)
                 .setTextSize((int) getResources().getDimension(R.dimen.txt_size))
                 .build());
         mMenu.addItem(new MenuItem.Builder().setWidth((int) getResources().getDimension(R.dimen.slv_item_bg_btn_width_img))
-                .setBackground(new ColorDrawable(Color.BLACK))
+                .setBackground(Utils.getDrawable(this, R.drawable.btn_right1))
                 .setDirection(MenuItem.DIRECTION_RIGHT)
                 .setIcon(getResources().getDrawable(R.drawable.ic_launcher))
                 .build());
