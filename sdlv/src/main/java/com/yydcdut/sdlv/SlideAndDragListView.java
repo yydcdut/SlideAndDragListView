@@ -5,7 +5,6 @@ import android.os.Handler;
 import android.os.Message;
 import android.os.Vibrator;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewConfiguration;
@@ -163,20 +162,16 @@ public class SlideAndDragListView<T> extends DragListView<T> implements WrapperA
                     }
                 } else if (fingerLeftAndRightMove(ev) && !isItemViewHandlingMotionEvent) {//上下范围在50，主要检测左右滑动
                     removeLongClickMessage();
-                    //将当前想要滑动哪一个传递给wrapperAdapter
                     int position = pointToPosition(mXDown, mYDown);
                     ItemMainLayout itemMainLayout = getItemMainLayoutByPosition(mXDown, mYDown);
                     if (itemMainLayout != null) {
                         //判断是不是点在menu上面了
-                        Log.i("yuyidong111", "ev.getX()--->" + ev.getX() + "   mItemLeftDistance--->" + mItemLeftDistance);
                         if (mItemLeftDistance > 0) { //已经向右滑动了，而且滑开了
                             if (ev.getX() < mItemLeftDistance) {//手指的位置再Menu
-                                Log.i("yuyidong111", "1111111");
                                 return true;
                             }
                         } else if (mItemLeftDistance < 0) {//已经向左滑动了，而且滑开了
                             if (ev.getX() > mItemLeftDistance + itemMainLayout.getItemCustomView().getWidth()) {
-                                Log.i("yuyidong111", "222222222");
                                 return true;
                             }
                         }
@@ -195,6 +190,7 @@ public class SlideAndDragListView<T> extends DragListView<T> implements WrapperA
                                 return true;
                             }
                         }
+                        //将当前想要滑动哪一个传递给wrapperAdapter
                         mWrapperAdapter.setSlideItemPosition(position);
                         isItemViewHandlingMotionEvent = true;
                         mState = STATE_SCROLL;
