@@ -121,22 +121,6 @@ class ItemMainLayout extends FrameLayout {
         Compat.setBackgroundDrawable(mItemRightBackGroundLayout, drawable);
     }
 
-//    @Override
-//    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-//        if (mDeleteHeight == DEFAULT_DELETE_HEIGHT || mDeleteHeight < 0) {
-//            super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-//            mHeight = getMeasuredHeight();
-//            for (int i = 0; i < getChildCount(); i++) {
-//                measureChild(getChildAt(i), widthMeasureSpec, MeasureSpec.makeMeasureSpec(mHeight, MeasureSpec.EXACTLY));
-//            }
-//        } else if (mDeleteHeight >= 0) {
-//            setMeasuredDimension(MeasureSpec.getSize(widthMeasureSpec), mDeleteHeight);
-//            for (int i = 0; i < getChildCount(); i++) {
-//                measureChild(getChildAt(i), widthMeasureSpec, MeasureSpec.makeMeasureSpec(mDeleteHeight, MeasureSpec.EXACTLY));
-//            }
-//        }
-//    }
-
     public void handleMotionEvent(MotionEvent ev, final float xDown, final float yDown, final int leftDistance) {
         getParent().requestDisallowInterceptTouchEvent(false);
         switch (ev.getAction() & MotionEvent.ACTION_MASK) {
@@ -223,11 +207,7 @@ class ItemMainLayout extends FrameLayout {
                 break;
             case MotionEvent.ACTION_UP:
             case MotionEvent.ACTION_CANCEL:
-                //当item归位的时候才将drawable设置回去
-                if (mIntention == INTENTION_LEFT_CLOSE ||
-                        mIntention == INTENTION_RIGHT_CLOSE) {
-                    enableBackgroundDrawable();
-                }
+
                 switch (mIntention) {
                     case INTENTION_LEFT_CLOSE:
                     case INTENTION_LEFT_OPEN:
@@ -250,6 +230,8 @@ class ItemMainLayout extends FrameLayout {
                                 mOnItemSlideListenerProxy.onSlideClose(this, MenuItem.DIRECTION_LEFT);
                             }
                             mScrollState = SCROLL_STATE_CLOSE;
+                            //当item归位的时候才将drawable设置回去
+                            enableBackgroundDrawable();
                         }
                         break;
                     case INTENTION_RIGHT_CLOSE:
@@ -272,6 +254,8 @@ class ItemMainLayout extends FrameLayout {
                                 mOnItemSlideListenerProxy.onSlideClose(this, MenuItem.DIRECTION_RIGHT);
                             }
                             mScrollState = SCROLL_STATE_CLOSE;
+                            //当item归位的时候才将drawable设置回去
+                            enableBackgroundDrawable();
                         }
                         break;
                 }
@@ -394,6 +378,7 @@ class ItemMainLayout extends FrameLayout {
         mScroller.startScroll(mItemCustomView.getLeft(), 0, -mItemCustomView.getLeft(), 0, SCROLL_BACK_TIME);
         postInvalidate();
         mScrollState = SCROLL_STATE_CLOSE;
+        enableBackgroundDrawable();
     }
 
     /**
