@@ -3,7 +3,6 @@ package com.yydcdut.sdlv;
 import android.content.Context;
 import android.os.Handler;
 import android.os.Message;
-import android.os.Vibrator;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
@@ -39,8 +38,6 @@ public class SlideAndDragListView<T> extends DragListView<T> implements WrapperA
     private static final int RETURN_SCROLL_BACK_CLICK_MENU_BUTTON = 3;//点击到了滑开的item的menuButton上
     private static final int RETURN_SCROLL_BACK_NOTHING = 0;//所以位置都没有回归操作
 
-    /* 振动 */
-    private Vibrator mVibrator;
     /* handler */
     private Handler mHandler;
     /* 是否要触发itemClick */
@@ -73,7 +70,6 @@ public class SlideAndDragListView<T> extends DragListView<T> implements WrapperA
 
     public SlideAndDragListView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        mVibrator = (Vibrator) getContext().getSystemService(Context.VIBRATOR_SERVICE);
         mHandler = new Handler(this);
         mShortestDistance = ViewConfiguration.get(context).getScaledTouchSlop();
     }
@@ -91,7 +87,6 @@ public class SlideAndDragListView<T> extends DragListView<T> implements WrapperA
                     View view = getChildAt(position - getFirstVisiblePosition());
                     //如果设置了监听器的话，就触发
                     if (mOnListItemLongClickListener != null) {
-                        mVibrator.vibrate(100);
                         mOnListItemLongClickListener.onListItemLongClick(view, position);
                     }
                     boolean canDrag = scrollBackByDrag(position);
