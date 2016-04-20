@@ -411,30 +411,53 @@ class ItemMainLayout extends FrameLayout {
      */
     private void initBackgroundDrawable() {
         Drawable drawable = getItemCustomView().getBackground();
-        if (drawable == null) {
-            return;
+        if (drawable != null) {
+            if (drawable instanceof StateListDrawable) {
+                StateListDrawable stateListDrawable = (StateListDrawable) drawable;
+                mNormalCustomBackgroundDrawable = stateListDrawable.getCurrent();
+            } else {
+                mNormalCustomBackgroundDrawable = drawable;
+            }
+            mTotalCustomBackgroundDrawable = drawable;
         }
-        if (drawable instanceof StateListDrawable) {
-            StateListDrawable stateListDrawable = (StateListDrawable) drawable;
-            mNormalCustomBackgroundDrawable = stateListDrawable.getCurrent();
-        } else {
-            mNormalCustomBackgroundDrawable = drawable;
+
+        Drawable listDrawable = getItemLeftBackGroundLayout().getBackground();
+        if (listDrawable != null) {
+            if (listDrawable instanceof StateListDrawable) {
+                StateListDrawable stateListDrawable = (StateListDrawable) listDrawable;
+                mNormalListSelectorDrawable = stateListDrawable.getCurrent();
+            } else {
+                mNormalListSelectorDrawable = listDrawable;
+            }
+            mTotalListSelectorDrawable = listDrawable;
         }
-        mTotalCustomBackgroundDrawable = drawable;
     }
 
     /**
      * 在滑动的时候禁止掉StateListDrawable
      */
     private void disableBackgroundDrawable() {
-        Compat.setBackgroundDrawable(getItemCustomView(), mNormalCustomBackgroundDrawable);
+        if (mNormalCustomBackgroundDrawable != null) {
+            Compat.setBackgroundDrawable(getItemCustomView(), mNormalCustomBackgroundDrawable);
+        }
+        if (mNormalListSelectorDrawable != null) {
+            Compat.setBackgroundDrawable(getItemLeftBackGroundLayout(), mNormalListSelectorDrawable);
+            Compat.setBackgroundDrawable(getItemRightBackGroundLayout(), mNormalListSelectorDrawable);
+        }
     }
 
     /**
      * 在没有滑动的时候恢复StateListDrawable
      */
     private void enableBackgroundDrawable() {
-        Compat.setBackgroundDrawable(getItemCustomView(), mTotalCustomBackgroundDrawable);
+        if (mTotalCustomBackgroundDrawable != null) {
+            Compat.setBackgroundDrawable(getItemCustomView(), mTotalCustomBackgroundDrawable);
+        }
+
+        if (mTotalListSelectorDrawable != null) {
+            Compat.setBackgroundDrawable(getItemLeftBackGroundLayout(), mTotalListSelectorDrawable);
+            Compat.setBackgroundDrawable(getItemRightBackGroundLayout(), mTotalListSelectorDrawable);
+        }
     }
 
 
