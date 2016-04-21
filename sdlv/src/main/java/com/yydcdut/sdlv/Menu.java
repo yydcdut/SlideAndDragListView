@@ -1,7 +1,5 @@
 package com.yydcdut.sdlv;
 
-import android.graphics.drawable.Drawable;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,33 +14,33 @@ public final class Menu {
     private List<MenuItem> mLeftMenuItems;
     private List<MenuItem> mRightMenuItems;
 
-    private Drawable mItemBackGroundDrawable;
     private boolean mWannaOver = true;
+    private boolean mWannaTransparentWhileDragging = true;
 
     private int mMenuViewType = 0;
 
-    public Menu(Drawable itemBackGroundDrawable) {
-        this(itemBackGroundDrawable, true);
+    public Menu(boolean wannaTransparentWhileDragging) {
+        this(wannaTransparentWhileDragging, true);
     }
 
-    public Menu(Drawable itemBackGroundDrawable, boolean wannaOver) {
-        this(itemBackGroundDrawable, wannaOver, 0);
+    public Menu(boolean wannaTransparentWhileDragging, boolean wannaOver) {
+        this(wannaTransparentWhileDragging, wannaOver, 0);
     }
 
-    public Menu(Drawable itemBackGroundDrawable, boolean wannaOver, int menuViewType) {
-        mItemBackGroundDrawable = itemBackGroundDrawable;
+    public Menu(boolean wannaTransparentWhileDragging, boolean wannaOver, int menuViewType) {
+        mWannaTransparentWhileDragging = wannaTransparentWhileDragging;
         mWannaOver = wannaOver;
         mLeftMenuItems = new ArrayList<>();
         mRightMenuItems = new ArrayList<>();
         mMenuViewType = menuViewType;
     }
 
-    public Drawable getItemBackGroundDrawable() {
-        return mItemBackGroundDrawable;
+    protected boolean isWannaOver() {
+        return mWannaOver;
     }
 
-    public boolean isWannaOver() {
-        return mWannaOver;
+    protected boolean isWannaTransparentWhileDragging() {
+        return mWannaTransparentWhileDragging;
     }
 
     public void addItem(MenuItem menuItem) {

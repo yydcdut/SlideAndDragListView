@@ -89,7 +89,7 @@ abstract class WrapperAdapter implements WrapperListAdapter, ItemMainLayout.OnIt
         ItemMainLayout itemMainLayout = null;
         if (convertView == null) {
             View contentView = mAdapter.getView(position, convertView, parent);
-            itemMainLayout = new ItemMainLayout(mContext);
+            itemMainLayout = new ItemMainLayout(mContext, contentView);
             int type = mAdapter.getItemViewType(position);
             Menu menu = mMenuMap.get(type);
             if (menu == null) {
@@ -98,12 +98,11 @@ abstract class WrapperAdapter implements WrapperListAdapter, ItemMainLayout.OnIt
             itemMainLayout.setParams(menu.getTotalBtnLength(MenuItem.DIRECTION_LEFT),
                     menu.getTotalBtnLength(MenuItem.DIRECTION_RIGHT), menu.isWannaOver());
             createMenu(menu, itemMainLayout);
-            itemMainLayout.getItemCustomLayout().saveBackground(menu.getItemBackGroundDrawable());
             itemMainLayout.setOnItemSlideListenerProxy(this);
-            itemMainLayout.getItemCustomLayout().addCustomView(contentView);
+            itemMainLayout.setSelector(mListView.getSelector());
         } else {
             itemMainLayout = (ItemMainLayout) convertView;
-            mAdapter.getView(position, itemMainLayout.getItemCustomLayout().getCustomView(), parent);
+            mAdapter.getView(position, itemMainLayout.getItemCustomView(), parent);
         }
         return itemMainLayout;
     }
@@ -115,7 +114,6 @@ abstract class WrapperAdapter implements WrapperListAdapter, ItemMainLayout.OnIt
      */
     private void createMenu(Menu menu, ItemMainLayout itemMainLayout) {
         if (menu.getTotalBtnLength(MenuItem.DIRECTION_LEFT) > 0) {
-            Compat.setBackgroundDrawable(itemMainLayout.getItemLeftBackGroundLayout().getBackGroundImage(), menu.getItemBackGroundDrawable());
             for (int i = 0; i < menu.getMenuItems(MenuItem.DIRECTION_LEFT).size(); i++) {
                 View v = itemMainLayout.getItemLeftBackGroundLayout().addMenuItem(menu.getMenuItems(MenuItem.DIRECTION_LEFT).get(i));
                 v.setOnClickListener(this);
@@ -126,7 +124,6 @@ abstract class WrapperAdapter implements WrapperListAdapter, ItemMainLayout.OnIt
             itemMainLayout.getItemLeftBackGroundLayout().setVisibility(View.GONE);
         }
         if (menu.getTotalBtnLength(MenuItem.DIRECTION_RIGHT) > 0) {
-            Compat.setBackgroundDrawable(itemMainLayout.getItemRightBackGroundLayout().getBackGroundImage(), menu.getItemBackGroundDrawable());
             for (int i = 0; i < menu.getMenuItems(MenuItem.DIRECTION_RIGHT).size(); i++) {
                 View v = itemMainLayout.getItemRightBackGroundLayout().addMenuItem(menu.getMenuItems(MenuItem.DIRECTION_RIGHT).get(i));
                 v.setOnClickListener(this);
@@ -231,6 +228,12 @@ abstract class WrapperAdapter implements WrapperListAdapter, ItemMainLayout.OnIt
             return ItemMainLayout.SCROLL_BACK_CLICK_NOTHING;
         }
         return ItemMainLayout.SCROLL_BACK_CLICK_NOTHING;
+    }
+
+    protected boolean isWannaTransparentWhileDragging(int position) {
+        int type = getItemViewType(position);
+        Menu menu = mMenuMap.get(type);
+        return menu.isWannaTransparentWhileDragging();
     }
 
     /**
