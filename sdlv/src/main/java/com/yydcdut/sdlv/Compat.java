@@ -16,8 +16,4 @@ class Compat {
             view.setBackgroundDrawable(drawable);
         }
     }
-
-    public static boolean afterLollipop() {
-        return Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP;
-    }
 }
