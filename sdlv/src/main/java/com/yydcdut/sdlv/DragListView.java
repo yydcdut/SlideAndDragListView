@@ -124,12 +124,6 @@ public class DragListView<T> extends ListView implements View.OnDragListener {
                 return true;
             case DragEvent.ACTION_DROP:
                 mSDAdapter.notifyDataSetChanged();
-                for (int i = 0; i < getLastVisiblePosition() - getFirstVisiblePosition(); i++) {
-                    if (getChildAt(i) instanceof ItemMainLayout) {
-                        ItemMainLayout view = (ItemMainLayout) getChildAt(i);
-                        setItemVisible(view);
-                    }
-                }
                 if (mOnDragListener != null) {
                     mOnDragListener.onDragViewDown(mCurrentPosition);
                 }
@@ -141,18 +135,6 @@ public class DragListView<T> extends ListView implements View.OnDragListener {
         }
         return false;
     }
-
-    /**
-     * 将透明的那部分变回来
-     *
-     * @param itemMainLayout
-     */
-    private void setItemVisible(ItemMainLayout itemMainLayout) {
-//        if (!itemMainLayout.getItemCustomView().isBackgroundShowing()) {
-//            itemMainLayout.getItemCustomView().showBackground();
-//        }
-    }
-
 
     /**
      * 如果到了两端，判断ListView是往上滑动还是ListView往下滑动
