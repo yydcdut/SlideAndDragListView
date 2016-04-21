@@ -1,4 +1,17 @@
-<menu
-    xmlns:tools="http://schemas.android.com/tools"
-    tools:context=".MainActivity">
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/menu_drag"
+        android:title="Disable Drag"
+        app:showAsAction="never"/>
+    <item
+        android:id="@+id/menu_item_click"
+        android:title="Disable Item Click"
+        app:showAsAction="never"/>
+
+    <item
+        android:id="@+id/menu_item_long_click"
+        android:title="Disable Item Long Click"
+        app:showAsAction="never"/>
+
 </menu>

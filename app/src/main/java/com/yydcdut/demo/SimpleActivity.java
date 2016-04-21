@@ -233,4 +233,45 @@ public class SimpleActivity extends AppCompatActivity implements SlideAndDragLis
     public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
 
     }
+
+    @Override
+    public boolean onCreateOptionsMenu(android.view.Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(android.view.MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.menu_drag:
+                if (item.getTitle().toString().startsWith("Enable")) {
+                    mListView.setOnDragListener(this, mAppList);
+                    item.setTitle("Disable Drag");
+                } else {
+                    mListView.setOnDragListener(null, null);
+                    item.setTitle("Enable Drag");
+                }
+                break;
+            case R.id.menu_item_click:
+                if (item.getTitle().toString().startsWith("Enable")) {
+                    mListView.setOnListItemClickListener(this);
+                    item.setTitle("Disable Item Click");
+                } else {
+                    mListView.setOnListItemClickListener(null);
+                    item.setTitle("Enable Item Click");
+                }
+                break;
+            case R.id.menu_item_long_click:
+                if (item.getTitle().toString().startsWith("Enable")) {
+                    mListView.setOnListItemLongClickListener(this);
+                    item.setTitle("Disable Item Long Click");
+                } else {
+                    mListView.setOnListItemLongClickListener(null);
+                    item.setTitle("Enable Item Long Click");
+                }
+                break;
+        }
+        return true;
+    }
+
 }
