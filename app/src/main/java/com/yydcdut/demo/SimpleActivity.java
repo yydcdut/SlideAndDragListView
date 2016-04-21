@@ -146,8 +146,9 @@ public class SimpleActivity extends AppCompatActivity implements SlideAndDragLis
 
     @Override
     public void onListItemLongClick(View view, int position) {
-        boolean bool = mListView.startDrag(position);
-        Toast.makeText(SimpleActivity.this, "onItemLongClick   position--->" + position + "   drag-->" + bool, Toast.LENGTH_SHORT).show();
+//        boolean bool = mListView.startDrag(position);
+//        Toast.makeText(SimpleActivity.this, "onItemLongClick   position--->" + position + "   drag-->" + bool, Toast.LENGTH_SHORT).show();
+        Toast.makeText(SimpleActivity.this, "onItemLongClick   position--->" + position, Toast.LENGTH_SHORT).show();
         Log.i(TAG, "onListItemLongClick   " + position);
     }
 

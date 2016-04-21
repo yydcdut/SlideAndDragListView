@@ -90,6 +90,7 @@ public class SlideAndDragListView<T> extends DragListView<T> implements WrapperA
                         ItemMainLayout itemMainLayout = (ItemMainLayout) view;
                         mOnListItemLongClickListener.onListItemLongClick(itemMainLayout.getItemCustomView(), position);
                     }
+                    startDrag(position);
                 }
                 break;
         }
@@ -453,7 +454,7 @@ public class SlideAndDragListView<T> extends DragListView<T> implements WrapperA
      * @param position
      * @return
      */
-    public boolean startDrag(int position) {
+    protected boolean startDrag(int position) {
         boolean canDrag = scrollBackByDrag(position);
         //找到那个位置的view
         View view = getChildAt(position - getFirstVisiblePosition());

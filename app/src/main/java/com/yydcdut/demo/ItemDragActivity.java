@@ -136,10 +136,10 @@ public class ItemDragActivity extends AppCompatActivity implements SlideAndDragL
         private View.OnTouchListener mOnTouchListener = new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                Object o = v.getTag();
-                if (o != null && o instanceof Integer) {
-                    mListView.startDrag(((Integer) o).intValue());
-                }
+//                Object o = v.getTag();
+//                if (o != null && o instanceof Integer) {
+//                    mListView.startDrag(((Integer) o).intValue());
+//                }
                 return false;
             }
         };

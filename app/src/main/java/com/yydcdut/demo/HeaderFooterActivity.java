@@ -151,8 +151,9 @@ public class HeaderFooterActivity extends AppCompatActivity implements SlideAndD
 
     @Override
     public void onListItemLongClick(View view, int position) {
-        boolean bool = mListView.startDrag(position);
-        Toast.makeText(HeaderFooterActivity.this, "onItemLongClick   position--->" + position + "   drag-->" + bool, Toast.LENGTH_SHORT).show();
+//        boolean bool = mListView.startDrag(position);
+//        Toast.makeText(HeaderFooterActivity.this, "onItemLongClick   position--->" + position + "   drag-->" + bool, Toast.LENGTH_SHORT).show();
+        Toast.makeText(HeaderFooterActivity.this, "onItemLongClick   position--->" + position, Toast.LENGTH_SHORT).show();
         Log.i(TAG, "onListItemLongClick   " + position);
     }
 
