@@ -86,7 +86,7 @@ public class DifferentActivity extends AppCompatActivity implements SlideAndDrag
 
     public void initMenu() {
         mMenuList = new ArrayList<>(2);
-        Menu menu0 = new Menu(true, true, 0);
+        Menu menu0 = new Menu(false, true, 0);
         menu0.addItem(new MenuItem.Builder().setWidth((int) getResources().getDimension(R.dimen.slv_item_bg_btn2_width))
                 .setBackground(new ColorDrawable(Color.RED))
                 .setText("删除")

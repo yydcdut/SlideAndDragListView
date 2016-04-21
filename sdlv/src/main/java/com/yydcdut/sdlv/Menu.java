@@ -35,8 +35,12 @@ public final class Menu {
         mMenuViewType = menuViewType;
     }
 
-    public boolean isWannaOver() {
+    protected boolean isWannaOver() {
         return mWannaOver;
+    }
+
+    protected boolean isWannaTransparentWhileDragging() {
+        return mWannaTransparentWhileDragging;
     }
 
     public void addItem(MenuItem menuItem) {

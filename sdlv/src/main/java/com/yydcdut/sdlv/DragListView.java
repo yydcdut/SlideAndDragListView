@@ -160,7 +160,7 @@ public class DragListView<T> extends ListView implements View.OnDragListener {
         mSDAdapter = (BaseAdapter) adapter;
     }
 
-    protected void setDragPosition(int position) {
+    protected void setDragPosition(int position, boolean isWannaTransparentWhileDragging) {
         mCurrentPosition = position;
         mBeforeCurrentPosition = position;
         mBeforeBeforePosition = position;
@@ -168,14 +168,18 @@ public class DragListView<T> extends ListView implements View.OnDragListener {
         if (mOnDragListener != null && view instanceof ItemMainLayout) {
             ItemMainLayout itemMainLayout = (ItemMainLayout) getChildAt(position - getFirstVisiblePosition());
             Drawable backgroundDrawable = itemMainLayout.getItemCustomView().getBackground();
-            Compat.setBackgroundDrawable(itemMainLayout.getItemCustomView(), new ColorDrawable(Color.TRANSPARENT));
+            if (isWannaTransparentWhileDragging) {
+                Compat.setBackgroundDrawable(itemMainLayout.getItemCustomView(), new ColorDrawable(Color.TRANSPARENT));
+            }
             itemMainLayout.getItemLeftBackGroundLayout().setVisibility(GONE);
             itemMainLayout.getItemRightBackGroundLayout().setVisibility(GONE);
             ClipData.Item item = new ClipData.Item("1");
             ClipData data = new ClipData("1", new String[]{ClipDescription.MIMETYPE_TEXT_PLAIN}, item);
             itemMainLayout.startDrag(data, new View.DragShadowBuilder(itemMainLayout), null, 0);
             mOnDragListener.onDragViewStart(position);
-            Compat.setBackgroundDrawable(itemMainLayout.getItemCustomView(), backgroundDrawable);
+            if (isWannaTransparentWhileDragging) {
+                Compat.setBackgroundDrawable(itemMainLayout.getItemCustomView(), backgroundDrawable);
+            }
         }
     }
 

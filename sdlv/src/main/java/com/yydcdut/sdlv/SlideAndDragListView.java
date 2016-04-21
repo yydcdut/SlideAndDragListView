@@ -459,7 +459,7 @@ public class SlideAndDragListView<T> extends DragListView<T> implements WrapperA
         //找到那个位置的view
         View view = getChildAt(position - getFirstVisiblePosition());
         if (canDrag && view instanceof ItemMainLayout) {
-            setDragPosition(position);
+            setDragPosition(position, mWrapperAdapter.isWannaTransparentWhileDragging(position));
         }
         return canDrag && view instanceof ItemMainLayout;
     }

@@ -230,6 +230,12 @@ abstract class WrapperAdapter implements WrapperListAdapter, ItemMainLayout.OnIt
         return ItemMainLayout.SCROLL_BACK_CLICK_NOTHING;
     }
 
+    protected boolean isWannaTransparentWhileDragging(int position) {
+        int type = getItemViewType(position);
+        Menu menu = mMenuMap.get(type);
+        return menu.isWannaTransparentWhileDragging();
+    }
+
     /**
      * 设置监听器
      *
