@@ -2,7 +2,7 @@
 
   [ ![Download](https://api.bintray.com/packages/yydcdut/maven/sdlv/images/download.svg) ](https://bintray.com/yydcdut/maven/sdlv/_latestVersion)       [![License](http://img.shields.io/:license-apache-blue.svg)](LICENSE.txt)  [![Build Status](https://travis-ci.org/yydcdut/SlideAndDragListView.svg?branch=master)](https://travis-ci.org/yydcdut/SlideAndDragListView)    [![API](https://img.shields.io/badge/API-11%2B-brightgreen.svg?style=flat)](https://android-arsenal.com/api?level=11)  <a href="http://www.methodscount.com/?lib=com.yydcdut.sdlv%3Asdlv%3A0.4.2"><img src="https://img.shields.io/badge/Methods count-287-e91e63.svg"></img></a>   <a href="http://www.methodscount.com/?lib=com.yydcdut.sdlv%3Asdlv%3A0.4.2"><img src="https://img.shields.io/badge/Size-29 KB-e91e63.svg"></img></a>  
 
-A ListView that you can slide(or swipe) the item, drag the item and drop it to another position.
+A ListView that you can slide ( or swipe ) the items, drag and drop the items to other places.
 
 <img width="300" height="553" src="https://raw.githubusercontent.com/yydcdut/SlideAndDragListView/master/gif/v1.1.gif" />
 
@@ -61,7 +61,7 @@ compile 'com.yydcdut.sdlv:sdlv:0.4.2@aar'
 - Create a `Menu` and add `MenuItem`
 
 ``` java
-Menu menu = new Menu(new ColorDrawable(Color.WHITE), true, 0);//the second parameter is whether can slide over
+Menu menu = new Menu(true, true, 0);//the second parameter is whether can slide over
 menu.addItem(new MenuItem.Builder().setWidth(90)//set Width
                 .setBackground(new ColorDrawable(Color.RED))// set background
                 .setText("One")//set text string
@@ -77,7 +77,7 @@ menu.addItem(new MenuItem.Builder().setWidth(120)
 slideAndDragListView.setMenu(menu);
 ```
 
-The class `Menu`, the construct function `Menu(Drawable itemBackGroundDrawable, boolean wannaOver, int menuViewType)`, the second parameter means whether can slide over.
+The class `Menu`, the construct function `Menu(bool wannaTransparentWhileDragging, boolean wannaOver, int menuViewType)`, the first parameter means whether set background transparent while dragging, the second parameter means whether can slide over.
 
 If it’s `true`:
 
@@ -311,12 +311,6 @@ slideAndDragListView.setOnListScrollListener(new SlideAndDragListView.OnListScro
 ```
 
 Same as `ListView.OnScrollListener` .
-
-# Permission
-
-``` xml
-<uses-permission android:name="android.permission.VIBRATE"/>
-```
 
 # License
 

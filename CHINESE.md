@@ -21,7 +21,7 @@ SlideAndDragListView (SDLV) 继承与ListView，SDLV可以向左或者向右滑�
 5. 滑动item的方向可以是向左、向右或者两者。
 6. 等等......
 
-SlideAndDragListView 用于各种优先级列表：收藏夹，播放列表，清单等。我希望你觉得它有请，同时，如果发现bug或者不人性化的地方，或者有什么建议，请麻烦告诉我或者帮助我！
+SlideAndDragListView 用于各种优先级列表：收藏夹，播放列表，清单等。我希望你觉得它有用，同时，如果遇到什么问题，或者有什么建议，可以邮件我或者 issue！
 
 # 引用
 
@@ -61,7 +61,7 @@ compile 'com.yydcdut.sdlv:sdlv:0.4.2@aar'
 - 创建`Menu`并添加`MenuItem`
 
 ``` java
-Menu menu = new Menu(new ColorDrawable(Color.WHITE), true, 0);//第2个参数表示滑动item是否能滑的过量(true表示过量，就像Gif中显示的那样；false表示不过量，就像QQ中的那样)
+Menu menu = new Menu(true, true, 0);//第1个参数表示在拖拽的时候 item 的背景是否透明，第2个参数表示滑动item是否能滑的过头，像弹簧那样(true表示过头，就像Gif中显示的那样；false表示不过头，就像Android QQ中的那样)
 menu.addItem(new MenuItem.Builder().setWidth(90)//单个菜单button的宽度
                 .setBackground(new ColorDrawable(Color.RED))//设置菜单的背景
                 .setText("One")//set text string
@@ -77,7 +77,7 @@ menu.addItem(new MenuItem.Builder().setWidth(120)
 listView.setMenu(menu);
 ```
 
-类 `Menu` 的构造函数中的第二个参数表示滑动item是否能滑的过量(true表示过量，就像Gif中显示的那样；false表示不过量。
+类 `Menu` 的构造函数中的第一个参数表示在拖拽的时候 item 的背景是否透明；第二个参数表示滑动item是否能滑的过头，就像弹簧效果那样， true 表示过头，就像 Gif 中显示的那样；false表示不过头。
 
 如果是`true`:
 
@@ -87,11 +87,11 @@ listView.setMenu(menu);
 
 <img width="350" height="70" src="https://raw.githubusercontent.com/yydcdut/SlideAndDragListView/master/gif/wannaOver_false.gif" />
 
-第三个参数表示ItemViewType类型，也就是`BaseAdapter`中的`int getItemViewType(int )`。
+第三个参数表示 ItemViewType 类型，也就是`BaseAdapter`中的`int getItemViewType( int )`。
 
 ### 步骤3
 
-- 实现 menu item的单击事件
+- 实现 menu item 的单击事件
 
 ``` java
 slideAndDragListView.setOnSlideListener(new SlideAndDragListView.OnSlideListener() {
@@ -128,7 +128,7 @@ slideAndDragListView.setOnMenuItemClickListener(new SlideAndDragListView.OnMenuI
         });
 ```
 
-注意：必须得设置OnSlideListener监听器。
+注意：如果想要滑动的话必须得设置OnSlideListener监听器。
 
 Menu.ITEM_NOTHING`:
 
@@ -144,7 +144,7 @@ Menu.ITEM_NOTHING`:
 
 ## 创建不同类型的Menu
 
-- 设置 adapter 中的 ViewType
+- 设置 adapter 中的 `ViewType`
 
 ``` java
 private BaseAdapter mAdapter = new BaseAdapter() {
@@ -252,7 +252,7 @@ slideAndDragListView.setOnListItemLongClickListener(new SlideAndDragListView.OnL
         });
 ```
 
-### Item滑动监听器
+### Item 滑动监听器
 
 ``` java
 SlideAndDragListView.OnSlideListener() {
@@ -279,9 +279,9 @@ slideAndDragListView.setOnItemDeleteListener(new SlideAndDragListView.OnItemDele
         });
 ```
 
-`public void onItemDelete(View view, int position)` 的调用是在 `int onMenuItemClick(View v, int itemPosition, int buttonPosition, int direction)` 返回`Menu.ITEM_DELETE_FROM_BOTTOM_TO_TOP`之后.
+`public void onItemDelete(View view, int position)` 的调用是在 `int onMenuItemClick(View v, int itemPosition, int buttonPosition, int direction)` 返回`Menu.ITEM_DELETE_FROM_BOTTOM_TO_TOP`之后。
 
-### 滑动监听器
+### Scroll 监听器
 
 ```java
 slideAndDragListView.setOnListScrollListener(new SlideAndDragListView.OnListScrollListener(){
@@ -302,10 +302,14 @@ slideAndDragListView.setOnListScrollListener(new SlideAndDragListView.OnListScro
     });
 ```
 
-与 `ListView.OnScrollListener` 相同
+与 `ListView.OnScrollListener` 相同。
 
-# 权限
+# License
 
-``` xml
-<uses-permission android:name="android.permission.VIBRATE"/>
-```
+Copyright 2015 yydcdut
+
+Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
+
+[http://www.apache.org/licenses/LICENSE-2.0](http://www.apache.org/licenses/LICENSE-2.0)
+
+Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
