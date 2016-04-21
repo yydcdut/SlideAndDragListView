@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -74,10 +75,11 @@ public class NormalActivity extends AppCompatActivity {
             CustomViewHolder cvh;
             if (convertView == null) {
                 cvh = new CustomViewHolder();
-                convertView = LayoutInflater.from(NormalActivity.this).inflate(R.layout.item_custom, null);
+                convertView = LayoutInflater.from(NormalActivity.this).inflate(R.layout.item_custom_btn, null);
                 cvh.imgLogo = (ImageView) convertView.findViewById(R.id.img_item_edit);
                 cvh.txtName = (TextView) convertView.findViewById(R.id.txt_item_edit);
-                cvh.imgLogo2 = (ImageView) convertView.findViewById(R.id.img_item_edit2);
+                cvh.btnClick = (Button) convertView.findViewById(R.id.btn_item_click);
+                cvh.btnClick.setOnClickListener(mOnClickListener);
                 convertView.setTag(cvh);
             } else {
                 cvh = (CustomViewHolder) convertView.getTag();
@@ -85,14 +87,25 @@ public class NormalActivity extends AppCompatActivity {
             ApplicationInfo item = (ApplicationInfo) this.getItem(position);
             cvh.txtName.setText(item.loadLabel(getPackageManager()));
             cvh.imgLogo.setImageDrawable(item.loadIcon(getPackageManager()));
-            cvh.imgLogo2.setImageDrawable(item.loadIcon(getPackageManager()));
+            cvh.btnClick.setText(position + "");
+            cvh.btnClick.setTag(position);
             return convertView;
         }
 
         class CustomViewHolder {
             public ImageView imgLogo;
             public TextView txtName;
-            public ImageView imgLogo2;
+            public Button btnClick;
         }
+
+        private View.OnClickListener mOnClickListener = new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Object o = v.getTag();
+                if (o instanceof Integer) {
+                    Toast.makeText(NormalActivity.this, "button click-->" + ((Integer) o), Toast.LENGTH_SHORT).show();
+                }
+            }
+        };
     };
 }
