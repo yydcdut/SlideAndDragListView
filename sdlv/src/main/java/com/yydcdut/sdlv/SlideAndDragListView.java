@@ -349,6 +349,13 @@ public class SlideAndDragListView<T> extends DragListView<T> implements WrapperA
         return (ev.getX() - mXDown < -mShortestDistance);
     }
 
+    /**
+     * 通过手指的XY坐标得到ItemMainLayout
+     *
+     * @param x
+     * @param y
+     * @return
+     */
     private ItemMainLayout getItemMainLayoutByPosition(int x, int y) {
         int position = pointToPosition(x, y);
         if (position != AdapterView.INVALID_POSITION) {
