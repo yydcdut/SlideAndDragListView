@@ -14,4 +14,9 @@
         android:title="Disable Item Long Click"
         app:showAsAction="never"/>
 
+    <item
+        android:id="@+id/menu_item_close_menu"
+        android:title="Close Slided Menu By Api"
+        app:showAsAction="never"/>
+
 </menu>

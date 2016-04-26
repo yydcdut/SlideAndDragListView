@@ -270,6 +270,9 @@ public class SimpleActivity extends AppCompatActivity implements SlideAndDragLis
                     item.setTitle("Enable Item Long Click");
                 }
                 break;
+            case R.id.menu_item_close_menu:
+                mListView.closeSlidedItem();
+                break;
         }
         return true;
     }

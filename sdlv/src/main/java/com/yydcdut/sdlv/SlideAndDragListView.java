@@ -22,7 +22,7 @@ public class SlideAndDragListView<T> extends DragListView<T> implements WrapperA
         WrapperAdapter.OnAdapterMenuClickListenerProxy, Handler.Callback {
     /* Handler 的 Message 信息 */
     private static final int MSG_WHAT_LONG_CLICK = 1;
-    /* Handler 发送message需要延迟的时间 */
+    /* Handler 发送 message 需要延迟的时间 */
     private static final long CLICK_LONG_TRIGGER_TIME = 1000;//1s
     /* onTouch里面的状态 */
     private static final int STATE_NOTHING = -1;//抬起状态
@@ -33,6 +33,7 @@ public class SlideAndDragListView<T> extends DragListView<T> implements WrapperA
     private static final int STATE_MORE_FINGERS = 4;//多个手指
     private int mState = STATE_NOTHING;
 
+    /* Scroll 归位的时候点击位置 */
     private static final int RETURN_SCROLL_BACK_OWN = 1;//自己有归位操作
     private static final int RETURN_SCROLL_BACK_OTHER = 2;//其他位置有归位操作
     private static final int RETURN_SCROLL_BACK_CLICK_MENU_BUTTON = 3;//点击到了滑开的item的menuButton上
@@ -412,6 +413,13 @@ public class SlideAndDragListView<T> extends DragListView<T> implements WrapperA
         for (Menu menu : menus) {
             mMenuMap.put(menu.getMenuViewType(), menu);
         }
+    }
+
+    /**
+     * 关闭打开了的Item
+     */
+    public void closeSlidedItem() {
+        mWrapperAdapter.returnSlideItemPosition();
     }
 
     @Override

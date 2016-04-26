@@ -32,9 +32,9 @@ class ItemMainLayout extends FrameLayout {
     private int mScrollState = SCROLL_STATE_CLOSE;
     /* 需要scroll back的时候返回的状态 */
     protected static final int SCROLL_BACK_CLICK_NOTHING = 0;
-    protected static final int SCROLL_BACK_CLICK_OWN = 1;
+    protected static final int SCROLL_BACK_CLICK_OWN = 1;//点击到item了
     protected static final int SCROLL_BACK_ALREADY_CLOSED = 2;
-    protected static final int SCROLL_BACK_CLICK_MENU_BUTTON = 3;
+    protected static final int SCROLL_BACK_CLICK_MENU_BUTTON = 3;//点击到menu的button了
 
     /* 时间 */
     private static final int SCROLL_TIME = 500;//500ms
