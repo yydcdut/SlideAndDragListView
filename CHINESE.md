@@ -1,6 +1,6 @@
 # SlideAndDragListView
 
-  [ ![Download](https://api.bintray.com/packages/yydcdut/maven/sdlv/images/download.svg) ](https://bintray.com/yydcdut/maven/sdlv/_latestVersion)       [![License](http://img.shields.io/:license-apache-blue.svg)](LICENSE.txt)  [![Build Status](https://travis-ci.org/yydcdut/SlideAndDragListView.svg?branch=master)](https://travis-ci.org/yydcdut/SlideAndDragListView)    [![API](https://img.shields.io/badge/API-11%2B-brightgreen.svg?style=flat)](https://android-arsenal.com/api?level=11)  <a href="http://www.methodscount.com/?lib=com.yydcdut.sdlv%3Asdlv%3A0.5.0-beta"><img src="https://img.shields.io/badge/Methods count-287-e91e63.svg"></img></a>   <a href="http://www.methodscount.com/?lib=com.yydcdut.sdlv%3Asdlv%3A0.5.0-beta"><img src="https://img.shields.io/badge/Size-29 KB-e91e63.svg"></img></a>  
+  [ ![Download](https://api.bintray.com/packages/yydcdut/maven/sdlv/images/download.svg) ](https://bintray.com/yydcdut/maven/sdlv/_latestVersion)       [![License](http://img.shields.io/:license-apache-blue.svg)](LICENSE.txt)  [![Build Status](https://travis-ci.org/yydcdut/SlideAndDragListView.svg?branch=master)](https://travis-ci.org/yydcdut/SlideAndDragListView)    [![API](https://img.shields.io/badge/API-11%2B-brightgreen.svg?style=flat)](https://android-arsenal.com/api?level=11)  <a href="http://www.methodscount.com/?lib=com.yydcdut.sdlv%3Asdlv%3A0.5.1"><img src="https://img.shields.io/badge/Methods count-287-e91e63.svg"></img></a>   <a href="http://www.methodscount.com/?lib=com.yydcdut.sdlv%3Asdlv%3A0.5.1"><img src="https://img.shields.io/badge/Size-29 KB-e91e63.svg"></img></a>  
 
 一个可以左右滑动item和拖放item的ListView。
 
@@ -30,7 +30,7 @@ SlideAndDragListView 用于各种优先级列表：收藏夹，播放列表，�
 ## Gradle
 
 ``` groovy
-compile 'com.yydcdut.sdlv:sdlv:0.5.0-beta@aar'
+compile 'com.yydcdut.sdlv:sdlv:0.5.1@aar'
 ```
 
 ## aar
@@ -228,7 +228,7 @@ slideAndDragListView.setOnDragListener(new SlideAndDragListView.OnDragListener()
 
 `public void onDragViewDown(int position)` . 参数 `position` i傲世的是拖动的item最放到了ListView的哪个位置。
 
-## 其他
+## 其他监听器
 
 ### Item 单击
 
@@ -303,6 +303,16 @@ slideAndDragListView.setOnListScrollListener(new SlideAndDragListView.OnListScro
 ```
 
 与 `ListView.OnScrollListener` 相同。
+
+## API
+
+### 关闭 Menu
+
+```java
+slideAndDragListView.closeSlidedItem();
+```
+
+调用 API 手动关闭 Menu。
 
 # License
 
