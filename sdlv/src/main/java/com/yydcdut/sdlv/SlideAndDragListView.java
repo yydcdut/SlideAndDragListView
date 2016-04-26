@@ -610,11 +610,19 @@ public class SlideAndDragListView<T> extends DragListView<T> implements WrapperA
     @Deprecated
     @Override
     public void setOnScrollListener(OnScrollListener l) {
-        super.setOnScrollListener(l);
     }
 
     public void setOnListScrollListener(OnListScrollListener onListScrollListener) {
         mOnListScrollListener = onListScrollListener;
+    }
+
+    /**
+     * 自己用的类
+     *
+     * @param l
+     */
+    protected void setOnSuperScrollListener(OnScrollListener l) {
+        super.setOnScrollListener(l);
     }
 
     public interface OnListScrollListener {

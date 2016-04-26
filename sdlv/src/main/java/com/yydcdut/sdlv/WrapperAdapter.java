@@ -31,10 +31,10 @@ abstract class WrapperAdapter implements WrapperListAdapter, ItemMainLayout.OnIt
     private OnAdapterSlideListenerProxy mOnAdapterSlideListenerProxy;
     private OnAdapterMenuClickListenerProxy mOnAdapterMenuClickListenerProxy;
 
-    public WrapperAdapter(Context context, SlideAndDragListView listView, ListAdapter adapter, Map<Integer, Menu> map) {
+    protected WrapperAdapter(Context context, SlideAndDragListView listView, ListAdapter adapter, Map<Integer, Menu> map) {
         mContext = context;
         mListView = listView;
-        mListView.setOnScrollListener(this);
+        mListView.setOnSuperScrollListener(this);
         mAdapter = adapter;
         mMenuMap = map;
     }
@@ -184,7 +184,7 @@ abstract class WrapperAdapter implements WrapperListAdapter, ItemMainLayout.OnIt
     /**
      * 归位mSlideItemPosition，button不可点击
      */
-    public void returnSlideItemPosition() {
+    protected void returnSlideItemPosition() {
         if (mSlideItemPosition != -1) {
             ItemMainLayout itemMainLayout = (ItemMainLayout) mListView.getChildAt(mSlideItemPosition - mListView.getFirstVisiblePosition());
             if (itemMainLayout != null) {
@@ -204,7 +204,7 @@ abstract class WrapperAdapter implements WrapperListAdapter, ItemMainLayout.OnIt
      * @param x
      * @return 是否滑动归位了
      */
-    public int returnSlideItemPosition(float x) {
+    protected int returnSlideItemPosition(float x) {
         if (mSlideItemPosition != -1) {
             ItemMainLayout itemMainLayout = (ItemMainLayout) mListView.getChildAt(mSlideItemPosition - mListView.getFirstVisiblePosition());
             if (itemMainLayout != null) {
@@ -241,7 +241,7 @@ abstract class WrapperAdapter implements WrapperListAdapter, ItemMainLayout.OnIt
      *
      * @param onAdapterSlideListenerProxy
      */
-    public void setOnAdapterSlideListenerProxy(OnAdapterSlideListenerProxy onAdapterSlideListenerProxy) {
+    protected void setOnAdapterSlideListenerProxy(OnAdapterSlideListenerProxy onAdapterSlideListenerProxy) {
         mOnAdapterSlideListenerProxy = onAdapterSlideListenerProxy;
     }
 
@@ -266,7 +266,7 @@ abstract class WrapperAdapter implements WrapperListAdapter, ItemMainLayout.OnIt
      *
      * @param onAdapterMenuClickListenerProxy
      */
-    public void setOnAdapterMenuClickListenerProxy(OnAdapterMenuClickListenerProxy onAdapterMenuClickListenerProxy) {
+    protected void setOnAdapterMenuClickListenerProxy(OnAdapterMenuClickListenerProxy onAdapterMenuClickListenerProxy) {
         mOnAdapterMenuClickListenerProxy = onAdapterMenuClickListenerProxy;
     }
 
@@ -326,20 +326,20 @@ abstract class WrapperAdapter implements WrapperListAdapter, ItemMainLayout.OnIt
         }
     }
 
-    public interface OnAdapterMenuClickListenerProxy {
+    protected interface OnAdapterMenuClickListenerProxy {
         int onMenuItemClick(View v, int itemPosition, int buttonPosition, int direction);
     }
 
-    public interface OnAdapterSlideListenerProxy {
+    protected interface OnAdapterSlideListenerProxy {
         void onSlideOpen(View view, int position, int direction);
 
         void onSlideClose(View view, int position, int direction);
     }
 
-    public abstract void onScrollStateChangedProxy(AbsListView view, int scrollState);
+    protected abstract void onScrollStateChangedProxy(AbsListView view, int scrollState);
 
-    public abstract void onScrollProxy(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount);
+    protected abstract void onScrollProxy(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount);
 
-    public abstract void onItemDelete(View view, int position);
+    protected abstract void onItemDelete(View view, int position);
 
 }

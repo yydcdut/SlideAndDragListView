@@ -63,7 +63,7 @@ class ItemMainLayout extends FrameLayout {
     private Drawable mNormalListSelectorDrawable;
     private Drawable mTotalListSelectorDrawable;
 
-    public ItemMainLayout(Context context, View customView) {
+    protected ItemMainLayout(Context context, View customView) {
         super(context);
         mScroller = new Scroller(context);
         mItemRightBackGroundLayout = new ItemBackGroundLayout(context);
@@ -82,7 +82,7 @@ class ItemMainLayout extends FrameLayout {
      *
      * @return
      */
-    public View getItemCustomView() {
+    protected View getItemCustomView() {
         return mItemCustomView;
     }
 
@@ -91,7 +91,7 @@ class ItemMainLayout extends FrameLayout {
      *
      * @return
      */
-    public ItemBackGroundLayout getItemLeftBackGroundLayout() {
+    protected ItemBackGroundLayout getItemLeftBackGroundLayout() {
         return mItemLeftBackGroundLayout;
     }
 
@@ -100,7 +100,7 @@ class ItemMainLayout extends FrameLayout {
      *
      * @return
      */
-    public ItemBackGroundLayout getItemRightBackGroundLayout() {
+    protected ItemBackGroundLayout getItemRightBackGroundLayout() {
         return mItemRightBackGroundLayout;
     }
 
@@ -109,19 +109,19 @@ class ItemMainLayout extends FrameLayout {
      * @param btnRightTotalWidth
      * @param wannaOver
      */
-    public void setParams(int btnLeftTotalWidth, int btnRightTotalWidth, boolean wannaOver) {
+    protected void setParams(int btnLeftTotalWidth, int btnRightTotalWidth, boolean wannaOver) {
         requestLayout();
         mBtnLeftTotalWidth = btnLeftTotalWidth;
         mBtnRightTotalWidth = btnRightTotalWidth;
         mWannaOver = wannaOver;
     }
 
-    public void setSelector(Drawable drawable) {
+    protected void setSelector(Drawable drawable) {
         Compat.setBackgroundDrawable(mItemLeftBackGroundLayout, drawable);
         Compat.setBackgroundDrawable(mItemRightBackGroundLayout, drawable);
     }
 
-    public void handleMotionEvent(MotionEvent ev, final float xDown, final float yDown, final int leftDistance) {
+    protected void handleMotionEvent(MotionEvent ev, final float xDown, final float yDown, final int leftDistance) {
         getParent().requestDisallowInterceptTouchEvent(false);
         switch (ev.getAction() & MotionEvent.ACTION_MASK) {
             case MotionEvent.ACTION_MOVE:

@@ -9,13 +9,11 @@ import android.view.View;
  */
 class Compat {
 
-    public static void setBackgroundDrawable(View view, Drawable drawable) {
+    protected static void setBackgroundDrawable(View view, Drawable drawable) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
             view.setBackground(drawable);
         } else {
             view.setBackgroundDrawable(drawable);
         }
     }
-
-
 }

@@ -36,7 +36,7 @@ class ItemBackGroundLayout extends ViewGroup {
         setVisibility(GONE);
     }
 
-    public View addMenuItem(MenuItem menuItem) {
+    protected View addMenuItem(MenuItem menuItem) {
         int count = getChildCount();
         if (!TextUtils.isEmpty(menuItem.text)) {
             TextView textView = new TextView(getContext());
@@ -95,7 +95,7 @@ class ItemBackGroundLayout extends ViewGroup {
         }
     }
 
-    public List<View> getBtnViews() {
+    protected List<View> getBtnViews() {
         return mBtnViews;
     }
 }
