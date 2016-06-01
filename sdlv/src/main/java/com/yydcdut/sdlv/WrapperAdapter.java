@@ -218,6 +218,7 @@ abstract class WrapperAdapter implements WrapperListAdapter, ItemMainLayout.OnIt
                         for (View v : itemMainLayout.getItemRightBackGroundLayout().getBtnViews()) {
                             v.setClickable(false);
                         }
+                        mSlideItemPosition = -1;
                         break;
                     case ItemMainLayout.SCROLL_BACK_CLICK_MENU_BUTTON:
                         break;
