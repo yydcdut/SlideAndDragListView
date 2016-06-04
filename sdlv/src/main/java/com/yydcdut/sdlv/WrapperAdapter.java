@@ -173,7 +173,7 @@ abstract class WrapperAdapter implements WrapperListAdapter, ItemMainLayout.OnIt
     }
 
     /**
-     * 归位mSlideItemPosition，button不可点击
+     * 归位mSlideItemPosition
      */
     protected void returnSlideItemPosition() {
         if (mSlideItemPosition != -1) {
