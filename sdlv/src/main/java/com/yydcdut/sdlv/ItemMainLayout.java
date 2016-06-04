@@ -360,9 +360,13 @@ class ItemMainLayout extends FrameLayout {
     @Override
     public void computeScroll() {
         if (mScroller.computeScrollOffset()) {
-            mItemCustomView.layout(mScroller.getCurrX(), mItemCustomView.getTop(),
+            int left = mScroller.getCurrX();
+            mItemCustomView.layout(left, mItemCustomView.getTop(),
                     mScroller.getCurrX() + mItemCustomView.getWidth(), mItemCustomView.getBottom());
             postInvalidate();
+            if (left == 0) {
+                setBackGroundVisible(false, false);
+            }
         }
         super.computeScroll();
     }
