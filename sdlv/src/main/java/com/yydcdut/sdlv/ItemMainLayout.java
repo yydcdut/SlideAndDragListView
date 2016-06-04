@@ -71,7 +71,12 @@ class ItemMainLayout extends FrameLayout {
         mItemLeftBackGroundLayout = new ItemBackGroundLayout(context);
         addView(mItemLeftBackGroundLayout, new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
         mItemCustomView = customView;
-        addView(mItemCustomView, new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
+        ViewGroup.LayoutParams layoutParams = customView.getLayoutParams();
+        if (layoutParams == null) {
+            addView(mItemCustomView, new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
+        } else {
+            addView(mItemCustomView, layoutParams);
+        }
         mTouchSlop = ViewConfiguration.get(getContext()).getScaledTouchSlop();
         initBackgroundDrawable();
     }
