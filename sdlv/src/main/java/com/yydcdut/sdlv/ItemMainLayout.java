@@ -200,7 +200,6 @@ class ItemMainLayout extends FrameLayout {
                             //滑动
                             mItemCustomView.layout((int) distanceRightClose, mItemCustomView.getTop(),
                                     mItemCustomView.getWidth() + (int) distanceRightClose, mItemCustomView.getBottom());
-
                             break;
                     }
                 }

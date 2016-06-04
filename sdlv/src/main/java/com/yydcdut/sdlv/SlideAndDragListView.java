@@ -43,6 +43,8 @@ public class SlideAndDragListView<T> extends DragListView<T> implements WrapperA
     private Handler mHandler;
     /* 是否要触发itemClick */
     private boolean mIsWannaTriggerClick = true;
+    /* 是否在滑动 */
+    private boolean mIsScrolling = false;
     /* 手指放下的坐标 */
     private int mXDown;
     private int mYDown;
@@ -129,6 +131,9 @@ public class SlideAndDragListView<T> extends DragListView<T> implements WrapperA
 
     @Override
     public boolean onTouchEvent(MotionEvent ev) {
+        if (mIsScrolling) {
+            return super.onTouchEvent(ev);
+        }
         switch (ev.getAction() & MotionEvent.ACTION_MASK) {
             case MotionEvent.ACTION_DOWN:
                 //获取出坐标来
@@ -213,7 +218,7 @@ public class SlideAndDragListView<T> extends DragListView<T> implements WrapperA
                         //是否ScrollBack了，是的话就不去执行onListItemClick操作了
                         int scrollBackState = scrollBack(position, ev.getX());
                         if (scrollBackState == RETURN_SCROLL_BACK_NOTHING) {
-                            if (mOnListItemClickListener != null && mIsWannaTriggerClick) {
+                            if (mOnListItemClickListener != null && mIsWannaTriggerClick && !mIsScrolling) {
                                 View v = getChildAt(position - getFirstVisiblePosition());
                                 if (v instanceof ItemMainLayout) {
                                     ItemMainLayout itemMainLayout = (ItemMainLayout) v;
@@ -433,8 +438,10 @@ public class SlideAndDragListView<T> extends DragListView<T> implements WrapperA
             public void onScrollStateChangedProxy(AbsListView view, int scrollState) {
                 if (scrollState == WrapperAdapter.SCROLL_STATE_IDLE) {
                     mIsWannaTriggerClick = true;
+                    mIsScrolling = false;
                 } else {
                     mIsWannaTriggerClick = false;
+                    mIsScrolling = true;
                 }
                 if (mOnListScrollListener != null) {
                     mOnListScrollListener.onScrollStateChanged(view, scrollState);
