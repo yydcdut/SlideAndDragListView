@@ -117,7 +117,6 @@ abstract class WrapperAdapter implements WrapperListAdapter, ItemMainLayout.OnIt
             for (int i = 0; i < menu.getMenuItems(MenuItem.DIRECTION_LEFT).size(); i++) {
                 View v = itemMainLayout.getItemLeftBackGroundLayout().addMenuItem(menu.getMenuItems(MenuItem.DIRECTION_LEFT).get(i));
                 v.setOnClickListener(this);
-                v.setClickable(false);
                 v.setTag(TAG_LEFT, i);
             }
         } else {
@@ -127,7 +126,6 @@ abstract class WrapperAdapter implements WrapperListAdapter, ItemMainLayout.OnIt
             for (int i = 0; i < menu.getMenuItems(MenuItem.DIRECTION_RIGHT).size(); i++) {
                 View v = itemMainLayout.getItemRightBackGroundLayout().addMenuItem(menu.getMenuItems(MenuItem.DIRECTION_RIGHT).get(i));
                 v.setOnClickListener(this);
-                v.setClickable(false);
                 v.setTag(TAG_RIGHT, i);
             }
         } else {
@@ -163,13 +161,6 @@ abstract class WrapperAdapter implements WrapperListAdapter, ItemMainLayout.OnIt
             return;
         }
         mSlideItemPosition = position;
-        ItemMainLayout itemMainLayout = (ItemMainLayout) mListView.getChildAt(mSlideItemPosition - mListView.getFirstVisiblePosition());
-        for (View v : itemMainLayout.getItemLeftBackGroundLayout().getBtnViews()) {
-            v.setClickable(true);
-        }
-        for (View v : itemMainLayout.getItemRightBackGroundLayout().getBtnViews()) {
-            v.setClickable(true);
-        }
     }
 
     /**
@@ -189,12 +180,6 @@ abstract class WrapperAdapter implements WrapperListAdapter, ItemMainLayout.OnIt
             ItemMainLayout itemMainLayout = (ItemMainLayout) mListView.getChildAt(mSlideItemPosition - mListView.getFirstVisiblePosition());
             if (itemMainLayout != null) {
                 itemMainLayout.scrollBack();
-                for (View v : itemMainLayout.getItemLeftBackGroundLayout().getBtnViews()) {
-                    v.setClickable(false);
-                }
-                for (View v : itemMainLayout.getItemRightBackGroundLayout().getBtnViews()) {
-                    v.setClickable(false);
-                }
             }
             mSlideItemPosition = -1;
         }
@@ -212,12 +197,6 @@ abstract class WrapperAdapter implements WrapperListAdapter, ItemMainLayout.OnIt
                 switch (scrollBackSituation) {
                     case ItemMainLayout.SCROLL_BACK_ALREADY_CLOSED:
                     case ItemMainLayout.SCROLL_BACK_CLICK_OWN:
-                        for (View v : itemMainLayout.getItemLeftBackGroundLayout().getBtnViews()) {
-                            v.setClickable(false);
-                        }
-                        for (View v : itemMainLayout.getItemRightBackGroundLayout().getBtnViews()) {
-                            v.setClickable(false);
-                        }
                         mSlideItemPosition = -1;
                         break;
                     case ItemMainLayout.SCROLL_BACK_CLICK_MENU_BUTTON:
@@ -288,12 +267,6 @@ abstract class WrapperAdapter implements WrapperListAdapter, ItemMainLayout.OnIt
                     if (mSlideItemPosition != -1) {
                         ItemMainLayout itemMainLayout = (ItemMainLayout) mListView.getChildAt(mSlideItemPosition - mListView.getFirstVisiblePosition());
                         if (itemMainLayout != null) {
-                            for (View v1 : itemMainLayout.getItemLeftBackGroundLayout().getBtnViews()) {
-                                v1.setClickable(false);
-                            }
-                            for (View v1 : itemMainLayout.getItemRightBackGroundLayout().getBtnViews()) {
-                                v1.setClickable(false);
-                            }
                             itemMainLayout.deleteItem(this);
                         }
                     }
