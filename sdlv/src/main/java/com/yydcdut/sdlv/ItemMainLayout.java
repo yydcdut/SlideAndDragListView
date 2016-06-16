@@ -144,6 +144,9 @@ class ItemMainLayout extends FrameLayout {
                     //判断意图
                     if (moveDistance > 0) {//往右
                         if (leftDistance == 0) {//关闭状态
+                            if (mOnItemSlideListenerProxy != null && mIntention != INTENTION_LEFT_OPEN) {
+                                mOnItemSlideListenerProxy.onSlideOpen(this, MenuItem.DIRECTION_LEFT);
+                            }
                             mIntention = INTENTION_LEFT_OPEN;
                             setBackGroundVisible(true, false);
                         } else if (leftDistance < 0) {//右边的btn显示出来的
@@ -153,6 +156,9 @@ class ItemMainLayout extends FrameLayout {
                         }
                     } else if (moveDistance < 0) {//往左
                         if (leftDistance == 0) {//关闭状态
+                            if (mOnItemSlideListenerProxy != null && mIntention != INTENTION_RIGHT_OPEN) {
+                                mOnItemSlideListenerProxy.onSlideOpen(this, MenuItem.DIRECTION_RIGHT);
+                            }
                             mIntention = INTENTION_RIGHT_OPEN;
                             setBackGroundVisible(false, true);
                         } else if (leftDistance < 0) {//右边的btn显示出来的
@@ -221,9 +227,6 @@ class ItemMainLayout extends FrameLayout {
                             mIntention = INTENTION_LEFT_OPEN;
                             int delta = mBtnLeftTotalWidth - Math.abs(mItemCustomView.getLeft());
                             mScroller.startScroll(mItemCustomView.getLeft(), 0, delta, 0, SCROLL_TIME);
-                            if (mOnItemSlideListenerProxy != null && mScrollState != SCROLL_STATE_OPEN) {
-                                mOnItemSlideListenerProxy.onSlideOpen(this, MenuItem.DIRECTION_LEFT);
-                            }
                             mScrollState = SCROLL_STATE_OPEN;
                         } else {
                             mIntention = INTENTION_LEFT_CLOSE;
@@ -245,9 +248,6 @@ class ItemMainLayout extends FrameLayout {
                             mIntention = INTENTION_RIGHT_OPEN;
                             int delta = mBtnRightTotalWidth - Math.abs(mItemCustomView.getLeft());
                             mScroller.startScroll(mItemCustomView.getLeft(), 0, -delta, 0, SCROLL_TIME);
-                            if (mOnItemSlideListenerProxy != null && mScrollState != SCROLL_STATE_OPEN) {
-                                mOnItemSlideListenerProxy.onSlideOpen(this, MenuItem.DIRECTION_RIGHT);
-                            }
                             mScrollState = SCROLL_STATE_OPEN;
                         } else {
                             mIntention = INTENTION_RIGHT_CLOSE;
