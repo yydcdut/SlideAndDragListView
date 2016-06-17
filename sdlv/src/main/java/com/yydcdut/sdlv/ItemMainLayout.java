@@ -386,6 +386,9 @@ class ItemMainLayout extends FrameLayout {
     protected void scrollBack() {
         mIntention = INTENTION_SCROLL_BACK;
         mScroller.startScroll(mItemCustomView.getLeft(), 0, -mItemCustomView.getLeft(), 0, SCROLL_BACK_TIME);
+        if (mOnItemSlideListenerProxy != null && mScrollState != SCROLL_STATE_CLOSE) {
+            mOnItemSlideListenerProxy.onSlideClose(this, getItemCustomView().getLeft() < 0 ? MenuItem.DIRECTION_LEFT : MenuItem.DIRECTION_RIGHT);
+        }
         postInvalidate();
         mScrollState = SCROLL_STATE_CLOSE;
         enableBackgroundDrawable();
