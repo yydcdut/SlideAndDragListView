@@ -545,8 +545,6 @@ public class SlideAndDragListView<T> extends DragListView<T> implements WrapperA
         void onListItemClick(View v, int position);
     }
 
-    private OnItemLongClickListener mOnItemLongClickListener;
-
     /**
      * {@link #setOnListItemLongClickListener(OnListItemLongClickListener)}
      *
