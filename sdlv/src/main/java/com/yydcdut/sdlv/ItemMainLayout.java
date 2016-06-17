@@ -330,7 +330,9 @@ class ItemMainLayout extends FrameLayout {
         Animation.AnimationListener animationListener = new Animation.AnimationListener() {
             @Override
             public void onAnimationStart(Animation animation) {
-
+                if (onItemDeleteListenerProxy != null) {
+                    onItemDeleteListenerProxy.onDeleteBegin();
+                }
             }
 
             @Override
@@ -490,6 +492,8 @@ class ItemMainLayout extends FrameLayout {
     }
 
     protected interface OnItemDeleteListenerProxy {
+        void onDeleteBegin();
+
         void onDelete(View view);
     }
 

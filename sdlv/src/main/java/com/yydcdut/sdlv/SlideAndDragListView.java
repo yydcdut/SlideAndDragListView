@@ -36,6 +36,8 @@ public class SlideAndDragListView<T> extends DragListView<T> implements WrapperA
     private boolean mIsWannaTriggerClick = true;
     /* 是否在滑动 */
     private boolean mIsScrolling = false;
+    /* 是否正在进行delete的动画 */
+    private boolean mIsDeleteAnimationRunning = false;
     /* 手指放下的坐标 */
     private int mXDown;
     private int mYDown;
@@ -119,6 +121,9 @@ public class SlideAndDragListView<T> extends DragListView<T> implements WrapperA
 
     @Override
     public boolean onTouchEvent(MotionEvent ev) {
+        if (mIsDeleteAnimationRunning) {
+            return false;
+        }
         if (mIsScrolling) {
             return super.onTouchEvent(ev);
         }
@@ -413,7 +418,13 @@ public class SlideAndDragListView<T> extends DragListView<T> implements WrapperA
             }
 
             @Override
+            public void onDeleteBegin() {
+                mIsDeleteAnimationRunning = true;
+            }
+
+            @Override
             public void onItemDelete(View view, int position) {
+                mIsDeleteAnimationRunning = false;
                 if (mOnItemDeleteListener != null && view instanceof ItemMainLayout) {
                     ItemMainLayout itemMainLayout = (ItemMainLayout) view;
                     mOnItemDeleteListener.onItemDelete(itemMainLayout.getItemCustomView(), position);
