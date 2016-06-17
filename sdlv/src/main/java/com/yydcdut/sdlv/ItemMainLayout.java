@@ -237,8 +237,6 @@ class ItemMainLayout extends FrameLayout {
                                 mOnItemSlideListenerProxy.onSlideClose(this, MenuItem.DIRECTION_LEFT);
                             }
                             mScrollState = SCROLL_STATE_CLOSE;
-                            //当item归位的时候才将drawable设置回去
-                            enableBackgroundDrawable();
                         }
                         break;
                     case INTENTION_RIGHT_CLOSE:
@@ -261,8 +259,6 @@ class ItemMainLayout extends FrameLayout {
                                 mOnItemSlideListenerProxy.onSlideClose(this, MenuItem.DIRECTION_RIGHT);
                             }
                             mScrollState = SCROLL_STATE_CLOSE;
-                            //当item归位的时候才将drawable设置回去
-                            enableBackgroundDrawable();
                         }
                         break;
                 }
@@ -375,6 +371,8 @@ class ItemMainLayout extends FrameLayout {
             postInvalidate();
             if (left == 0) {
                 setBackGroundVisible(false, false);
+                //当item归位的时候才将drawable设置回去
+                enableBackgroundDrawable();
             }
         }
         super.computeScroll();
