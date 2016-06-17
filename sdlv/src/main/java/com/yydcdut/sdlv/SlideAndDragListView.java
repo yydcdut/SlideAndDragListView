@@ -564,11 +564,7 @@ public class SlideAndDragListView<T> extends DragListView<T> implements WrapperA
      */
     public void setOnListItemLongClickListener(OnListItemLongClickListener listener) {
         mOnListItemLongClickListener = listener;
-        if (mOnListItemLongClickListener == null) {
-            super.setOnItemLongClickListener(null);
-        } else {
-            super.setOnItemLongClickListener(this);
-        }
+        super.setOnItemLongClickListener(this);
     }
 
     /**
