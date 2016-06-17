@@ -1,8 +1,6 @@
 package com.yydcdut.sdlv;
 
 import android.content.Context;
-import android.os.Handler;
-import android.os.Message;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
@@ -19,15 +17,10 @@ import java.util.Map;
  * Created by yuyidong on 15/9/28.
  */
 public class SlideAndDragListView<T> extends DragListView<T> implements WrapperAdapter.OnAdapterSlideListenerProxy,
-        WrapperAdapter.OnAdapterMenuClickListenerProxy, Handler.Callback {
-    /* Handler 的 Message 信息 */
-    private static final int MSG_WHAT_LONG_CLICK = 1;
-    /* Handler 发送 message 需要延迟的时间 */
-    private static final long CLICK_LONG_TRIGGER_TIME = 1000;//1s
+        WrapperAdapter.OnAdapterMenuClickListenerProxy, AbsListView.OnItemLongClickListener {
     /* onTouch里面的状态 */
     private static final int STATE_NOTHING = -1;//抬起状态
     private static final int STATE_DOWN = 0;//按下状态
-    private static final int STATE_LONG_CLICK = 1;//长点击状态
     private static final int STATE_SCROLL = 2;//SCROLL状态
     private static final int STATE_LONG_CLICK_FINISH = 3;//长点击已经触发完成
     private static final int STATE_MORE_FINGERS = 4;//多个手指
@@ -39,8 +32,6 @@ public class SlideAndDragListView<T> extends DragListView<T> implements WrapperA
     private static final int RETURN_SCROLL_BACK_CLICK_MENU_BUTTON = 3;//点击到了滑开的item的menuButton上
     private static final int RETURN_SCROLL_BACK_NOTHING = 0;//所以位置都没有回归操作
 
-    /* handler */
-    private Handler mHandler;
     /* 是否要触发itemClick */
     private boolean mIsWannaTriggerClick = true;
     /* 是否在滑动 */
@@ -54,6 +45,10 @@ public class SlideAndDragListView<T> extends DragListView<T> implements WrapperA
     private WrapperAdapter mWrapperAdapter;
     /* 手指滑动的最短距离 */
     private int mShortestDistance = 25;
+    /* CustomItemView距离左边的距离 */
+    private int mItemLeftDistance = 0;
+    /* ItemMainView是否正在处理手势操作 */
+    private boolean isItemViewHandlingMotionEvent = false;
 
     /* 监听器 */
     private OnSlideListener mOnSlideListener;
@@ -73,31 +68,27 @@ public class SlideAndDragListView<T> extends DragListView<T> implements WrapperA
 
     public SlideAndDragListView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        mHandler = new Handler(this);
         mShortestDistance = ViewConfiguration.get(context).getScaledTouchSlop();
     }
 
     @Override
-    public boolean handleMessage(Message msg) {
-        switch (msg.what) {
-            case MSG_WHAT_LONG_CLICK:
-                if (mState == STATE_LONG_CLICK) {//如果得到msg的时候state状态是Long Click的话
-                    //改为long click触发完成
-                    mState = STATE_LONG_CLICK_FINISH;
-                    //得到长点击的位置
-                    int position = msg.arg1;
-                    //找到那个位置的view
-                    View view = getChildAt(position - getFirstVisiblePosition());
-                    //如果设置了监听器的话，就触发
-                    if (mOnListItemLongClickListener != null && view instanceof ItemMainLayout) {
-                        ItemMainLayout itemMainLayout = (ItemMainLayout) view;
-                        mOnListItemLongClickListener.onListItemLongClick(itemMainLayout.getItemCustomView(), position);
-                    }
-                    startDrag(position);
-                }
-                break;
+    public boolean onItemLongClick(AdapterView<?> parent, View v, int position, long id) {
+        //找到那个位置的view
+        View view = getChildAt(position - getFirstVisiblePosition());
+        if (mOnListItemLongClickListener != null && view instanceof ItemMainLayout) {
+            ItemMainLayout itemMainLayout = (ItemMainLayout) view;
+            if (itemMainLayout.getItemCustomView().getLeft() == 0) {
+                mState = STATE_LONG_CLICK_FINISH;
+                //回滚
+                mWrapperAdapter.returnSlideItemPosition();
+                //触发回调
+                mOnListItemLongClickListener.onListItemLongClick(itemMainLayout.getItemCustomView(), position);
+            }
         }
-        return true;
+        if (mState == STATE_LONG_CLICK_FINISH || mState == STATE_DOWN) {
+            startDrag(position);
+        }
+        return false;
     }
 
     @Override
@@ -126,9 +117,6 @@ public class SlideAndDragListView<T> extends DragListView<T> implements WrapperA
         return super.onInterceptTouchEvent(ev);
     }
 
-    private int mItemLeftDistance = 0;
-    private boolean isItemViewHandlingMotionEvent = false;
-
     @Override
     public boolean onTouchEvent(MotionEvent ev) {
         if (mIsScrolling) {
@@ -150,17 +138,10 @@ public class SlideAndDragListView<T> extends DragListView<T> implements WrapperA
                 }
                 break;
             case MotionEvent.ACTION_POINTER_DOWN:
-                removeLongClickMessage();
                 mState = STATE_MORE_FINGERS;
                 return false;
             case MotionEvent.ACTION_MOVE:
-                if (fingerNotMove(ev) && mState != STATE_SCROLL) {//手指的范围在50以内
-                    if (mItemLeftDistance == 0) {
-                        sendLongClickMessage(pointToPosition(mXDown, mYDown));
-                        mState = STATE_LONG_CLICK;
-                    }
-                } else if (fingerLeftAndRightMove(ev) && !isItemViewHandlingMotionEvent) {//上下范围在50，主要检测左右滑动
-                    removeLongClickMessage();
+                if (fingerLeftAndRightMove(ev) && !isItemViewHandlingMotionEvent) {//上下范围在50，主要检测左右滑动
                     int position = pointToPosition(mXDown, mYDown);
                     ItemMainLayout itemMainLayout = getItemMainLayoutByPosition(mXDown, mYDown);
                     if (itemMainLayout != null) {
@@ -206,15 +187,13 @@ public class SlideAndDragListView<T> extends DragListView<T> implements WrapperA
                             itemMainLayout.handleMotionEvent(ev, mXDown, mYDown, mItemLeftDistance);
                             return true;
                         }
-                    } else {
-                        removeLongClickMessage();
                     }
                 }
                 break;
             case MotionEvent.ACTION_UP:
                 int position = pointToPosition(mXDown, mYDown);
                 if (position != AdapterView.INVALID_POSITION) {
-                    if (mState == STATE_DOWN || mState == STATE_LONG_CLICK) {
+                    if (mState == STATE_DOWN || mState == STATE_LONG_CLICK_FINISH) {
                         //是否ScrollBack了，是的话就不去执行onListItemClick操作了
                         int scrollBackState = scrollBack(position, ev.getX());
                         if (scrollBackState == RETURN_SCROLL_BACK_NOTHING) {
@@ -233,7 +212,6 @@ public class SlideAndDragListView<T> extends DragListView<T> implements WrapperA
                         }
                     }
                 }
-                removeLongClickMessage();
                 mState = STATE_NOTHING;
                 mItemLeftDistance = 0;
                 isItemViewHandlingMotionEvent = false;
@@ -292,27 +270,6 @@ public class SlideAndDragListView<T> extends DragListView<T> implements WrapperA
             return true;
         }
         return true;
-    }
-
-    /**
-     * remove掉message
-     */
-    private void removeLongClickMessage() {
-        if (mHandler.hasMessages(MSG_WHAT_LONG_CLICK)) {
-            mHandler.removeMessages(MSG_WHAT_LONG_CLICK);
-        }
-    }
-
-    /**
-     * sendMessage
-     */
-    private void sendLongClickMessage(int position) {
-        if (!mHandler.hasMessages(MSG_WHAT_LONG_CLICK)) {
-            Message message = new Message();
-            message.what = MSG_WHAT_LONG_CLICK;
-            message.arg1 = position;
-            mHandler.sendMessageDelayed(message, CLICK_LONG_TRIGGER_TIME);
-        }
     }
 
     /**
@@ -588,6 +545,8 @@ public class SlideAndDragListView<T> extends DragListView<T> implements WrapperA
         void onListItemClick(View v, int position);
     }
 
+    private OnItemLongClickListener mOnItemLongClickListener;
+
     /**
      * {@link #setOnListItemLongClickListener(OnListItemLongClickListener)}
      *
@@ -605,6 +564,11 @@ public class SlideAndDragListView<T> extends DragListView<T> implements WrapperA
      */
     public void setOnListItemLongClickListener(OnListItemLongClickListener listener) {
         mOnListItemLongClickListener = listener;
+        if (mOnListItemLongClickListener == null) {
+            super.setOnItemLongClickListener(null);
+        } else {
+            super.setOnItemLongClickListener(this);
+        }
     }
 
     /**
