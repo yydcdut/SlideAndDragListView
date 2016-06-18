@@ -237,8 +237,6 @@ abstract class WrapperAdapter implements WrapperListAdapter, ItemMainLayout.OnIt
         if (mOnAdapterSlideListenerProxy != null) {
             mOnAdapterSlideListenerProxy.onSlideClose(view, mSlideItemPosition, direction);
         }
-        //归位
-        returnSlideItemPosition();
     }
 
     /**

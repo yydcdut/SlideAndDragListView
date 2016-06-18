@@ -6,9 +6,12 @@ import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
+import android.os.Handler;
 import android.util.AttributeSet;
 import android.view.DragEvent;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewConfiguration;
 import android.widget.BaseAdapter;
 import android.widget.ListAdapter;
 import android.widget.ListView;
@@ -19,6 +22,23 @@ import java.util.List;
  * Created by yuyidong on 15/9/30.
  */
 public class DragListView<T> extends ListView implements View.OnDragListener {
+    /* 移动距离 */
+    private final int DRAG_SCROLL_PX_UNIT = 25;
+    /* Handler */
+    private Handler mScrollHandler;
+    /* Handler的延时 */
+    private final long SCROLL_HANDLER_DELAY_MILLIS = 5;
+    /* 边界比例，到这个比例的位置就开始移动 */
+    private final float BOUND_GAP_RATIO = 0.2f;
+    /* 边界 */
+    private int mTopScrollBound;
+    private int mBottomScrollBound;
+    /* 按下的时候的Y轴坐标 */
+    private int mTouchDownForDragStartY;
+    /* Move的时候的Y轴坐标 */
+    private int mLastDragY;
+    /* 是否进入了scroll的handler里面了 */
+    private boolean mIsDragScrollerRunning = false;
     /* 判断drag往上还是往下 */
     private boolean mUp = false;
     /* 当前drag所在ListView中的位置 */
@@ -42,9 +62,32 @@ public class DragListView<T> extends ListView implements View.OnDragListener {
         this(context, attrs, 0);
     }
 
+    private float mTouchSlop;
+
     public DragListView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         super.setOnDragListener(this);
+        mTouchSlop = ViewConfiguration.get(context).getScaledPagingTouchSlop();
+    }
+
+    private final Runnable mDragScroller = new Runnable() {
+        @Override
+        public void run() {
+            if (mLastDragY <= mTopScrollBound) {
+                smoothScrollBy(-DRAG_SCROLL_PX_UNIT, (int) SCROLL_HANDLER_DELAY_MILLIS);
+            } else if (mLastDragY >= mBottomScrollBound) {
+                smoothScrollBy(DRAG_SCROLL_PX_UNIT, (int) SCROLL_HANDLER_DELAY_MILLIS);
+            }
+            mScrollHandler.postDelayed(this, SCROLL_HANDLER_DELAY_MILLIS);
+        }
+    };
+
+    @Override
+    public boolean onInterceptTouchEvent(MotionEvent ev) {
+        if (ev.getAction() == MotionEvent.ACTION_DOWN) {
+            mTouchDownForDragStartY = (int) ev.getY();
+        }
+        return super.onInterceptTouchEvent(ev);
     }
 
     @Override
@@ -54,8 +97,12 @@ public class DragListView<T> extends ListView implements View.OnDragListener {
             case DragEvent.ACTION_DRAG_STARTED:
                 return true;
             case DragEvent.ACTION_DRAG_ENTERED:
+                final int boundGap = (int) (getHeight() * BOUND_GAP_RATIO);
+                mTopScrollBound = (getTop() + boundGap);
+                mBottomScrollBound = (getBottom() - boundGap);
                 return true;
             case DragEvent.ACTION_DRAG_LOCATION:
+                mLastDragY = (int) event.getY();
                 //当前移动的item在ListView中的position
                 int position = pointToPosition((int) event.getX(), (int) event.getY());
                 //如果位置发生了改变
@@ -70,7 +117,13 @@ public class DragListView<T> extends ListView implements View.OnDragListener {
                         mBeforeCurrentPosition = position;
                     }
                 }
-                moveListViewUpOrDown(position);
+                //判断是否需要上下移
+                if (!mIsDragScrollerRunning &&
+                        (Math.abs(mLastDragY - mTouchDownForDragStartY) >= 4 * mTouchSlop)) {
+                    mIsDragScrollerRunning = true;
+                    ensureScrollHandler();
+                    mScrollHandler.postDelayed(mDragScroller, SCROLL_HANDLER_DELAY_MILLIS);
+                }
                 //有时候为-1(AdapterView.INVALID_POSITION)的情况，忽略掉
                 if (position >= 0) {
                     //判断是不是已经换过位置了，如果没有换过，则进去换
@@ -121,14 +174,20 @@ public class DragListView<T> extends ListView implements View.OnDragListener {
                 }
                 return true;
             case DragEvent.ACTION_DRAG_EXITED:
+            case DragEvent.ACTION_DRAG_ENDED:
+                mIsDragScrollerRunning = false;
+                ensureScrollHandler();
+                mScrollHandler.removeCallbacks(mDragScroller);
+                mSDAdapter.notifyDataSetChanged();
                 return true;
             case DragEvent.ACTION_DROP:
+                mIsDragScrollerRunning = false;
+                ensureScrollHandler();
+                mScrollHandler.removeCallbacks(mDragScroller);
                 mSDAdapter.notifyDataSetChanged();
                 if (mOnDragListener != null) {
                     mOnDragListener.onDragViewDown(mCurrentPosition);
                 }
-                return true;
-            case DragEvent.ACTION_DRAG_ENDED:
                 return true;
             default:
                 break;
@@ -137,22 +196,14 @@ public class DragListView<T> extends ListView implements View.OnDragListener {
     }
 
     /**
-     * 如果到了两端，判断ListView是往上滑动还是ListView往下滑动
-     *
-     * @param position
+     * 确保Handler
      */
-    private void moveListViewUpOrDown(int position) {
-        //ListView中最上面的显示的位置
-        int firstPosition = getFirstVisiblePosition();
-        //ListView中最下面的显示的位置
-        int lastPosition = getLastVisiblePosition();
-        //能够往上的话往上
-        if ((position == firstPosition || position == firstPosition + 1) && firstPosition != 0) {
-            smoothScrollToPosition(firstPosition - 1);
+    private void ensureScrollHandler() {
+        if (mScrollHandler == null) {
+            mScrollHandler = getHandler();
         }
-        //能够往下的话往下
-        if ((position == lastPosition || position == lastPosition - 1) && lastPosition != getCount() - 1) {
-            smoothScrollToPosition(lastPosition + 1);
+        if (mScrollHandler == null) {
+            mScrollHandler = new Handler();
         }
     }
 
