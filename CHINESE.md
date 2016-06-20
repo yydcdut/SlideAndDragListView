@@ -35,6 +35,12 @@ SlideAndDragListView 用于各种优先级列表：收藏夹，播放列表，�
 compile 'com.yydcdut.sdlv:sdlv:0.5.4@aar'
 ```
 
+或者
+
+``` groovy
+compile 'com.yydcdut.sdlv:sdlv:0.5.4'
+```
+
 ## aar
 
 <a href="https://github.com/yydcdut/SlideAndDragListView/blob/master/aar/sdlv.aar?raw=true">下载</a>

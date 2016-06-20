@@ -35,6 +35,12 @@ SlideAndDragListView is useful for all kinds of prioritized lists: favorites, pl
 compile 'com.yydcdut.sdlv:sdlv:0.5.4@aar'
 ```
 
+Or
+
+``` groovy
+compile 'com.yydcdut.sdlv:sdlv:0.5.4'
+```
+
 ## aar
 
 <a href="https://github.com/yydcdut/SlideAndDragListView/blob/master/aar/sdlv.aar?raw=true">DOWNLOAD</a>
