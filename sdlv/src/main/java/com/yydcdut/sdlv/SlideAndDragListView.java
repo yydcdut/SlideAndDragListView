@@ -17,7 +17,8 @@ import java.util.Map;
  * Created by yuyidong on 15/9/28.
  */
 public class SlideAndDragListView<T> extends DragListView<T> implements WrapperAdapter.OnAdapterSlideListenerProxy,
-        WrapperAdapter.OnAdapterMenuClickListenerProxy, AbsListView.OnItemLongClickListener {
+        WrapperAdapter.OnAdapterMenuClickListenerProxy, WrapperAdapter.onItemDeleteListenerProxy,
+        WrapperAdapter.OnScrollListenerProxy, AbsListView.OnItemLongClickListener {
     /* onTouch里面的状态 */
     private static final int STATE_NOTHING = -1;//抬起状态
     private static final int STATE_DOWN = 0;//按下状态
@@ -394,48 +395,49 @@ public class SlideAndDragListView<T> extends DragListView<T> implements WrapperA
         if (mMenuMap == null || mMenuMap.size() == 0) {
             throw new IllegalArgumentException("先设置Menu");
         }
-        mWrapperAdapter = new WrapperAdapter(getContext(), this, adapter, mMenuMap) {
-
-            @Override
-            public void onScrollStateChangedProxy(AbsListView view, int scrollState) {
-                if (scrollState == WrapperAdapter.SCROLL_STATE_IDLE) {
-                    mIsWannaTriggerClick = true;
-                    mIsScrolling = false;
-                } else {
-                    mIsWannaTriggerClick = false;
-                    mIsScrolling = true;
-                }
-                if (mOnListScrollListener != null) {
-                    mOnListScrollListener.onScrollStateChanged(view, scrollState);
-                }
-            }
-
-            @Override
-            public void onScrollProxy(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
-                if (mOnListScrollListener != null) {
-                    mOnListScrollListener.onScroll(view, firstVisibleItem, visibleItemCount, totalItemCount);
-                }
-            }
-
-            @Override
-            public void onDeleteBegin() {
-                mIsDeleteAnimationRunning = true;
-            }
-
-            @Override
-            public void onItemDelete(View view, int position) {
-                mIsDeleteAnimationRunning = false;
-                if (mOnItemDeleteListener != null && view instanceof ItemMainLayout) {
-                    ItemMainLayout itemMainLayout = (ItemMainLayout) view;
-                    mOnItemDeleteListener.onItemDelete(itemMainLayout.getItemCustomView(), position);
-                }
-            }
-
-        };
+        mWrapperAdapter = new WrapperAdapter(getContext(), this, adapter, mMenuMap);
         mWrapperAdapter.setOnAdapterSlideListenerProxy(this);
         mWrapperAdapter.setOnAdapterMenuClickListenerProxy(this);
+        mWrapperAdapter.setOnItemDeleteListenerProxy(this);
+        mWrapperAdapter.setOnScrollListenerProxy(this);
         setRawAdapter(adapter);
         super.setAdapter(mWrapperAdapter);
+    }
+
+    @Override
+    public void onScrollStateChangedProxy(AbsListView view, int scrollState) {
+        if (scrollState == WrapperAdapter.SCROLL_STATE_IDLE) {
+            mIsWannaTriggerClick = true;
+            mIsScrolling = false;
+        } else {
+            mIsWannaTriggerClick = false;
+            mIsScrolling = true;
+        }
+        if (mOnListScrollListener != null) {
+            mOnListScrollListener.onScrollStateChanged(view, scrollState);
+        }
+    }
+
+    @Override
+    public void onScrollProxy(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+        if (mOnListScrollListener != null) {
+            mOnListScrollListener.onScroll(view, firstVisibleItem, visibleItemCount, totalItemCount);
+        }
+    }
+
+    @Override
+    public void onDeleteBegin() {
+        mIsDeleteAnimationRunning = true;
+
+    }
+
+    @Override
+    public void onItemDelete(View view, int position) {
+        mIsDeleteAnimationRunning = false;
+        if (mOnItemDeleteListener != null && view instanceof ItemMainLayout) {
+            ItemMainLayout itemMainLayout = (ItemMainLayout) view;
+            mOnItemDeleteListener.onItemDelete(itemMainLayout.getItemCustomView(), position);
+        }
     }
 
     /**

@@ -6,6 +6,7 @@ import android.util.AttributeSet;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -38,31 +39,48 @@ class ItemBackGroundLayout extends ViewGroup {
 
     protected View addMenuItem(MenuItem menuItem) {
         int count = getChildCount();
+        FrameLayout parent = new FrameLayout(getContext());
+        FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(menuItem.width, LayoutParams.MATCH_PARENT);
+        layoutParams.gravity = Gravity.CENTER;
+        parent.setLayoutParams(layoutParams);
+        parent.addView(createBG(menuItem));
+        parent.setTag(menuItem);
         if (!TextUtils.isEmpty(menuItem.text)) {
-            TextView textView = new TextView(getContext());
-            Compat.setBackgroundDrawable(textView, menuItem.background);
-            textView.setText(menuItem.text);
-            textView.setTextSize(menuItem.textSize);
-            textView.setTextColor(menuItem.textColor);
-            textView.setGravity(Gravity.CENTER);
-            textView.setTag(menuItem);
-            addView(textView, count, new LayoutParams(menuItem.width, LayoutParams.MATCH_PARENT));
-            requestLayout();
-            mBtnViews.add(textView);
-            return textView;
+            parent.addView(createTextView(menuItem));
+            addView(parent, count);
+            mBtnViews.add(parent);
+            return parent;
         } else if (menuItem.icon != null) {
-            ImageView imageView = new ImageView(getContext());
-            Compat.setBackgroundDrawable(imageView, menuItem.background);
-            imageView.setImageDrawable(menuItem.icon);
-            imageView.setScaleType(ImageView.ScaleType.CENTER);
-            imageView.setTag(menuItem);
-            addView(imageView, count, new LayoutParams(menuItem.width, LayoutParams.MATCH_PARENT));
-            requestLayout();
-            mBtnViews.add(imageView);
-            return imageView;
+            parent.addView(createImageView(menuItem));
+            addView(parent, count);
+            mBtnViews.add(parent);
+            return parent;
         } else {
             throw new IllegalArgumentException("必须得有一个!");
         }
+    }
+
+    private ImageView createBG(MenuItem menuItem) {
+        ImageView imageView = new ImageView(getContext());
+        imageView.setImageDrawable(menuItem.background);
+        imageView.setScaleType(ImageView.ScaleType.FIT_XY);
+        return imageView;
+    }
+
+    private TextView createTextView(MenuItem menuItem) {
+        TextView textView = new TextView(getContext());
+        textView.setText(menuItem.text);
+        textView.setTextSize(menuItem.textSize);
+        textView.setTextColor(menuItem.textColor);
+        textView.setGravity(Gravity.CENTER);
+        return textView;
+    }
+
+    private ImageView createImageView(MenuItem menuItem) {
+        ImageView imageView = new ImageView(getContext());
+        imageView.setImageDrawable(menuItem.icon);
+        imageView.setScaleType(ImageView.ScaleType.CENTER);
+        return imageView;
     }
 
     @Override

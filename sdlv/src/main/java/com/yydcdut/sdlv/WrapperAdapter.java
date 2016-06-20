@@ -13,7 +13,7 @@ import java.util.Map;
 /**
  * Created by yuyidong on 15/9/28.
  */
-abstract class WrapperAdapter implements WrapperListAdapter, ItemMainLayout.OnItemSlideListenerProxy, View.OnClickListener,
+class WrapperAdapter implements WrapperListAdapter, ItemMainLayout.OnItemSlideListenerProxy, View.OnClickListener,
         AbsListView.OnScrollListener, ItemMainLayout.OnItemDeleteListenerProxy {
     private static final int TAG_LEFT = 3 << 24;
     private static final int TAG_RIGHT = 4 << 24;
@@ -30,6 +30,8 @@ abstract class WrapperAdapter implements WrapperListAdapter, ItemMainLayout.OnIt
     /* 监听器 */
     private OnAdapterSlideListenerProxy mOnAdapterSlideListenerProxy;
     private OnAdapterMenuClickListenerProxy mOnAdapterMenuClickListenerProxy;
+    private onItemDeleteListenerProxy mOnItemDeleteListenerProxy;
+    private OnScrollListenerProxy mOnScrollListenerProxy;
 
     protected WrapperAdapter(Context context, SlideAndDragListView listView, ListAdapter adapter, Map<Integer, Menu> map) {
         mContext = context;
@@ -281,21 +283,35 @@ abstract class WrapperAdapter implements WrapperListAdapter, ItemMainLayout.OnIt
         if (scrollState != AbsListView.OnScrollListener.SCROLL_STATE_IDLE) {
             returnSlideItemPosition();
         }
-        onScrollStateChangedProxy(view, scrollState);
+        if (mOnScrollListenerProxy != null) {
+            mOnScrollListenerProxy.onScrollStateChangedProxy(view, scrollState);
+        }
     }
 
     @Override
     public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
-        onScrollProxy(view, firstVisibleItem, visibleItemCount, totalItemCount);
+        if (mOnScrollListenerProxy != null) {
+            mOnScrollListenerProxy.onScrollProxy(view, firstVisibleItem, visibleItemCount, totalItemCount);
+        }
+    }
+
+    @Override
+    public void onDeleteBegin() {
+        if (mOnItemDeleteListenerProxy != null) {
+            mOnItemDeleteListenerProxy.onDeleteBegin();
+        }
     }
 
     @Override
     public void onDelete(View view) {
         int position = mSlideItemPosition;
         if (mSlideItemPosition != -1) {
-            onItemDelete(view, position);
+            if (mOnItemDeleteListenerProxy != null) {
+                mOnItemDeleteListenerProxy.onItemDelete(view, position);
+            }
             mSlideItemPosition = -1;
         }
+
     }
 
     protected interface OnAdapterMenuClickListenerProxy {
@@ -308,10 +324,23 @@ abstract class WrapperAdapter implements WrapperListAdapter, ItemMainLayout.OnIt
         void onSlideClose(View view, int position, int direction);
     }
 
-    protected abstract void onScrollStateChangedProxy(AbsListView view, int scrollState);
+    protected void setOnScrollListenerProxy(OnScrollListenerProxy onScrollListenerProxy) {
+        mOnScrollListenerProxy = onScrollListenerProxy;
+    }
 
-    protected abstract void onScrollProxy(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount);
+    protected interface OnScrollListenerProxy {
+        void onScrollStateChangedProxy(AbsListView view, int scrollState);
 
-    protected abstract void onItemDelete(View view, int position);
+        void onScrollProxy(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount);
+    }
 
+    protected void setOnItemDeleteListenerProxy(onItemDeleteListenerProxy onItemDeleteListenerProxy) {
+        mOnItemDeleteListenerProxy = onItemDeleteListenerProxy;
+    }
+
+    protected interface onItemDeleteListenerProxy {
+        void onDeleteBegin();
+
+        void onItemDelete(View view, int position);
+    }
 }
