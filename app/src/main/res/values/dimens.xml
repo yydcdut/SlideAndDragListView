@@ -6,6 +6,4 @@
     <dimen name="slv_item_bg_btn2_width">60dip</dimen>
     <dimen name="slv_item_bg_btn_width_img">100dip</dimen>
 
-    <dimen name="txt_size">7sp</dimen>
-    <dimen name="txt_qq">5sp</dimen>
 </resources>

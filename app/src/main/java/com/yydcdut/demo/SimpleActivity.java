@@ -34,6 +34,7 @@ public class SimpleActivity extends AppCompatActivity implements SlideAndDragLis
     private Menu mMenu;
     private List<ApplicationInfo> mAppList;
     private SlideAndDragListView<ApplicationInfo> mListView;
+    private Toast mToast;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -54,20 +55,20 @@ public class SimpleActivity extends AppCompatActivity implements SlideAndDragLis
                 .setBackground(Utils.getDrawable(this, R.drawable.btn_left0))
                 .setText("One")
                 .setTextColor(Color.GRAY)
-                .setTextSize((int) getResources().getDimension(R.dimen.txt_size))
+                .setTextSize(14)
                 .build());
         mMenu.addItem(new MenuItem.Builder().setWidth((int) getResources().getDimension(R.dimen.slv_item_bg_btn_width))
                 .setBackground(Utils.getDrawable(this, R.drawable.btn_left1))
                 .setText("Two")
                 .setTextColor(Color.BLACK)
-                .setTextSize((int) getResources().getDimension(R.dimen.txt_size))
+                .setTextSize((14))
                 .build());
         mMenu.addItem(new MenuItem.Builder().setWidth((int) getResources().getDimension(R.dimen.slv_item_bg_btn_width) + 30)
                 .setBackground(Utils.getDrawable(this, R.drawable.btn_right0))
                 .setText("Three")
                 .setDirection(MenuItem.DIRECTION_RIGHT)
                 .setTextColor(Color.BLACK)
-                .setTextSize((int) getResources().getDimension(R.dimen.txt_size))
+                .setTextSize(14)
                 .build());
         mMenu.addItem(new MenuItem.Builder().setWidth((int) getResources().getDimension(R.dimen.slv_item_bg_btn_width_img))
                 .setBackground(Utils.getDrawable(this, R.drawable.btn_right1))
@@ -148,13 +149,21 @@ public class SimpleActivity extends AppCompatActivity implements SlideAndDragLis
     public void onListItemLongClick(View view, int position) {
 //        boolean bool = mListView.startDrag(position);
 //        Toast.makeText(SimpleActivity.this, "onItemLongClick   position--->" + position + "   drag-->" + bool, Toast.LENGTH_SHORT).show();
-        Toast.makeText(SimpleActivity.this, "onItemLongClick   position--->" + position, Toast.LENGTH_SHORT).show();
+        if (mToast != null) {
+            mToast.cancel();
+        }
+        mToast = Toast.makeText(SimpleActivity.this, "onItemLongClick   position--->" + position, Toast.LENGTH_SHORT);
+        mToast.show();
         Log.i(TAG, "onListItemLongClick   " + position);
     }
 
     @Override
     public void onDragViewStart(int position) {
-        Toast.makeText(SimpleActivity.this, "onDragViewStart   position--->" + position, Toast.LENGTH_SHORT).show();
+        if (mToast != null) {
+            mToast.cancel();
+        }
+        mToast = Toast.makeText(SimpleActivity.this, "onDragViewStart   position--->" + position, Toast.LENGTH_SHORT);
+        mToast.show();
         Log.i(TAG, "onDragViewStart   " + position);
     }
 
@@ -166,25 +175,41 @@ public class SimpleActivity extends AppCompatActivity implements SlideAndDragLis
 
     @Override
     public void onDragViewDown(int position) {
-        Toast.makeText(SimpleActivity.this, "onDragViewDown   position--->" + position, Toast.LENGTH_SHORT).show();
+        if (mToast != null) {
+            mToast.cancel();
+        }
+        mToast = Toast.makeText(SimpleActivity.this, "onDragViewDown   position--->" + position, Toast.LENGTH_SHORT);
+        mToast.show();
         Log.i(TAG, "onDragViewDown   " + position);
     }
 
     @Override
     public void onListItemClick(View v, int position) {
-        Toast.makeText(SimpleActivity.this, "onItemClick   position--->" + position, Toast.LENGTH_SHORT).show();
+        if (mToast != null) {
+            mToast.cancel();
+        }
+        mToast = Toast.makeText(SimpleActivity.this, "onItemClick   position--->" + position, Toast.LENGTH_SHORT);
+        mToast.show();
         Log.i(TAG, "onListItemClick   " + position);
     }
 
     @Override
     public void onSlideOpen(View view, View parentView, int position, int direction) {
-        Toast.makeText(SimpleActivity.this, "onSlideOpen   position--->" + position + "  direction--->" + direction, Toast.LENGTH_SHORT).show();
+        if (mToast != null) {
+            mToast.cancel();
+        }
+        mToast = Toast.makeText(SimpleActivity.this, "onSlideOpen   position--->" + position + "  direction--->" + direction, Toast.LENGTH_SHORT);
+        mToast.show();
         Log.i(TAG, "onSlideOpen   " + position);
     }
 
     @Override
     public void onSlideClose(View view, View parentView, int position, int direction) {
-        Toast.makeText(SimpleActivity.this, "onSlideClose   position--->" + position + "  direction--->" + direction, Toast.LENGTH_SHORT).show();
+        if (mToast != null) {
+            mToast.cancel();
+        }
+        mToast = Toast.makeText(SimpleActivity.this, "onSlideClose   position--->" + position + "  direction--->" + direction, Toast.LENGTH_SHORT);
+        mToast.show();
         Log.i(TAG, "onSlideClose   " + position);
     }
 

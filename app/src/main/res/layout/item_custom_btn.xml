@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/layout_item_edit"
-    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@drawable/item_selector">
@@ -13,7 +12,7 @@
         android:layout_centerVertical="true"
         android:layout_marginLeft="16dp"
         android:layout_marginRight="16dp"
-        android:layout_marginStart="16dp"/>
+        android:layout_marginStart="16dp" />
 
     <TextView
         android:id="@+id/txt_item_edit"
@@ -21,11 +20,10 @@
         android:layout_height="@dimen/slv_item_height"
         android:layout_centerInParent="true"
         android:layout_centerVertical="true"
-        android:alpha="0.87"
         android:gravity="center_vertical"
         android:lines="1"
         android:textColor="@android:color/black"
-        android:textSize="14sp"/>
+        android:textSize="14dp" />
 
     <Button
         android:id="@+id/btn_item_click"
@@ -36,6 +34,6 @@
         android:layout_marginLeft="16dp"
         android:layout_marginRight="16dp"
         android:layout_marginStart="16dp"
-        android:focusable="false"/>
+        android:focusable="false" />
 
 </RelativeLayout>

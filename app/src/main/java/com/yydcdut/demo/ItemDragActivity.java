@@ -54,20 +54,20 @@ public class ItemDragActivity extends AppCompatActivity implements SlideAndDragL
                 .setBackground(Utils.getDrawable(this, R.drawable.btn_left0))
                 .setText("One")
                 .setTextColor(Color.GRAY)
-                .setTextSize((int) getResources().getDimension(R.dimen.txt_size))
+                .setTextSize(14)
                 .build());
         mMenu.addItem(new MenuItem.Builder().setWidth((int) getResources().getDimension(R.dimen.slv_item_bg_btn_width))
                 .setBackground(Utils.getDrawable(this, R.drawable.btn_left1))
                 .setText("Two")
                 .setTextColor(Color.BLACK)
-                .setTextSize((int) getResources().getDimension(R.dimen.txt_size))
+                .setTextSize(14)
                 .build());
         mMenu.addItem(new MenuItem.Builder().setWidth((int) getResources().getDimension(R.dimen.slv_item_bg_btn_width) + 30)
                 .setBackground(Utils.getDrawable(this, R.drawable.btn_right0))
                 .setText("Three")
                 .setDirection(MenuItem.DIRECTION_RIGHT)
                 .setTextColor(Color.BLACK)
-                .setTextSize((int) getResources().getDimension(R.dimen.txt_size))
+                .setTextSize(14)
                 .build());
         mMenu.addItem(new MenuItem.Builder().setWidth((int) getResources().getDimension(R.dimen.slv_item_bg_btn_width_img))
                 .setBackground(Utils.getDrawable(this, R.drawable.btn_right1))
