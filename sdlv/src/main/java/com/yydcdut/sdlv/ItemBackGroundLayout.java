@@ -56,7 +56,10 @@ class ItemBackGroundLayout extends ViewGroup {
             mBtnViews.add(parent);
             return parent;
         } else {
-            throw new IllegalArgumentException("必须得有一个!");
+            parent.addView(createEmptyTextView());
+            addView(parent, count);
+            mBtnViews.add(parent);
+            return parent;
         }
     }
 
@@ -74,6 +77,11 @@ class ItemBackGroundLayout extends ViewGroup {
         textView.setTextColor(menuItem.textColor);
         textView.setGravity(Gravity.CENTER);
         return textView;
+    }
+
+    private View createEmptyTextView() {
+        View view = new View(getContext());
+        return view;
     }
 
     private ImageView createImageView(MenuItem menuItem) {

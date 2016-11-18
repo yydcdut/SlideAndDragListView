@@ -95,7 +95,7 @@ class WrapperAdapter implements WrapperListAdapter, ItemMainLayout.OnItemSlideLi
             int type = mAdapter.getItemViewType(position);
             Menu menu = mMenuMap.get(type);
             if (menu == null) {
-                throw new IllegalArgumentException("没有这个ViewType");
+                throw new IllegalArgumentException("This menu doesn't match any view types in ListView");
             }
             itemMainLayout.setParams(menu.getTotalBtnLength(MenuItem.DIRECTION_LEFT),
                     menu.getTotalBtnLength(MenuItem.DIRECTION_RIGHT), menu.isWannaOver());
