@@ -1,14 +1,9 @@
 package com.yydcdut.sdlv;
 
 import android.content.Context;
-import android.text.TextUtils;
 import android.util.AttributeSet;
-import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
-import android.widget.ImageView;
-import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,7 +16,7 @@ class ItemBackGroundLayout extends ViewGroup {
     private int mMarginLeft = 0;
     private int mMarginRight = 0;
     /* 添加的子View */
-    private List<View> mBtnViews;
+    private List<View> mViewsList;
 
     public ItemBackGroundLayout(Context context) {
         this(context, null);
@@ -33,73 +28,28 @@ class ItemBackGroundLayout extends ViewGroup {
 
     public ItemBackGroundLayout(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        mBtnViews = new ArrayList<>();
+        mViewsList = new ArrayList<>();
         setVisibility(GONE);
     }
 
     protected View addMenuItem(MenuItem menuItem) {
         int count = getChildCount();
-        FrameLayout parent = new FrameLayout(getContext());
-        FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(menuItem.width, LayoutParams.MATCH_PARENT);
-        layoutParams.gravity = Gravity.CENTER;
-        parent.setLayoutParams(layoutParams);
-        parent.addView(createBG(menuItem));
-        parent.setTag(menuItem);
-        if (!TextUtils.isEmpty(menuItem.text)) {
-            parent.addView(createTextView(menuItem));
-            addView(parent, count);
-            mBtnViews.add(parent);
-            return parent;
-        } else if (menuItem.icon != null) {
-            parent.addView(createImageView(menuItem));
-            addView(parent, count);
-            mBtnViews.add(parent);
-            return parent;
-        } else {
-            parent.addView(createEmptyTextView());
-            addView(parent, count);
-            mBtnViews.add(parent);
-            return parent;
-        }
+        BaseLayout parent = new SDMenuItemView(getContext(), menuItem);
+        parent.build();
+        addView(parent, count);
+        mViewsList.add(parent);
+        return parent;
     }
 
-    private ImageView createBG(MenuItem menuItem) {
-        ImageView imageView = new ImageView(getContext());
-        imageView.setImageDrawable(menuItem.background);
-        imageView.setScaleType(ImageView.ScaleType.FIT_XY);
-        return imageView;
-    }
-
-    private TextView createTextView(MenuItem menuItem) {
-        TextView textView = new TextView(getContext());
-        textView.setText(menuItem.text);
-        textView.setTextSize(menuItem.textSize);
-        textView.setTextColor(menuItem.textColor);
-        textView.setGravity(Gravity.CENTER);
-        return textView;
-    }
-
-    private View createEmptyTextView() {
-        View view = new View(getContext());
-        return view;
-    }
-
-    private ImageView createImageView(MenuItem menuItem) {
-        ImageView imageView = new ImageView(getContext());
-        imageView.setImageDrawable(menuItem.icon);
-        imageView.setScaleType(ImageView.ScaleType.CENTER);
-        return imageView;
-    }
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
         int total = getChildCount();
         for (int i = 0; i < total; i++) {
-            View view = getChildAt(i);
-            MenuItem menuItem = (MenuItem) view.getTag();
-            measureChild(view, MeasureSpec.makeMeasureSpec(menuItem.width, MeasureSpec.EXACTLY),
-                    heightMeasureSpec);
+            BaseLayout view = (BaseLayout) getChildAt(i);
+            MenuItem menuItem = view.mMenuItem;
+            measureChild(view, MeasureSpec.makeMeasureSpec(menuItem.width, MeasureSpec.EXACTLY), heightMeasureSpec);
         }
     }
 
@@ -109,8 +59,8 @@ class ItemBackGroundLayout extends ViewGroup {
         mMarginLeft = 0;
         mMarginRight = getMeasuredWidth();
         for (int i = 0; i < total; i++) {
-            View view = getChildAt(i);
-            MenuItem menuItem = (MenuItem) view.getTag();
+            BaseLayout view = (BaseLayout) getChildAt(i);
+            MenuItem menuItem = view.mMenuItem;
             if (menuItem.direction == MenuItem.DIRECTION_LEFT) {
                 view.layout(mMarginLeft, t, menuItem.width + mMarginLeft, b);
                 mMarginLeft += menuItem.width;
@@ -121,7 +71,7 @@ class ItemBackGroundLayout extends ViewGroup {
         }
     }
 
-    protected List<View> getBtnViews() {
-        return mBtnViews;
+    protected List<View> getViewsList() {
+        return mViewsList;
     }
 }

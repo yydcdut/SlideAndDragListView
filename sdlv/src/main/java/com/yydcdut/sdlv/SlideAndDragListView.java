@@ -164,13 +164,13 @@ public class SlideAndDragListView<T> extends DragListView<T> implements WrapperA
 
                         //没有点在menu上面
                         if (isFingerMoving2Right(ev)) {//如果想向右滑动
-                            if (itemMainLayout.getItemLeftBackGroundLayout().getBtnViews().size() == 0 &&
+                            if (itemMainLayout.getItemLeftBackGroundLayout().getViewsList().size() == 0 &&
                                     itemMainLayout.getScrollState() == ItemMainLayout.SCROLL_STATE_CLOSE) {//但是又没有Left的Menu
                                 mState = STATE_NOTHING;
                                 return true;
                             }
                         } else if (isFingerMoving2Left(ev)) {//如果想向左滑动
-                            if (itemMainLayout.getItemRightBackGroundLayout().getBtnViews().size() == 0 &&
+                            if (itemMainLayout.getItemRightBackGroundLayout().getViewsList().size() == 0 &&
                                     itemMainLayout.getScrollState() == ItemMainLayout.SCROLL_STATE_CLOSE) {//但是又没有Right的Menu
                                 mState = STATE_NOTHING;
                                 return true;

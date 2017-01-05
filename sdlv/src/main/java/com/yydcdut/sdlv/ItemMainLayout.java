@@ -169,7 +169,7 @@ class ItemMainLayout extends FrameLayout {
                     switch (mIntention) {
                         case INTENTION_LEFT_OPEN:
                         case INTENTION_LEFT_ALREADY_OPEN:
-                            if (mItemLeftBackGroundLayout.getBtnViews().size() == 0) {//如果左边没有menu，就不能往左滑动
+                            if (mItemLeftBackGroundLayout.getViewsList().size() == 0) {//如果左边没有menu，就不能往左滑动
                                 break;
                             }
                             //此时moveDistance为正数，mLeftDistance为0
@@ -190,7 +190,7 @@ class ItemMainLayout extends FrameLayout {
                             break;
                         case INTENTION_RIGHT_OPEN:
                         case INTENTION_RIGHT_ALREADY_OPEN:
-                            if (mItemRightBackGroundLayout.getBtnViews().size() == 0) {//如果右边没有menu，就不能往左滑动
+                            if (mItemRightBackGroundLayout.getViewsList().size() == 0) {//如果右边没有menu，就不能往左滑动
                                 break;
                             }
                             //此时moveDistance为负数，mLeftDistance为0
