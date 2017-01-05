@@ -387,10 +387,16 @@ public class SlideAndDragListView<T> extends DragListView<T> implements WrapperA
      * 关闭打开了的Item
      */
     public void closeSlidedItem() {
+        if (mWrapperAdapter == null) {
+            return;
+        }
         mWrapperAdapter.returnSlideItemPosition();
     }
 
     public void deleteSlideItem() {
+        if (mWrapperAdapter == null) {
+            return;
+        }
         mWrapperAdapter.deleteSlideItemPosition();
     }
 

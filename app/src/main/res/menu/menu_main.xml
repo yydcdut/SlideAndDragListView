@@ -19,4 +19,8 @@
         android:title="Close Slided Menu By Api"
         app:showAsAction="never"/>
 
+    <item
+        android:id="@+id/menu_item_delete_menu"
+        android:title="Delete Slided Menu By Api"
+        app:showAsAction="never"/>
 </menu>

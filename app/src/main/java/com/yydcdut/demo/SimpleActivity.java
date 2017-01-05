@@ -298,6 +298,9 @@ public class SimpleActivity extends AppCompatActivity implements SlideAndDragLis
             case R.id.menu_item_close_menu:
                 mListView.closeSlidedItem();
                 break;
+            case R.id.menu_item_delete_menu:
+                mListView.deleteSlideItem();
+                break;
         }
         return true;
     }
