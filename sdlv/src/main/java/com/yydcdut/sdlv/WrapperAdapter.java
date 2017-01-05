@@ -187,6 +187,15 @@ class WrapperAdapter implements WrapperListAdapter, ItemMainLayout.OnItemSlideLi
         }
     }
 
+    protected void deleteSlideItemPosition() {
+        if (mSlideItemPosition != -1) {
+            ItemMainLayout itemMainLayout = (ItemMainLayout) mListView.getChildAt(mSlideItemPosition - mListView.getFirstVisiblePosition());
+            if (itemMainLayout != null) {
+                itemMainLayout.deleteItem(this);
+            }
+        }
+    }
+
     /**
      * @param x
      * @return 是否滑动归位了
@@ -264,12 +273,7 @@ class WrapperAdapter implements WrapperListAdapter, ItemMainLayout.OnItemSlideLi
                     returnSlideItemPosition();
                     break;
                 case Menu.ITEM_DELETE_FROM_BOTTOM_TO_TOP:
-                    if (mSlideItemPosition != -1) {
-                        ItemMainLayout itemMainLayout = (ItemMainLayout) mListView.getChildAt(mSlideItemPosition - mListView.getFirstVisiblePosition());
-                        if (itemMainLayout != null) {
-                            itemMainLayout.deleteItem(this);
-                        }
-                    }
+                    deleteSlideItemPosition();
                     break;
                 default:
                     break;

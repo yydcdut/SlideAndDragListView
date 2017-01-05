@@ -390,6 +390,10 @@ public class SlideAndDragListView<T> extends DragListView<T> implements WrapperA
         mWrapperAdapter.returnSlideItemPosition();
     }
 
+    public void deleteSlideItem() {
+        mWrapperAdapter.deleteSlideItemPosition();
+    }
+
     @Override
     public void setAdapter(final ListAdapter adapter) {
         if (mMenuMap == null || mMenuMap.size() == 0) {
