@@ -10,7 +10,7 @@ android {
     defaultConfig {
         minSdkVersion 11
         targetSdkVersion 22
-        versionCode 15
+        versionCode 16
         versionName "1.8.6"
     }
     buildTypes {
@@ -30,7 +30,7 @@ dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
 }
 
-//version = "0.5.4"
+//version = "0.5.5"
 //
 //def siteUrl = 'https://github.com/yydcdut/SlideAndDragListView'
 //def gitUrl = 'https://github.com/yydcdut/SlideAndDragListView.git'

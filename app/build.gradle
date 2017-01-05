@@ -8,8 +8,8 @@ android {
         applicationId "com.yydcdut.demo"
         minSdkVersion 11
         targetSdkVersion 22
-        versionCode 8
-        versionName "1.1.9"
+        versionCode 9
+        versionName "1.2.0"
     }
     buildTypes {
         release {

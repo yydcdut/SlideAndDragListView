@@ -1,6 +1,6 @@
 # SlideAndDragListView
 
-  [ ![Download](https://api.bintray.com/packages/yydcdut/maven/SlideAndDragListView/images/download.svg) ](https://bintray.com/yydcdut/maven/sdlv/_latestVersion)       [![License](http://img.shields.io/:license-apache-blue.svg)](LICENSE.txt)  [![Build Status](https://travis-ci.org/yydcdut/SlideAndDragListView.svg?branch=master)](https://travis-ci.org/yydcdut/SlideAndDragListView)    [![API](https://img.shields.io/badge/API-11%2B-brightgreen.svg?style=flat)](https://android-arsenal.com/api?level=11)  <a href="http://www.methodscount.com/?lib=com.yydcdut.sdlv%3Asdlv%3A0.5.4"><img src="https://img.shields.io/badge/Methods count-287-e91e63.svg"></img></a>   <a href="http://www.methodscount.com/?lib=com.yydcdut.sdlv%3Asdlv%3A0.5.4"><img src="https://img.shields.io/badge/Size-29 KB-e91e63.svg"></img></a>  
+  [ ![Download](https://api.bintray.com/packages/yydcdut/maven/SlideAndDragListView/images/download.svg) ](https://bintray.com/yydcdut/maven/sdlv/_latestVersion)       [![License](http://img.shields.io/:license-apache-blue.svg)](LICENSE.txt)  [![Build Status](https://travis-ci.org/yydcdut/SlideAndDragListView.svg?branch=master)](https://travis-ci.org/yydcdut/SlideAndDragListView)    [![API](https://img.shields.io/badge/API-11%2B-brightgreen.svg?style=flat)](https://android-arsenal.com/api?level=11)  <a href="http://www.methodscount.com/?lib=com.yydcdut.sdlv%3Asdlv%3A0.5.5"><img src="https://img.shields.io/badge/Methods count-287-e91e63.svg"></img></a>   <a href="http://www.methodscount.com/?lib=com.yydcdut.sdlv%3Asdlv%3A0.5.5"><img src="https://img.shields.io/badge/Size-29 KB-e91e63.svg"></img></a>  
 
 A ListView that you can slide ( or swipe ) the items, drag and drop the items to other places.
 
@@ -32,13 +32,13 @@ SlideAndDragListView is useful for all kinds of prioritized lists: favorites, pl
 ## Gradle
 
 ``` groovy
-compile 'com.yydcdut.sdlv:sdlv:0.5.4@aar'
+compile 'com.yydcdut.sdlv:sdlv:0.5.5@aar'
 ```
 
 Or
 
 ``` groovy
-compile 'com.yydcdut.sdlv:sdlv:0.5.4'
+compile 'com.yydcdut.sdlv:sdlv:0.5.5'
 ```
 
 ## aar
@@ -329,6 +329,14 @@ slideAndDragListView.closeSlidedItem();
 ```
 
 Close menu manually.
+
+### Delete Menu
+
+```java
+slideAndDragListView.deleteSlideItem();
+```
+
+Delete menu manually.
 
 # License
 
