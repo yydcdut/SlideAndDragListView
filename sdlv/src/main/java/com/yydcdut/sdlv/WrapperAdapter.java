@@ -34,11 +34,13 @@ class WrapperAdapter implements WrapperListAdapter, ItemMainLayout.OnItemSlideLi
     private OnScrollListenerProxy mOnScrollListenerProxy;
 
     protected WrapperAdapter(Context context, SlideAndDragListView listView, ListAdapter adapter, Map<Integer, Menu> map) {
+        //// TODO: 2017/3/7 NULL context,listview,adapter,map
         mContext = context;
         mListView = listView;
         mListView.setOnSuperScrollListener(this);
         mAdapter = adapter;
         mMenuMap = map;
+        mAdapter.registerDataSetObserver(mDataSetObserver);
     }
 
     @Override
@@ -65,6 +67,19 @@ class WrapperAdapter implements WrapperListAdapter, ItemMainLayout.OnItemSlideLi
     public void unregisterDataSetObserver(DataSetObserver observer) {
         mAdapter.unregisterDataSetObserver(observer);
     }
+
+    private DataSetObserver mDataSetObserver = new DataSetObserver() {
+        @Override
+        public void onChanged() {
+            super.onChanged();
+            returnSlideItemPosition();
+        }
+
+        @Override
+        public void onInvalidated() {
+            super.onInvalidated();
+        }
+    };
 
     @Override
     public int getCount() {
@@ -225,6 +240,12 @@ class WrapperAdapter implements WrapperListAdapter, ItemMainLayout.OnItemSlideLi
         int type = getItemViewType(position);
         Menu menu = mMenuMap.get(type);
         return menu.isWannaTransparentWhileDragging();
+    }
+
+    protected void removeDataSetObserver() {
+        if (mAdapter != null) {
+            mAdapter.unregisterDataSetObserver(mDataSetObserver);
+        }
     }
 
     /**

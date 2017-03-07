@@ -466,6 +466,14 @@ public class SlideAndDragListView<T> extends DragListView<T> implements WrapperA
         return canDrag && view instanceof ItemMainLayout;
     }
 
+    @Override
+    protected void onDetachedFromWindow() {
+        super.onDetachedFromWindow();
+        if (mWrapperAdapter != null) {
+            mWrapperAdapter.removeDataSetObserver();
+        }
+    }
+
     /**
      * 设置item滑动监听器
      *
