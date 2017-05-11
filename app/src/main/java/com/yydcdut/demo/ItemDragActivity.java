@@ -102,7 +102,7 @@ public class ItemDragActivity extends AppCompatActivity implements SlideAndDragL
 
         @Override
         public long getItemId(int position) {
-            return position;
+            return mAppList.get(position).hashCode();
         }
 
         @Override

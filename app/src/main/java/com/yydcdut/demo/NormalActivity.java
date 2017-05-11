@@ -67,7 +67,7 @@ public class NormalActivity extends AppCompatActivity {
 
         @Override
         public long getItemId(int position) {
-            return position;
+            return mAppList.get(position).hashCode();
         }
 
         @Override

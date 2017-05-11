@@ -170,7 +170,7 @@ public class DifferentActivity extends AppCompatActivity implements SlideAndDrag
 
         @Override
         public long getItemId(int position) {
-            return position;
+            return mQQList.get(position).hashCode();
         }
 
         @Override

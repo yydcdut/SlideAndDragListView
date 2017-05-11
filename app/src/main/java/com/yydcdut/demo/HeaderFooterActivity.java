@@ -119,7 +119,7 @@ public class HeaderFooterActivity extends AppCompatActivity implements SlideAndD
 
         @Override
         public long getItemId(int position) {
-            return position;
+            return mAppList.get(position).hashCode();
         }
 
         @Override

@@ -103,7 +103,7 @@ public class SimpleActivity extends AppCompatActivity implements SlideAndDragLis
 
         @Override
         public long getItemId(int position) {
-            return position;
+            return mAppList.get(position).hashCode();
         }
 
         @Override
