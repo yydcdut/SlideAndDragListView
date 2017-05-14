@@ -5,6 +5,7 @@ import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.database.DataSetObserver;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
@@ -386,7 +387,7 @@ class WrapperAdapter implements WrapperListAdapter, ItemMainLayout.OnItemSlideLi
     @Override
     public void onDragStarted(int x, int y, View view) {
         setInDragging(true);
-        int itemIndex = mListView.getPositionForView(view);
+        int itemIndex = mListView.getPositionForView(view) - mListView.getHeaderViewsCount();
         popDragEntry(itemIndex);
     }
 
@@ -421,13 +422,16 @@ class WrapperAdapter implements WrapperListAdapter, ItemMainLayout.OnItemSlideLi
         for (int i = 0; i < mListView.getChildCount(); i++) {
             View child = mListView.getChildAt(i);
             int position = firstVisiblePosition + i;
-            if (!isIndexInBound(position)) {
+            if (position < mListView.getHeaderViewsCount()) {
                 continue;
             }
-            if (getItem(position) == null) {
+            if (!isIndexInBound(position - mListView.getHeaderViewsCount())) {
+                continue;
+            }
+            if (getItem(position - mListView.getHeaderViewsCount()) == null) {
                 throw new NullPointerException("todo ");
             }
-            int itemId = getItem(position).hashCode();
+            int itemId = getItem(position - mListView.getHeaderViewsCount()).hashCode();
             mItemIdTopMap.put(itemId, child.getTop());
         }
     }
@@ -441,7 +445,8 @@ class WrapperAdapter implements WrapperListAdapter, ItemMainLayout.OnItemSlideLi
         if (view == null) {
             return;
         }
-        int itemIndex = mListView.getPositionForView(view);
+        int itemIndex = mListView.getPositionForView(view) - mListView.getHeaderViewsCount();
+        Log.d("yuyidong", "onDragMoving  mListView.getPositionForView(view)-->" + (mListView.getPositionForView(view)) + "  itemIndex-->" + itemIndex);
         if (isInDragging && mDragEnteredEntityIndex != itemIndex && isIndexInBound(itemIndex)
                 && itemIndex > mStartLimit && itemIndex < mEndLimit) {
             markDropArea(itemIndex);
@@ -485,16 +490,18 @@ class WrapperAdapter implements WrapperListAdapter, ItemMainLayout.OnItemSlideLi
                 int firstVisiblePosition = mListView.getFirstVisiblePosition();
 
                 AnimatorSet animSet = new AnimatorSet();
-                ArrayList<Animator> animators = new ArrayList<Animator>();
+                ArrayList<Animator> animators = new ArrayList<>();
                 for (int i = 0; i < mListView.getChildCount(); i++) {
                     View child = mListView.getChildAt(i);
                     int position = firstVisiblePosition + i;
-
-                    if (!isIndexInBound(position)) {
+                    if (position < mListView.getHeaderViewsCount()) {
+                        continue;
+                    }
+                    if (!isIndexInBound(position - mListView.getHeaderViewsCount())) {
                         continue;
                     }
 
-                    int itemId = getItem(position).hashCode();
+                    int itemId = getItem(position - mListView.getHeaderViewsCount()).hashCode();
 
                     Integer startTop = mItemIdTopMap.get(itemId);
                     int top = child.getTop();

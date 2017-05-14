@@ -121,8 +121,7 @@ class DragListView<T> extends ListView implements OnDragDropListener {
             case DragEvent.ACTION_DRAG_LOCATION:
                 mLastDragY = eY;
                 handleDragMoving(this, eX, eY);
-                if (!mIsDragScrollerRunning &&
-                        (Math.abs(mLastDragY - mTouchDownForDragStartY) >= 4 * mTouchSlop)) {
+                if (!mIsDragScrollerRunning && (Math.abs(mLastDragY - mTouchDownForDragStartY) >= 4 * mTouchSlop)) {
                     mIsDragScrollerRunning = true;
                     ensureScrollHandler();
                     mScrollHandler.postDelayed(mDragScroller, SCROLL_HANDLER_DELAY_MILLIS);
