@@ -1,20 +1,27 @@
 package com.yydcdut.sdlv;
 
+import android.animation.Animator;
+import android.animation.AnimatorSet;
+import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.database.DataSetObserver;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.widget.AbsListView;
+import android.widget.BaseAdapter;
 import android.widget.ListAdapter;
 import android.widget.WrapperListAdapter;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
  * Created by yuyidong on 15/9/28.
  */
 class WrapperAdapter implements WrapperListAdapter, ItemMainLayout.OnItemSlideListenerProxy, View.OnClickListener,
-        AbsListView.OnScrollListener, ItemMainLayout.OnItemDeleteListenerProxy {
+        AbsListView.OnScrollListener, ItemMainLayout.OnItemDeleteListenerProxy, OnDragDropListener {
     private static final int TAG_LEFT = 3 << 24;
     private static final int TAG_RIGHT = 4 << 24;
     /* 上下文 */
@@ -24,23 +31,41 @@ class WrapperAdapter implements WrapperListAdapter, ItemMainLayout.OnItemSlideLi
     /* 用户自定义参数 */
     private Map<Integer, Menu> mMenuMap;
     /* SDLV */
-    private SlideAndDragListView mListView;
+    private SlideListView mListView;
     /* 当前滑动的item的位置 */
     private int mSlideItemPosition = -1;
+    /* 当前是否drag状态 */
+    private boolean isInDragging = false;
+    /* drag的entity */
+    private Object mDraggedEntity = null;
+    /* drag的entity的位置 */
+    private int mDraggedEntityIndex = -1;
+    /* drag的entity的位置 */
+    private int mDragEnteredEntityIndex = -1;
+    /* 记录top位置 */
+    private HashMap<Integer, Integer> mItemIdTopMap;
+    /* drag的时候不移动的header */
+    private int mStartLimit = -1;//todo header
+    /* drag的时候不移动的footer */
+    private int mEndLimit = Integer.MAX_VALUE;//todo footer
+    /* drag的动画时间 */
+    private int mAnimationDuration = 300;
+
     /* 监听器 */
     private OnAdapterSlideListenerProxy mOnAdapterSlideListenerProxy;
     private OnAdapterMenuClickListenerProxy mOnAdapterMenuClickListenerProxy;
     private onItemDeleteListenerProxy mOnItemDeleteListenerProxy;
     private OnScrollListenerProxy mOnScrollListenerProxy;
 
-    protected WrapperAdapter(Context context, SlideAndDragListView listView, ListAdapter adapter, Map<Integer, Menu> map) {
-        //// TODO: 2017/3/7 NULL context,listview,adapter,map
+    protected WrapperAdapter(Context context, SlideListView listView, ListAdapter adapter, Map<Integer, Menu> map) {
         mContext = context;
         mListView = listView;
         mListView.setOnSuperScrollListener(this);
         mAdapter = adapter;
         mMenuMap = map;
         mAdapter.registerDataSetObserver(mDataSetObserver);
+        mListView.addOnDragDropListener(this);
+        mItemIdTopMap = new HashMap<>();
     }
 
     @Override
@@ -121,7 +146,22 @@ class WrapperAdapter implements WrapperListAdapter, ItemMainLayout.OnItemSlideLi
             itemMainLayout = (ItemMainLayout) convertView;
             mAdapter.getView(position, itemMainLayout.getItemCustomView(), parent);
         }
+        hide(itemMainLayout, position);
         return itemMainLayout;
+    }
+
+    private void hide(View itemMainLayout, int position) {
+        if (mDraggedEntity == null) {
+            if (itemMainLayout != null && itemMainLayout.getVisibility() != View.VISIBLE) {
+                itemMainLayout.setVisibility(View.VISIBLE);
+            }
+            return;
+        }
+        if (getItem(position) == mDraggedEntity & itemMainLayout != null) {
+            itemMainLayout.setVisibility(View.INVISIBLE);
+        } else if (itemMainLayout.getVisibility() != View.VISIBLE) {
+            itemMainLayout.setVisibility(View.VISIBLE);
+        }
     }
 
     /**
@@ -337,6 +377,145 @@ class WrapperAdapter implements WrapperListAdapter, ItemMainLayout.OnItemSlideLi
             mSlideItemPosition = -1;
         }
 
+    }
+
+    private void setInDragging(boolean inDragging) {
+        isInDragging = inDragging;
+    }
+
+    @Override
+    public void onDragStarted(int x, int y, View view) {
+        setInDragging(true);
+        int itemIndex = mListView.getPositionForView(view);
+        popDragEntry(itemIndex);
+    }
+
+    private void popDragEntry(int index) {
+        if (isIndexInBound(index)) {
+            mDraggedEntity = mListView.getDataList().get(index);
+            mDraggedEntityIndex = index;
+            mDragEnteredEntityIndex = index;
+            markDropArea(index);
+        }
+    }
+
+    private void markDropArea(int itemIndex) {
+        if (mDraggedEntity != null && isIndexInBound(mDragEnteredEntityIndex) && isIndexInBound(itemIndex)) {
+            cacheOffsetsForDataSetChanged();
+            Object object = mListView.getDataList().remove(mDragEnteredEntityIndex);
+            mDragEnteredEntityIndex = itemIndex;
+            mListView.getDataList().add(mDragEnteredEntityIndex, object);
+            doAnimation();
+            notifyDataSetChanged();
+        }
+    }
+
+    private void notifyDataSetChanged() {
+        if (mAdapter != null && mAdapter instanceof BaseAdapter) {
+            ((BaseAdapter) mAdapter).notifyDataSetChanged();
+        }
+    }
+
+    private void cacheOffsetsForDataSetChanged() {
+        int firstVisiblePosition = mListView.getFirstVisiblePosition();
+        for (int i = 0; i < mListView.getChildCount(); i++) {
+            View child = mListView.getChildAt(i);
+            int position = firstVisiblePosition + i;
+            if (!isIndexInBound(position)) {
+                continue;
+            }
+            if (getItem(position) == null) {
+                throw new NullPointerException("todo ");
+            }
+            int itemId = getItem(position).hashCode();
+            mItemIdTopMap.put(itemId, child.getTop());
+        }
+    }
+
+    private boolean isIndexInBound(int itemIndex) {
+        return itemIndex >= 0 && itemIndex < mListView.getDataList().size();
+    }
+
+    @Override
+    public void onDragMoving(int x, int y, View view) {
+        if (view == null) {
+            return;
+        }
+        int itemIndex = mListView.getPositionForView(view);
+        if (isInDragging && mDragEnteredEntityIndex != itemIndex && isIndexInBound(itemIndex)
+                && itemIndex > mStartLimit && itemIndex < mEndLimit) {
+            markDropArea(itemIndex);
+        }
+    }
+
+    @Override
+    public void onDragFinished(int x, int y) {
+        setInDragging(false);
+        handleDrop();
+    }
+
+    private void handleDrop() {
+        if (mDraggedEntity != null) {
+            if (isIndexInBound(mDragEnteredEntityIndex) && mDragEnteredEntityIndex != mDraggedEntityIndex) {
+                int dropIndex = mDragEnteredEntityIndex;
+                mListView.getDataList().set(dropIndex, mDraggedEntity);
+                cacheOffsetsForDataSetChanged();
+                notifyDataSetChanged();
+            } else if (isIndexInBound(mDraggedEntityIndex)) {
+                mListView.getDataList().remove(mDragEnteredEntityIndex);
+                mListView.getDataList().add(mDraggedEntityIndex, mDraggedEntity);
+                notifyDataSetChanged();
+            }
+            mDraggedEntity = null;
+            if (mDraggedEntityIndex != mDragEnteredEntityIndex) {
+//                mDragDropListener.onDataSetChangedForResult(mDragEntries);
+            }
+        }
+    }
+
+    private void doAnimation() {
+        if (mItemIdTopMap.isEmpty()) {
+            return;
+        }
+
+        mListView.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
+            @Override
+            public boolean onPreDraw() {
+                mListView.getViewTreeObserver().removeOnPreDrawListener(this);
+                int firstVisiblePosition = mListView.getFirstVisiblePosition();
+
+                AnimatorSet animSet = new AnimatorSet();
+                ArrayList<Animator> animators = new ArrayList<Animator>();
+                for (int i = 0; i < mListView.getChildCount(); i++) {
+                    View child = mListView.getChildAt(i);
+                    int position = firstVisiblePosition + i;
+
+                    if (!isIndexInBound(position)) {
+                        continue;
+                    }
+
+                    int itemId = getItem(position).hashCode();
+
+                    Integer startTop = mItemIdTopMap.get(itemId);
+                    int top = child.getTop();
+                    int deltaY = 0;
+
+                    if (startTop != null) {
+                        if (startTop != top) {
+                            deltaY = startTop - top;
+                            animators.add(ObjectAnimator.ofFloat(child, "translationY", deltaY, 0.0f));
+                        }
+                    }
+                }
+                if (animators.size() > 0) {
+                    animSet.setDuration(mAnimationDuration).playTogether(animators);
+                    animSet.start();
+                }
+
+                mItemIdTopMap.clear();
+                return true;
+            }
+        });
     }
 
     protected interface OnAdapterMenuClickListenerProxy {

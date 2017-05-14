@@ -1,65 +1,27 @@
 package com.yydcdut.sdlv;
 
 import android.content.Context;
+import android.content.Intent;
+import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.util.AttributeSet;
-import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewConfiguration;
+import android.view.ViewGroup;
 import android.widget.AbsListView;
-import android.widget.AdapterView;
+import android.widget.FrameLayout;
+import android.widget.HeaderViewListAdapter;
+import android.widget.ImageView;
 import android.widget.ListAdapter;
+import android.widget.WrapperListAdapter;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
- * Created by yuyidong on 15/9/28.
+ * Created by yuyidong on 2017/5/10.
  */
-public class SlideAndDragListView<T> extends DragListView<T> implements WrapperAdapter.OnAdapterSlideListenerProxy,
-        WrapperAdapter.OnAdapterMenuClickListenerProxy, WrapperAdapter.onItemDeleteListenerProxy,
-        WrapperAdapter.OnScrollListenerProxy, AbsListView.OnItemLongClickListener {
-    /* onTouch里面的状态 */
-    private static final int STATE_NOTHING = -1;//抬起状态
-    private static final int STATE_DOWN = 0;//按下状态
-    private static final int STATE_SCROLL = 2;//SCROLL状态
-    private static final int STATE_LONG_CLICK_FINISH = 3;//长点击已经触发完成
-    private static final int STATE_MORE_FINGERS = 4;//多个手指
-    private int mState = STATE_NOTHING;
-
-    /* Scroll 归位的时候点击位置 */
-    private static final int RETURN_SCROLL_BACK_OWN = 1;//自己有归位操作
-    private static final int RETURN_SCROLL_BACK_OTHER = 2;//其他位置有归位操作
-    private static final int RETURN_SCROLL_BACK_CLICK_MENU_BUTTON = 3;//点击到了滑开的item的menuButton上
-    private static final int RETURN_SCROLL_BACK_NOTHING = 0;//所以位置都没有回归操作
-
-    /* 是否要触发itemClick */
-    private boolean mIsWannaTriggerClick = true;
-    /* 是否在滑动 */
-    private boolean mIsScrolling = false;
-    /* 是否正在进行delete的动画 */
-    private boolean mIsDeleteAnimationRunning = false;
-    /* 手指放下的坐标 */
-    private int mXDown;
-    private int mYDown;
-    /* Menu */
-    private Map<Integer, Menu> mMenuMap;
-    /* WrapperAdapter */
-    private WrapperAdapter mWrapperAdapter;
-    /* 手指滑动的最短距离 */
-    private int mShortestDistance = 25;
-    /* CustomItemView距离左边的距离 */
-    private int mItemLeftDistance = 0;
-    /* ItemMainView是否正在处理手势操作 */
-    private boolean isItemViewHandlingMotionEvent = false;
-
-    /* 监听器 */
-    private OnSlideListener mOnSlideListener;
-    private OnMenuItemClickListener mOnMenuItemClickListener;
-    private OnListItemLongClickListener mOnListItemLongClickListener;
-    private OnListItemClickListener mOnListItemClickListener;
-    private OnItemDeleteListener mOnItemDeleteListener;
-    private OnListScrollListener mOnListScrollListener;
+public class SlideAndDragListView<T> extends FrameLayout {
+    private ImageView mImageView;
+    private SlideListView<T> mSlideListView;
 
     public SlideAndDragListView(Context context) {
         this(context, null);
@@ -71,270 +33,329 @@ public class SlideAndDragListView<T> extends DragListView<T> implements WrapperA
 
     public SlideAndDragListView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        mShortestDistance = ViewConfiguration.get(context).getScaledTouchSlop();
+        createView(context, attrs);
     }
 
-    @Override
-    public boolean onItemLongClick(AdapterView<?> parent, View v, int position, long id) {
-        //找到那个位置的view
-        View view = getChildAt(position - getFirstVisiblePosition());
-        if (mOnListItemLongClickListener != null && view instanceof ItemMainLayout) {
-            ItemMainLayout itemMainLayout = (ItemMainLayout) view;
-            if (itemMainLayout.getItemCustomView().getLeft() == 0) {
-                mState = STATE_LONG_CLICK_FINISH;
-                //回滚
-                mWrapperAdapter.returnSlideItemPosition();
-                //触发回调
-                mOnListItemLongClickListener.onListItemLongClick(itemMainLayout.getItemCustomView(), position);
-            }
-        }
-        if (mState == STATE_LONG_CLICK_FINISH || mState == STATE_DOWN) {
-            startDrag(position);
-        }
-        return false;
+    private void createView(Context context, AttributeSet attrs) {
+        mSlideListView = new SlideListView(context, attrs);
+        addView(mSlideListView, new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
+        mImageView = new ImageView(context);
+        addView(mImageView, new LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+        mImageView.setVisibility(GONE);
+        mSlideListView.setDragView(mImageView);
     }
 
-    @Override
-    public boolean onInterceptTouchEvent(MotionEvent ev) {
-        switch (ev.getAction() & MotionEvent.ACTION_MASK) {
-            case MotionEvent.ACTION_DOWN:
-                //当Menu滑开，然后在Menu的位置滑动，是不会经过onTouchEvent的ACTION_DOWN的
-                //获取出坐标来
-                mXDown = (int) ev.getX();
-                mYDown = (int) ev.getY();
-                //当前state状态为按下
-                mState = STATE_DOWN;
-                ItemMainLayout itemMainLayoutDown = getItemMainLayoutByPosition((int) ev.getX(), (int) ev.getY());
-                if (itemMainLayoutDown != null) {
-                    mItemLeftDistance = itemMainLayoutDown.getItemCustomView().getLeft();
-                } else {
-                    mItemLeftDistance = 0;
-                }
-                break;
-            case MotionEvent.ACTION_MOVE:
-                if (fingerLeftAndRightMove(ev)) {//上下范围在50，主要检测左右滑动
-                    return true;
-                }
-                break;
-        }
-        return super.onInterceptTouchEvent(ev);
+    /**
+     * @return The maximum amount a list view will scroll in response to
+     * an arrow event.
+     */
+    public int getMaxScrollAmount() {
+        return mSlideListView.getMaxScrollAmount();
     }
 
-    @Override
-    public boolean onTouchEvent(MotionEvent ev) {
-        if (mIsDeleteAnimationRunning) {
+    /**
+     * Add a fixed view to appear at the top of the list. If this method is
+     * called more than once, the views will appear in the order they were
+     * added. Views added using this call can take focus if they want.
+     * <p>
+     * Note: When first introduced, this method could only be called before
+     * setting the adapter with {@link #setAdapter(ListAdapter)}. Starting with
+     * {@link android.os.Build.VERSION_CODES#KITKAT}, this method may be
+     * called at any time. If the ListView's adapter does not extend
+     * {@link HeaderViewListAdapter}, it will be wrapped with a supporting
+     * instance of {@link WrapperListAdapter}.
+     *
+     * @param v            The view to add.
+     * @param data         Data to associate with this view
+     * @param isSelectable whether the item is selectable
+     */
+    public void addHeaderView(View v, Object data, boolean isSelectable) {
+        mSlideListView.addHeaderView(v, data, isSelectable);
+    }
+
+    /**
+     * Add a fixed view to appear at the top of the list. If addHeaderView is
+     * called more than once, the views will appear in the order they were
+     * added. Views added using this call can take focus if they want.
+     * <p>
+     * Note: When first introduced, this method could only be called before
+     * setting the adapter with {@link #setAdapter(ListAdapter)}. Starting with
+     * {@link android.os.Build.VERSION_CODES#KITKAT}, this method may be
+     * called at any time. If the ListView's adapter does not extend
+     * {@link HeaderViewListAdapter}, it will be wrapped with a supporting
+     * instance of {@link WrapperListAdapter}.
+     *
+     * @param v The view to add.
+     */
+    public void addHeaderView(View v) {
+        mSlideListView.addHeaderView(v);
+    }
+
+    public int getHeaderViewsCount() {
+        return mSlideListView.getHeaderViewsCount();
+    }
+
+    /**
+     * Removes a previously-added header view.
+     *
+     * @param v The view to remove
+     * @return true if the view was removed, false if the view was not a header
+     * view
+     */
+    public boolean removeHeaderView(View v) {
+        return mSlideListView.removeHeaderView(v);
+    }
+
+
+    /**
+     * Add a fixed view to appear at the bottom of the list. If addFooterView is
+     * called more than once, the views will appear in the order they were
+     * added. Views added using this call can take focus if they want.
+     * <p>
+     * Note: When first introduced, this method could only be called before
+     * setting the adapter with {@link #setAdapter(ListAdapter)}. Starting with
+     * {@link android.os.Build.VERSION_CODES#KITKAT}, this method may be
+     * called at any time. If the ListView's adapter does not extend
+     * {@link HeaderViewListAdapter}, it will be wrapped with a supporting
+     * instance of {@link WrapperListAdapter}.
+     *
+     * @param v            The view to add.
+     * @param data         Data to associate with this view
+     * @param isSelectable true if the footer view can be selected
+     */
+    public void addFooterView(View v, Object data, boolean isSelectable) {
+        mSlideListView.addFooterView(v, data, isSelectable);
+    }
+
+    /**
+     * Add a fixed view to appear at the bottom of the list. If addFooterView is
+     * called more than once, the views will appear in the order they were
+     * added. Views added using this call can take focus if they want.
+     * <p>
+     * Note: When first introduced, this method could only be called before
+     * setting the adapter with {@link #setAdapter(ListAdapter)}. Starting with
+     * {@link android.os.Build.VERSION_CODES#KITKAT}, this method may be
+     * called at any time. If the ListView's adapter does not extend
+     * {@link HeaderViewListAdapter}, it will be wrapped with a supporting
+     * instance of {@link WrapperListAdapter}.
+     *
+     * @param v The view to add.
+     */
+    public void addFooterView(View v) {
+        mSlideListView.addFooterView(v);
+    }
+
+    public int getFooterViewsCount() {
+        return mSlideListView.getFooterViewsCount();
+    }
+
+    /**
+     * Removes a previously-added footer view.
+     *
+     * @param v The view to remove
+     * @return true if the view was removed, false if the view was not a footer view
+     */
+    public boolean removeFooterView(View v) {
+        return mSlideListView.removeFooterView(v);
+    }
+
+    /**
+     * Returns the adapter currently in use in this ListView. The returned adapter
+     * might not be the same adapter passed to {@link #setAdapter(ListAdapter)} but
+     * might be a {@link WrapperListAdapter}.
+     *
+     * @return The adapter currently used to display data in this ListView.
+     * @see #setAdapter(ListAdapter)
+     */
+    public ListAdapter getAdapter() {
+        return mSlideListView.getAdapter();
+    }
+
+    /**
+     * Sets up this AbsListView to use a remote views adapter which connects to a RemoteViewsService
+     * through the specified intent.
+     *
+     * @param intent the intent used to identify the RemoteViewsService for the adapter to connect to.
+     */
+    public void setRemoteViewsAdapter(Intent intent) {
+        mSlideListView.setRemoteViewsAdapter(intent);
+    }
+
+    /**
+     * Sets the data behind this ListView.
+     * <p>
+     * The adapter passed to this method may be wrapped by a {@link WrapperListAdapter},
+     * depending on the ListView features currently in use. For instance, adding
+     * headers and/or footers will cause the adapter to be wrapped.
+     *
+     * @param adapter The ListAdapter which is responsible for maintaining the
+     *                data backing this list and for producing a view to represent an
+     *                item in that data set.
+     * @see #getAdapter()
+     */
+    public void setAdapter(ListAdapter adapter) {
+        mSlideListView.setAdapter(adapter);
+    }
+
+    /**
+     * Smoothly scroll to the specified adapter position. The view will
+     * scroll such that the indicated position is displayed.
+     *
+     * @param position Scroll to this adapter position.
+     */
+    public void smoothScrollToPosition(int position) {
+        mSlideListView.smoothScrollToPosition(position);
+    }
+
+    /**
+     * Smoothly scroll to the specified adapter position offset. The view will
+     * scroll such that the indicated position is displayed.
+     *
+     * @param offset The amount to offset from the adapter position to scroll to.
+     */
+    public void smoothScrollByOffset(int offset) {
+        mSlideListView.smoothScrollByOffset(offset);
+    }
+
+    /**
+     * Sets the currently selected item. If in touch mode, the item will not be selected
+     * but it will still be positioned appropriately. If the specified selection position
+     * is less than 0, then the item at position 0 will be selected.
+     *
+     * @param position Index (starting at 0) of the data item to be selected.
+     */
+    public void setSelection(int position) {
+        mSlideListView.setSelection(position);
+    }
+
+    /**
+     * setSelectionAfterHeaderView set the selection to be the first list item
+     * after the header views.
+     */
+    public void setSelectionAfterHeaderView() {
+        mSlideListView.setSelectionAfterHeaderView();
+    }
+
+    /**
+     * @return Whether the views created by the ListAdapter can contain focusable
+     * items.
+     */
+    public boolean getItemsCanFocus() {
+        return mSlideListView.getItemsCanFocus();
+    }
+
+    public void setCacheColorHint(int color) {
+        mSlideListView.setCacheColorHint(color);
+    }
+
+    /**
+     * Sets the drawable that will be drawn between each item in the list. If the drawable does
+     * not have an intrinsic height, you should also call {@link #setDividerHeight(int)}
+     *
+     * @param divider The drawable to use.
+     */
+    public void setDivider(Drawable divider) {
+        mSlideListView.setDivider(divider);
+    }
+
+    /**
+     * @return Returns the height of the divider that will be drawn between each item in the list.
+     */
+    public int getDividerHeight() {
+        return mSlideListView.getDividerHeight();
+    }
+
+    /**
+     * Sets the height of the divider that will be drawn between each item in the list. Calling
+     * this will override the intrinsic height as set by {@link #setDivider(Drawable)}
+     *
+     * @param height The new height of the divider in pixels.
+     */
+    public void setDividerHeight(int height) {
+        mSlideListView.setDividerHeight(height);
+    }
+
+    /**
+     * Enables or disables the drawing of the divider for header views.
+     *
+     * @param headerDividersEnabled True to draw the headers, false otherwise.
+     * @see #setFooterDividersEnabled(boolean)
+     * @see #areHeaderDividersEnabled()
+     * @see #addHeaderView(android.view.View)
+     */
+    public void setHeaderDividersEnabled(boolean headerDividersEnabled) {
+        mSlideListView.setHeaderDividersEnabled(headerDividersEnabled);
+    }
+
+    /**
+     * @return Whether the drawing of the divider for header views is enabled
+     * @see #setHeaderDividersEnabled(boolean)
+     */
+    public boolean areHeaderDividersEnabled() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            return mSlideListView.areHeaderDividersEnabled();
+        } else {
             return false;
         }
-        if (mIsScrolling) {
-            return super.onTouchEvent(ev);
-        }
-        switch (ev.getAction() & MotionEvent.ACTION_MASK) {
-            case MotionEvent.ACTION_DOWN:
-                //获取出坐标来
-                mXDown = (int) ev.getX();
-                mYDown = (int) ev.getY();
-                //当前state状态为按下
-                mState = STATE_DOWN;
-                //得到当前Item滑动了多少
-                ItemMainLayout itemMainLayoutDown = getItemMainLayoutByPosition(mXDown, mYDown);
-                if (itemMainLayoutDown != null) {
-                    mItemLeftDistance = itemMainLayoutDown.getItemCustomView().getLeft();
-                } else {
-                    mItemLeftDistance = 0;
-                }
-                break;
-            case MotionEvent.ACTION_POINTER_DOWN:
-                mState = STATE_MORE_FINGERS;
-                return false;
-            case MotionEvent.ACTION_MOVE:
-                if (fingerLeftAndRightMove(ev) && !isItemViewHandlingMotionEvent) {//上下范围在50，主要检测左右滑动
-                    int position = pointToPosition(mXDown, mYDown);
-                    ItemMainLayout itemMainLayout = getItemMainLayoutByPosition(mXDown, mYDown);
-                    if (itemMainLayout != null) {
-                        //判断是不是点在menu上面了
-                        if (mItemLeftDistance > 0) { //已经向右滑动了，而且滑开了
-                            if (ev.getX() < mItemLeftDistance) {//手指的位置再Menu
-                                return true;
-                            }
-                        } else if (mItemLeftDistance < 0) {//已经向左滑动了，而且滑开了
-                            if (ev.getX() > mItemLeftDistance + itemMainLayout.getItemCustomView().getWidth()) {
-                                return true;
-                            }
-                        }
-
-                        //没有点在menu上面
-                        if (isFingerMoving2Right(ev)) {//如果想向右滑动
-                            if (itemMainLayout.getItemLeftBackGroundLayout().getViewsList().size() == 0 &&
-                                    itemMainLayout.getScrollState() == ItemMainLayout.SCROLL_STATE_CLOSE) {//但是又没有Left的Menu
-                                mState = STATE_NOTHING;
-                                return true;
-                            }
-                        } else if (isFingerMoving2Left(ev)) {//如果想向左滑动
-                            if (itemMainLayout.getItemRightBackGroundLayout().getViewsList().size() == 0 &&
-                                    itemMainLayout.getScrollState() == ItemMainLayout.SCROLL_STATE_CLOSE) {//但是又没有Right的Menu
-                                mState = STATE_NOTHING;
-                                return true;
-                            }
-                        }
-                        //将当前想要滑动哪一个传递给wrapperAdapter
-                        mWrapperAdapter.setSlideItemPosition(position);
-                        isItemViewHandlingMotionEvent = true;
-                        mState = STATE_SCROLL;
-                        itemMainLayout.handleMotionEvent(ev, mXDown, mYDown, mItemLeftDistance);
-                        return true;
-                    } else {
-                        mState = STATE_NOTHING;
-                        return true;
-                    }
-                } else {
-                    if (isItemViewHandlingMotionEvent) {
-                        ItemMainLayout itemMainLayout = getItemMainLayoutByPosition(mXDown, mYDown);
-                        if (itemMainLayout != null) {
-                            itemMainLayout.handleMotionEvent(ev, mXDown, mYDown, mItemLeftDistance);
-                            return true;
-                        }
-                    }
-                }
-                break;
-            case MotionEvent.ACTION_UP:
-                int position = pointToPosition(mXDown, mYDown);
-                if (position != AdapterView.INVALID_POSITION) {
-                    if (mState == STATE_DOWN || mState == STATE_LONG_CLICK_FINISH) {
-                        //是否ScrollBack了，是的话就不去执行onListItemClick操作了
-                        int scrollBackState = scrollBack(position, ev.getX());
-                        if (scrollBackState == RETURN_SCROLL_BACK_NOTHING) {
-                            if (mOnListItemClickListener != null && mIsWannaTriggerClick && !mIsScrolling) {
-                                View v = getChildAt(position - getFirstVisiblePosition());
-                                if (v instanceof ItemMainLayout) {
-                                    ItemMainLayout itemMainLayout = (ItemMainLayout) v;
-                                    mOnListItemClickListener.onListItemClick(itemMainLayout.getItemCustomView(), position);
-                                }
-                            }
-                        }
-                    } else {
-                        ItemMainLayout itemMainLayout = getItemMainLayoutByPosition(mXDown, mYDown);
-                        if (itemMainLayout != null) {
-                            itemMainLayout.handleMotionEvent(ev, mXDown, mYDown, -1);
-                        }
-                    }
-                }
-                mState = STATE_NOTHING;
-                mItemLeftDistance = 0;
-                isItemViewHandlingMotionEvent = false;
-                break;
-            case MotionEvent.ACTION_POINTER_UP:
-            case MotionEvent.ACTION_CANCEL:
-                mState = STATE_NOTHING;
-                mItemLeftDistance = 0;
-                isItemViewHandlingMotionEvent = false;
-                break;
-            default:
-                break;
-
-        }
-        return super.onTouchEvent(ev);
     }
 
     /**
-     * 将滑开的item归位
+     * Enables or disables the drawing of the divider for footer views.
      *
-     * @param position
-     * @param x        坐标
-     * @return
+     * @param footerDividersEnabled True to draw the footers, false otherwise.
+     * @see #setHeaderDividersEnabled(boolean)
+     * @see #areFooterDividersEnabled()
+     * @see #addFooterView(android.view.View)
      */
-    private int scrollBack(int position, float x) {
-        //是不是当前滑开的这个
-        if (mWrapperAdapter.getSlideItemPosition() == position) {
-            int scrollBackSituation = mWrapperAdapter.returnSlideItemPosition(x);
-            switch (scrollBackSituation) {
-                case ItemMainLayout.SCROLL_BACK_CLICK_OWN:
-                    return RETURN_SCROLL_BACK_OWN;
-                case ItemMainLayout.SCROLL_BACK_ALREADY_CLOSED:
-                    return RETURN_SCROLL_BACK_NOTHING;
-                case ItemMainLayout.SCROLL_BACK_CLICK_MENU_BUTTON:
-                    return RETURN_SCROLL_BACK_CLICK_MENU_BUTTON;
-            }
-        } else if (mWrapperAdapter.getSlideItemPosition() != -1) {
-            mWrapperAdapter.returnSlideItemPosition();
-            return RETURN_SCROLL_BACK_OTHER;
-        }
-        return RETURN_SCROLL_BACK_NOTHING;
+    public void setFooterDividersEnabled(boolean footerDividersEnabled) {
+        mSlideListView.setFooterDividersEnabled(footerDividersEnabled);
     }
 
     /**
-     * 用于drag的ScrollBack逻辑操作
-     *
-     * @param position
-     * @return true--->可以drag false--->不能drag
+     * @return Whether the drawing of the divider for footer views is enabled
+     * @see #setFooterDividersEnabled(boolean)
      */
-    private boolean scrollBackByDrag(int position) {
-        //是不是当前滑开的这个
-        if (mWrapperAdapter.getSlideItemPosition() == position) {
+    public boolean areFooterDividersEnabled() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            return mSlideListView.areFooterDividersEnabled();
+        } else {
             return false;
-        } else if (mWrapperAdapter.getSlideItemPosition() != -1) {
-            mWrapperAdapter.returnSlideItemPosition();
-            return true;
         }
-        return true;
     }
 
     /**
-     * 上下左右不能超出50
+     * Sets the drawable that will be drawn above all other list content.
+     * This area can become visible when the user overscrolls the list.
      *
-     * @param ev
-     * @return
+     * @param header The drawable to use
      */
-    private boolean fingerNotMove(MotionEvent ev) {
-        return (mXDown - ev.getX() < mShortestDistance && mXDown - ev.getX() > -mShortestDistance &&
-                mYDown - ev.getY() < mShortestDistance && mYDown - ev.getY() > -mShortestDistance);
+    public void setOverscrollHeader(Drawable header) {
+        mSlideListView.setOverscrollHeader(header);
     }
 
     /**
-     * 左右得超出50，上下不能超出50
-     *
-     * @param ev
-     * @return
+     * @return The drawable that will be drawn above all other list content
      */
-    private boolean fingerLeftAndRightMove(MotionEvent ev) {
-        return ((ev.getX() - mXDown > mShortestDistance || ev.getX() - mXDown < -mShortestDistance) &&
-                ev.getY() - mYDown < mShortestDistance && ev.getY() - mYDown > -mShortestDistance);
+    public Drawable getOverscrollHeader() {
+        return mSlideListView.getOverscrollHeader();
     }
 
     /**
-     * 是不是向右滑动
+     * Sets the drawable that will be drawn below all other list content.
+     * This area can become visible when the user overscrolls the list,
+     * or when the list's content does not fully fill the container area.
      *
-     * @return
+     * @param footer The drawable to use
      */
-    private boolean isFingerMoving2Right(MotionEvent ev) {
-        return (ev.getX() - mXDown > mShortestDistance);
+    public void setOverscrollFooter(Drawable footer) {
+        mSlideListView.setOverscrollFooter(footer);
     }
 
     /**
-     * 是不是向左滑动
-     *
-     * @return
+     * @return The drawable that will be drawn below all other list content
      */
-    private boolean isFingerMoving2Left(MotionEvent ev) {
-        return (ev.getX() - mXDown < -mShortestDistance);
-    }
-
-    /**
-     * 通过手指的XY坐标得到ItemMainLayout
-     *
-     * @param x
-     * @param y
-     * @return
-     */
-    private ItemMainLayout getItemMainLayoutByPosition(int x, int y) {
-        int position = pointToPosition(x, y);
-        if (position != AdapterView.INVALID_POSITION) {
-            View view = getChildAt(position - getFirstVisiblePosition());
-            if (view instanceof ItemMainLayout) {
-                ItemMainLayout itemMainLayout = (ItemMainLayout) view;
-                return itemMainLayout;
-            }
-        }
-        return null;
+    public Drawable getOverscrollFooter() {
+        return mSlideListView.getOverscrollFooter();
     }
 
     /**
@@ -343,12 +364,7 @@ public class SlideAndDragListView<T> extends DragListView<T> implements WrapperA
      * @param menu
      */
     public void setMenu(Menu menu) {
-        if (mMenuMap != null) {
-            mMenuMap.clear();
-        } else {
-            mMenuMap = new HashMap<>(1);
-        }
-        mMenuMap.put(menu.getMenuViewType(), menu);
+        mSlideListView.setMenu(menu);
     }
 
     /**
@@ -357,14 +373,7 @@ public class SlideAndDragListView<T> extends DragListView<T> implements WrapperA
      * @param list
      */
     public void setMenu(List<Menu> list) {
-        if (mMenuMap != null) {
-            mMenuMap.clear();
-        } else {
-            mMenuMap = new HashMap<>(list.size());
-        }
-        for (Menu menu : list) {
-            mMenuMap.put(menu.getMenuViewType(), menu);
-        }
+        mSlideListView.setMenu(list);
     }
 
     /**
@@ -373,114 +382,54 @@ public class SlideAndDragListView<T> extends DragListView<T> implements WrapperA
      * @param menus
      */
     public void setMenu(Menu... menus) {
-        if (mMenuMap != null) {
-            mMenuMap.clear();
-        } else {
-            mMenuMap = new HashMap<>(menus.length);
-        }
-        for (Menu menu : menus) {
-            mMenuMap.put(menu.getMenuViewType(), menu);
-        }
+        mSlideListView.setMenu(menus);
     }
 
     /**
      * 关闭打开了的Item
      */
     public void closeSlidedItem() {
-        if (mWrapperAdapter == null) {
-            return;
-        }
-        mWrapperAdapter.returnSlideItemPosition();
+        mSlideListView.closeSlidedItem();
     }
 
     public void deleteSlideItem() {
-        if (mWrapperAdapter == null) {
-            return;
-        }
-        mWrapperAdapter.deleteSlideItemPosition();
-    }
-
-    @Override
-    public void setAdapter(final ListAdapter adapter) {
-        if (mMenuMap == null || mMenuMap.size() == 0) {
-            throw new IllegalArgumentException("先设置Menu");
-        }
-        mWrapperAdapter = new WrapperAdapter(getContext(), this, adapter, mMenuMap);
-        mWrapperAdapter.setOnAdapterSlideListenerProxy(this);
-        mWrapperAdapter.setOnAdapterMenuClickListenerProxy(this);
-        mWrapperAdapter.setOnItemDeleteListenerProxy(this);
-        mWrapperAdapter.setOnScrollListenerProxy(this);
-        setRawAdapter(adapter);
-        super.setAdapter(mWrapperAdapter);
-    }
-
-    @Override
-    public void onScrollStateChangedProxy(AbsListView view, int scrollState) {
-        if (scrollState == WrapperAdapter.SCROLL_STATE_IDLE) {
-            mIsWannaTriggerClick = true;
-            mIsScrolling = false;
-        } else {
-            mIsWannaTriggerClick = false;
-            mIsScrolling = true;
-        }
-        if (mOnListScrollListener != null) {
-            mOnListScrollListener.onScrollStateChanged(view, scrollState);
-        }
-    }
-
-    @Override
-    public void onScrollProxy(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
-        if (mOnListScrollListener != null) {
-            mOnListScrollListener.onScroll(view, firstVisibleItem, visibleItemCount, totalItemCount);
-        }
-    }
-
-    @Override
-    public void onDeleteBegin() {
-        mIsDeleteAnimationRunning = true;
-
-    }
-
-    @Override
-    public void onItemDelete(View view, int position) {
-        mIsDeleteAnimationRunning = false;
-        if (mOnItemDeleteListener != null && view instanceof ItemMainLayout) {
-            ItemMainLayout itemMainLayout = (ItemMainLayout) view;
-            mOnItemDeleteListener.onItemDelete(itemMainLayout.getItemCustomView(), position);
-        }
+        mSlideListView.deleteSlideItem();
     }
 
     /**
-     * 添加Drag
-     *
-     * @param position
-     * @return
+     * 当发生drag的时候触发的监听器
      */
-    protected boolean startDrag(int position) {
-        boolean canDrag = scrollBackByDrag(position);
-        //找到那个位置的view
-        View view = getChildAt(position - getFirstVisiblePosition());
-        if (canDrag && view instanceof ItemMainLayout) {
-            setDragPosition(position, mWrapperAdapter.isWannaTransparentWhileDragging(position));
-        }
-        return canDrag && view instanceof ItemMainLayout;
-    }
+    public interface OnDragListener {
+        /**
+         * 开始drag
+         *
+         * @param position
+         */
+        void onDragViewStart(int position);
 
-    @Override
-    protected void onDetachedFromWindow() {
-        super.onDetachedFromWindow();
-        if (mWrapperAdapter != null) {
-            mWrapperAdapter.removeDataSetObserver();
-        }
+        /**
+         * drag的正在移动
+         *
+         * @param position
+         */
+        void onDragViewMoving(int position);
+
+        /**
+         * drag的放下了
+         *
+         * @param position
+         */
+        void onDragViewDown(int position);
     }
 
     /**
-     * 设置item滑动监听器
+     * 设置drag的监听器，加入数据
      *
-     * @param listener
+     * @param onDragListener
+     * @param dataList
      */
-    public void setOnSlideListener(OnSlideListener listener) {
-        mOnSlideListener = listener;
+    public void setOnDragListener(OnDragListener onDragListener, List<T> dataList) {
+        mSlideListView.setOnDragListener(onDragListener, dataList);
     }
 
     /**
@@ -506,30 +455,15 @@ public class SlideAndDragListView<T> extends DragListView<T> implements WrapperA
         void onSlideClose(View view, View parentView, int position, int direction);
     }
 
-    @Override
-    public void onSlideOpen(View view, int position, int direction) {
-        if (mOnSlideListener != null && view instanceof ItemMainLayout) {
-            ItemMainLayout itemMainLayout = (ItemMainLayout) view;
-            mOnSlideListener.onSlideOpen(itemMainLayout.getItemCustomView(), this, position, direction);
-        }
-    }
-
-    @Override
-    public void onSlideClose(View view, int position, int direction) {
-        if (mOnSlideListener != null && view instanceof ItemMainLayout) {
-            ItemMainLayout itemMainLayout = (ItemMainLayout) view;
-            mOnSlideListener.onSlideClose(itemMainLayout.getItemCustomView(), this, position, direction);
-        }
-    }
-
     /**
-     * 设置item中的button点击事件的监听器
+     * 设置item滑动监听器
      *
-     * @param onMenuItemClickListener
+     * @param listener
      */
-    public void setOnMenuItemClickListener(OnMenuItemClickListener onMenuItemClickListener) {
-        mOnMenuItemClickListener = onMenuItemClickListener;
+    public void setOnSlideListener(SlideAndDragListView.OnSlideListener listener) {
+        mSlideListView.setOnSlideListener(listener);
     }
+
 
     /**
      * item中的button监听器
@@ -547,26 +481,13 @@ public class SlideAndDragListView<T> extends DragListView<T> implements WrapperA
         int onMenuItemClick(View v, int itemPosition, int buttonPosition, int direction);
     }
 
-    @Override
-    public int onMenuItemClick(View v, int itemPosition, int buttonPosition, int direction) {
-        if (mOnMenuItemClickListener != null) {
-            return mOnMenuItemClickListener.onMenuItemClick(v, itemPosition, buttonPosition, direction);
-        }
-        return Menu.ITEM_NOTHING;
-    }
-
-    @Deprecated
-    @Override
-    public void setOnItemClickListener(OnItemClickListener listener) {
-    }
-
     /**
-     * 设置监听器
+     * 设置item中的button点击事件的监听器
      *
-     * @param listener
+     * @param onMenuItemClickListener
      */
-    public void setOnListItemClickListener(OnListItemClickListener listener) {
-        mOnListItemClickListener = listener;
+    public void setOnMenuItemClickListener(OnMenuItemClickListener onMenuItemClickListener) {
+        mSlideListView.setOnMenuItemClickListener(onMenuItemClickListener);
     }
 
     /**
@@ -577,23 +498,12 @@ public class SlideAndDragListView<T> extends DragListView<T> implements WrapperA
     }
 
     /**
-     * {@link #setOnListItemLongClickListener(OnListItemLongClickListener)}
-     *
-     * @param listener
-     */
-    @Deprecated
-    @Override
-    public void setOnItemLongClickListener(OnItemLongClickListener listener) {
-    }
-
-    /**
      * 设置监听器
      *
      * @param listener
      */
-    public void setOnListItemLongClickListener(OnListItemLongClickListener listener) {
-        mOnListItemLongClickListener = listener;
-        super.setOnItemLongClickListener(this);
+    public void setOnListItemClickListener(SlideAndDragListView.OnListItemClickListener listener) {
+        mSlideListView.setOnListItemClickListener(listener);
     }
 
     /**
@@ -603,30 +513,21 @@ public class SlideAndDragListView<T> extends DragListView<T> implements WrapperA
         void onListItemLongClick(View view, int position);
     }
 
-    public void setOnItemDeleteListener(OnItemDeleteListener onItemDeleteListener) {
-        mOnItemDeleteListener = onItemDeleteListener;
+    /**
+     * 设置监听器
+     *
+     * @param listener
+     */
+    public void setOnListItemLongClickListener(SlideAndDragListView.OnListItemLongClickListener listener) {
+        mSlideListView.setOnListItemLongClickListener(listener);
     }
 
     public interface OnItemDeleteListener {
         void onItemDelete(View view, int position);
     }
 
-    @Deprecated
-    @Override
-    public void setOnScrollListener(OnScrollListener l) {
-    }
-
-    public void setOnListScrollListener(OnListScrollListener onListScrollListener) {
-        mOnListScrollListener = onListScrollListener;
-    }
-
-    /**
-     * 自己用的类
-     *
-     * @param l
-     */
-    protected void setOnSuperScrollListener(OnScrollListener l) {
-        super.setOnScrollListener(l);
+    public void setOnItemDeleteListener(SlideAndDragListView.OnItemDeleteListener onItemDeleteListener) {
+        mSlideListView.setOnItemDeleteListener(onItemDeleteListener);
     }
 
     public interface OnListScrollListener {
@@ -638,4 +539,9 @@ public class SlideAndDragListView<T> extends DragListView<T> implements WrapperA
 
         void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount);
     }
+
+    public void setOnListScrollListener(SlideAndDragListView.OnListScrollListener onListScrollListener) {
+        mSlideListView.setOnListScrollListener(onListScrollListener);
+    }
+
 }
