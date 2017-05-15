@@ -43,7 +43,7 @@ class SlideListView<T> extends DragListView<T> implements WrapperAdapter.OnAdapt
     private int mXDown;
     private int mYDown;
     /* Menu */
-    private Map<Integer, Menu> mMenuMap;
+    private Map<Integer, Menu> mMenuMap;//todo SpareArray
     /* WrapperAdapter */
     private WrapperAdapter mWrapperAdapter;
     /* 手指滑动的最短距离 */
