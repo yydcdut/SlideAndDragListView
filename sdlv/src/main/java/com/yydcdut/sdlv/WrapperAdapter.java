@@ -5,7 +5,6 @@ import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.database.DataSetObserver;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
@@ -446,7 +445,6 @@ class WrapperAdapter implements WrapperListAdapter, ItemMainLayout.OnItemSlideLi
             return;
         }
         int itemIndex = mListView.getPositionForView(view) - mListView.getHeaderViewsCount();
-        Log.d("yuyidong", "onDragMoving  mListView.getPositionForView(view)-->" + (mListView.getPositionForView(view)) + "  itemIndex-->" + itemIndex);
         if (isInDragging && mDragEnteredEntityIndex != itemIndex && isIndexInBound(itemIndex)
                 && itemIndex > mStartLimit && itemIndex < mEndLimit) {
             markDropArea(itemIndex);
