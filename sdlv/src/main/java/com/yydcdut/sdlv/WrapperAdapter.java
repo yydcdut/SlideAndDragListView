@@ -21,7 +21,7 @@ import java.util.Map;
  * Created by yuyidong on 15/9/28.
  */
 class WrapperAdapter implements WrapperListAdapter, ItemMainLayout.OnItemSlideListenerProxy, View.OnClickListener,
-        AbsListView.OnScrollListener, ItemMainLayout.OnItemDeleteListenerProxy, OnDragDropListener {
+        AbsListView.OnScrollListener, ItemMainLayout.OnItemDeleteListenerProxy, DragListView.OnDragDropListener {
     private static final int TAG_LEFT = 3 << 24;
     private static final int TAG_RIGHT = 4 << 24;
     /* 上下文 */
@@ -64,7 +64,7 @@ class WrapperAdapter implements WrapperListAdapter, ItemMainLayout.OnItemSlideLi
         mAdapter = adapter;
         mMenuMap = map;
         mAdapter.registerDataSetObserver(mDataSetObserver);
-        mListView.addOnDragDropListener(this);
+        mListView.add1OnDragDropListener(this);
         mItemIdTopMap = new HashMap<>();
     }
 
@@ -376,7 +376,6 @@ class WrapperAdapter implements WrapperListAdapter, ItemMainLayout.OnItemSlideLi
             }
             mSlideItemPosition = -1;
         }
-
     }
 
     private void setInDragging(boolean inDragging) {

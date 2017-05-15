@@ -1,11 +1,18 @@
 package com.yydcdut.sdlv;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
+import android.os.Handler;
 import android.util.AttributeSet;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewConfiguration;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.FrameLayout;
@@ -19,9 +26,38 @@ import java.util.List;
 /**
  * Created by yuyidong on 2017/5/10.
  */
-public class SlideAndDragListView<T> extends FrameLayout {
-    private ImageView mImageView;
+public class SlideAndDragListView<T> extends FrameLayout implements DragListView.OnDragDropListener {
+    /* drag的时候透明度 */
+    private static final float DRAG_VIEW_ALPHA = 0.7f;
+    /* drag的View */
+    private ImageView mDragView;
+    /* Inner View */
     private SlideListView<T> mSlideListView;
+    /* Handler的延时 */
+    private final long SCROLL_HANDLER_DELAY_MILLIS = 5;
+    /* 移动距离 */
+    private final int DRAG_SCROLL_PX_UNIT = 25;
+    /* Handler */
+    private Handler mScrollHandler;
+    /* 边界比例，到这个比例的位置就开始移动 */
+    private final float BOUND_GAP_RATIO = 0.2f;
+    /* 边界 */
+    private int mTopScrollBound;
+    private int mBottomScrollBound;
+    /* 按下的时候的Y轴坐标 */
+    private int mTouchDownForDragStartY;
+    /* Move的时候的Y轴坐标 */
+    private int mLastDragY;
+    /* 是否进入了scroll的handler里面了 */
+    private boolean mIsDragScrollerRunning = false;
+    /* 最小距离 */
+    private float mTouchSlop;
+    /* drag的View的Bitmap */
+    private Bitmap mDragViewBitmap;
+    /* 拦截参数 */
+    private boolean interceptTouchEvent = false;
+    /* drag的误差 */
+    private int mDragDelta;
 
     public SlideAndDragListView(Context context) {
         this(context, null);
@@ -33,17 +69,142 @@ public class SlideAndDragListView<T> extends FrameLayout {
 
     public SlideAndDragListView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
+        mTouchSlop = ViewConfiguration.get(context).getScaledPagingTouchSlop();
         createView(context, attrs);
     }
 
     private void createView(Context context, AttributeSet attrs) {
         mSlideListView = new SlideListView(context, attrs);
         addView(mSlideListView, new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
-        mImageView = new ImageView(context);
-        addView(mImageView, new LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-        mImageView.setVisibility(GONE);
-        mSlideListView.setDragView(mImageView);
+        mDragView = new ImageView(context);
+        addView(mDragView, new LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+        mDragView.setVisibility(GONE);
+        mSlideListView.add0OnDragDropListener(this);
     }
+
+    protected void setInterceptTouchEvent(boolean interceptTouchEvent) {
+        this.interceptTouchEvent = interceptTouchEvent;
+    }
+
+    @Override
+    public boolean onInterceptTouchEvent(MotionEvent ev) {
+        if (ev.getAction() == MotionEvent.ACTION_DOWN) {
+            mTouchDownForDragStartY = (int) ev.getY();
+        }
+        if (interceptTouchEvent) {
+            final int boundGap = (int) (getHeight() * BOUND_GAP_RATIO);
+            mTopScrollBound = (getTop() + boundGap);
+            mBottomScrollBound = (getBottom() - boundGap);
+            mSlideListView.handleDragStarted((int) ev.getX(), (int) ev.getY());
+        }
+        return interceptTouchEvent;
+    }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        int eX = (int) event.getX();
+        int eY = (int) event.getY();
+        switch (event.getAction() & MotionEvent.ACTION_MASK) {
+            case MotionEvent.ACTION_MOVE:
+                mLastDragY = eY;
+                mSlideListView.handleDragMoving(eX, eY);
+                if (!mIsDragScrollerRunning && (Math.abs(mLastDragY - mTouchDownForDragStartY) >= 4 * mTouchSlop)) {
+                    mIsDragScrollerRunning = true;
+                    ensureScrollHandler();
+                    mScrollHandler.postDelayed(mDragScroller, SCROLL_HANDLER_DELAY_MILLIS);
+                }
+                break;
+            case MotionEvent.ACTION_UP:
+            case MotionEvent.ACTION_CANCEL:
+                ensureScrollHandler();
+                mScrollHandler.removeCallbacks(mDragScroller);
+                mIsDragScrollerRunning = false;
+                mSlideListView.handleDragFinished(eX, eY);
+                interceptTouchEvent = false;
+                break;
+        }
+        return interceptTouchEvent || super.onTouchEvent(event);
+    }
+
+    @Override
+    public void onDragStarted(int x, int y, View view) {
+        mDragViewBitmap = createDraggedChildBitmap(view);
+        if (mDragViewBitmap == null) {
+            return;
+        }
+        mDragView.setImageBitmap(mDragViewBitmap);
+        mDragView.setVisibility(VISIBLE);
+        mDragView.setAlpha(DRAG_VIEW_ALPHA);
+        mDragView.setX(mSlideListView.getPaddingLeft() + getPaddingLeft());
+        mDragDelta = y - view.getTop();
+        mDragView.setY(y - mDragDelta);
+    }
+
+    private Bitmap createDraggedChildBitmap(View view) {
+        view.setDrawingCacheEnabled(true);
+        Bitmap cache = view.getDrawingCache();
+        Bitmap bitmap = null;
+        if (cache != null) {
+            try {
+                bitmap = cache.copy(Bitmap.Config.ARGB_8888, false);
+            } catch (OutOfMemoryError e) {
+                bitmap = null;
+            }
+        }
+        view.destroyDrawingCache();
+        view.setDrawingCacheEnabled(false);
+        return bitmap;
+    }
+
+    @Override
+    public void onDragMoving(int x, int y, View view) {
+        mDragView.setX(mSlideListView.getPaddingLeft() + getPaddingLeft());
+        mDragView.setY(y - mDragDelta);
+    }
+
+    @Override
+    public void onDragFinished(int x, int y) {
+        mDragDelta = 0;
+        if (mDragView != null) {
+            ObjectAnimator objectAnimator = ObjectAnimator.ofFloat(mDragView, "alpha", DRAG_VIEW_ALPHA, 0.0f);
+            objectAnimator.setDuration(100);
+            objectAnimator.addListener(new DragFinishAnimation());
+            objectAnimator.start();
+        }
+    }
+
+    private class DragFinishAnimation extends AnimatorListenerAdapter {
+        @Override
+        public void onAnimationEnd(Animator animation) {
+            if (mDragViewBitmap != null) {
+                mDragViewBitmap.recycle();
+                mDragViewBitmap = null;
+            }
+            mDragView.setVisibility(GONE);
+            mDragView.setImageBitmap(null);
+        }
+    }
+
+    private void ensureScrollHandler() {
+        if (mScrollHandler == null) {
+            mScrollHandler = getHandler();
+        }
+        if (mScrollHandler == null) {
+            mScrollHandler = new Handler();
+        }
+    }
+
+    private final Runnable mDragScroller = new Runnable() {
+        @Override
+        public void run() {
+            if (mLastDragY <= mTopScrollBound) {
+                mSlideListView.smoothScrollBy(-DRAG_SCROLL_PX_UNIT, (int) SCROLL_HANDLER_DELAY_MILLIS);
+            } else if (mLastDragY >= mBottomScrollBound) {
+                mSlideListView.smoothScrollBy(DRAG_SCROLL_PX_UNIT, (int) SCROLL_HANDLER_DELAY_MILLIS);
+            }
+            mScrollHandler.postDelayed(this, SCROLL_HANDLER_DELAY_MILLIS);
+        }
+    };
 
     /**
      * @return The maximum amount a list view will scroll in response to
@@ -463,7 +624,6 @@ public class SlideAndDragListView<T> extends FrameLayout {
     public void setOnSlideListener(SlideAndDragListView.OnSlideListener listener) {
         mSlideListView.setOnSlideListener(listener);
     }
-
 
     /**
      * item中的button监听器
