@@ -90,6 +90,9 @@ class DragListView<T> extends ListView {
         if (mOnDragDropListeners[1] != null) {
             mOnDragDropListeners[1].onDragStarted(x, y, view);
         }
+        if (mOnDragListener != null) {
+            mOnDragListener.onDragViewStart(getPositionForView(view));
+        }
     }
 
     protected void handleDragMoving(int x, int y) {
@@ -103,6 +106,9 @@ class DragListView<T> extends ListView {
         if (mOnDragDropListeners[1] != null) {
             mOnDragDropListeners[1].onDragMoving(x, y, view);
         }
+        if (mOnDragListener != null) {
+            mOnDragListener.onDragViewMoving(getPositionForView(view));
+        }
     }
 
     protected void handleDragFinished(int x, int y) {
@@ -111,6 +117,9 @@ class DragListView<T> extends ListView {
         }
         if (mOnDragDropListeners[1] != null) {
             mOnDragDropListeners[1].onDragFinished(x, y);
+        }
+        if (mOnDragListener != null) {
+            mOnDragListener.onDragViewMoving(getPositionForView(getViewByPoint(x, y)));
         }
     }
 

@@ -469,9 +469,6 @@ class WrapperAdapter implements WrapperListAdapter, ItemMainLayout.OnItemSlideLi
                 notifyDataSetChanged();
             }
             mDraggedEntity = null;
-            if (mDraggedEntityIndex != mDragEnteredEntityIndex) {
-//                mDragDropListener.onDataSetChangedForResult(mDragEntries);
-            }
         }
     }
 
