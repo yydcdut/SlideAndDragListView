@@ -1,6 +1,6 @@
 # SlideAndDragListView
 
-  [ ![Download](https://api.bintray.com/packages/yydcdut/maven/sdlv/images/download.svg) ](https://bintray.com/yydcdut/maven/sdlv/_latestVersion)       [![License](http://img.shields.io/:license-apache-blue.svg)](LICENSE.txt)  [![Build Status](https://travis-ci.org/yydcdut/SlideAndDragListView.svg?branch=master)](https://travis-ci.org/yydcdut/SlideAndDragListView)    [![API](https://img.shields.io/badge/API-11%2B-brightgreen.svg?style=flat)](https://android-arsenal.com/api?level=11)  <a href="http://www.methodscount.com/?lib=com.yydcdut.sdlv%3Asdlv%3A0.5.5"><img src="https://img.shields.io/badge/Methods count-287-e91e63.svg"></img></a>   <a href="http://www.methodscount.com/?lib=com.yydcdut.sdlv%3Asdlv%3A0.5.5"><img src="https://img.shields.io/badge/Size-29 KB-e91e63.svg"></img></a>
+  [![Download](https://api.bintray.com/packages/yydcdut/maven/sdlv/images/download.svg)](https://bintray.com/yydcdut/maven/sdlv/_latestVersion)       [![License](http://img.shields.io/:license-apache-blue.svg)](LICENSE.txt)  [![Build Status](https://travis-ci.org/yydcdut/SlideAndDragListView.svg?branch=master)](https://travis-ci.org/yydcdut/SlideAndDragListView)    [![API](https://img.shields.io/badge/API-11%2B-brightgreen.svg?style=flat)](https://android-arsenal.com/api?level=11)  <a href="http://www.methodscount.com/?lib=com.yydcdut.sdlv%3Asdlv%3A0.5.5"><img src="https://img.shields.io/badge/Methods count-287-e91e63.svg"></img></a>   <a href="http://www.methodscount.com/?lib=com.yydcdut.sdlv%3Asdlv%3A0.5.5"><img src="https://img.shields.io/badge/Size-29 KB-e91e63.svg"></img></a>
 
 A ListView that you can slide ( or swipe ) the items, drag and drop the items to other places.
 
@@ -238,32 +238,6 @@ slideAndDragListView.setOnDragListener(new SlideAndDragListView.OnDragListener()
 
 ## Other Listeners
 
-### ListView Item Click Listener
-
-``` java
-slideAndDragListView.setOnListItemClickListener(new SlideAndDragListView.OnListItemClickListener() {
-            @Override
-            public void onListItemClick(View v, int position) {
-
-            }
-        });
-```
-
-`public void onListItemClick(View view, int position)` . The parameter `view` is the ListView item that is clicked, and the parameter `position` is the position of the view in the list.
-
-### ListView Item Long Click Listener
-
-``` java
-slideAndDragListView.setOnListItemLongClickListener(new SlideAndDragListView.OnListItemLongClickListener() {
-            @Override
-            public void onListItemLongClick(View view, int position) {
-
-            }
-        });
-```
-
-`public void onListItemLongClick(View view, int position)` . The parameter `view` is the ListView item which is long clicked, and the parameter `position` is the position of the view in the list.
-
 ### Item Slide Listener
 
 ``` java
@@ -283,42 +257,6 @@ slideAndDragListView.OnSlideListener() {
 `public void onSlideOpen(View view, View parentView, int position, int direction)`. The parameter `view` is the ListView item that is slide open, `parentView` here is SDLV, `position` is the position of the view in the list, and the parameter `direction` is the item slided direction.
 
 `public void onSlideClose(View view, View parentView, int position, int direction)`. The parameter `view` is the ListView item that is slide close,`parentView` here is SDLV, `position` is the position of the view in the list, and the parameter `direction` is the item slided direction.
-
-### Item Delete Listener
-
-``` java
-slideAndDragListView.setOnItemDeleteListener(new SlideAndDragListView.OnItemDeleteListener() {
-            @Override
-            public void onItemDelete(View view, int position) {
-
-            }
-        });
-```
-
-`public void onItemDelete(View view, int position)` will invoked after `int onMenuItemClick(View v, int itemPosition, int buttonPosition, int direction)` return `Menu.ITEM_DELETE_FROM_BOTTOM_TO_TOP`.
-
-### Scroll Listener
-
-```java
-slideAndDragListView.setOnListScrollListener(new SlideAndDragListView.OnListScrollListener(){
-        @Override
-        public void onScrollStateChanged(AbsListView view,int scrollState){
-            if(scrollState==SlideAndDragListView.OnListScrollListener.SCROLL_STATE_FLING){
-
-            }else if(scrollState==SlideAndDragListView.OnListScrollListener.SCROLL_STATE_FLING){
-
-            }else if(scrollState==SlideAndDragListView.OnListScrollListener.SCROLL_STATE_TOUCH_SCROLL){
-
-            }
-        }
-
-        @Override
-        public void onScroll(AbsListView view,int firstVisibleItem,int visibleItemCount,int totalItemCount){
-        }
-    });
-```
-
-Same as `ListView.OnScrollListener` .
 
 ## API
 

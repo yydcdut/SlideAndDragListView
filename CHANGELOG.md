@@ -1,4 +1,11 @@
+## 0.6.0-beta
+
+* Recode drag & drop
+* Add drag & drop animation
+* Redesign listeners
+
 ## 0.5.2
+
 * Fix Bugs
 
 
