@@ -8,6 +8,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.SimpleAdapter;
@@ -23,10 +24,10 @@ import java.util.List;
 /**
  * Created by yuyidong on 15/7/31.
  */
-public class HeaderFooterActivity extends AppCompatActivity implements SlideAndDragListView.OnListItemLongClickListener,
+public class HeaderFooterActivity extends AppCompatActivity implements AdapterView.OnItemLongClickListener,
+        AdapterView.OnItemClickListener,
         SlideAndDragListView.OnDragListener, SlideAndDragListView.OnSlideListener,
-        SlideAndDragListView.OnListItemClickListener, SlideAndDragListView.OnMenuItemClickListener,
-        SlideAndDragListView.OnItemDeleteListener {
+        SlideAndDragListView.OnMenuItemClickListener, SlideAndDragListView.OnItemDeleteListener {
     private static final String TAG = HeaderFooterActivity.class.getSimpleName();
 
     private Menu mMenu;
@@ -96,9 +97,9 @@ public class HeaderFooterActivity extends AppCompatActivity implements SlideAndD
 //        mSimpleAdapter = new SimpleAdapter(this, list, R.layout.item_simple_adapter, new String[]{"text"}, new int[]{R.id.txt_simple});
 //        mListView.setAdapter(mSimpleAdapter);
         mListView.setAdapter(mAdapter);
-        mListView.setOnListItemLongClickListener(this);
+        mListView.setOnItemClickListener(this);
         mListView.setOnDragListener(this, mAppList);
-        mListView.setOnListItemClickListener(this);
+        mListView.setOnItemLongClickListener(this);
         mListView.setOnSlideListener(this);
         mListView.setOnMenuItemClickListener(this);
         mListView.setOnItemDeleteListener(this);
@@ -150,14 +151,6 @@ public class HeaderFooterActivity extends AppCompatActivity implements SlideAndD
     };
 
     @Override
-    public void onListItemLongClick(View view, int position) {
-//        boolean bool = mListView.startDrag(position);
-//        Toast.makeText(HeaderFooterActivity.this, "onItemLongClick   position--->" + position + "   drag-->" + bool, Toast.LENGTH_SHORT).show();
-        Toast.makeText(HeaderFooterActivity.this, "onItemLongClick   position--->" + position, Toast.LENGTH_SHORT).show();
-        Log.i(TAG, "onListItemLongClick   " + position);
-    }
-
-    @Override
     public void onDragViewStart(int position) {
         Toast.makeText(HeaderFooterActivity.this, "onDragViewStart   position--->" + position, Toast.LENGTH_SHORT).show();
         Log.i(TAG, "onDragViewStart   " + position);
@@ -173,12 +166,6 @@ public class HeaderFooterActivity extends AppCompatActivity implements SlideAndD
     public void onDragViewDown(int position) {
         Toast.makeText(HeaderFooterActivity.this, "onDragViewDown   position--->" + position, Toast.LENGTH_SHORT).show();
         Log.i(TAG, "onDragViewDown   " + position);
-    }
-
-    @Override
-    public void onListItemClick(View v, int position) {
-        Toast.makeText(HeaderFooterActivity.this, "onItemClick   position--->" + position, Toast.LENGTH_SHORT).show();
-        Log.i(TAG, "onListItemClick   " + position);
     }
 
     @Override
@@ -220,6 +207,19 @@ public class HeaderFooterActivity extends AppCompatActivity implements SlideAndD
     public void onItemDelete(View view, int position) {
         mAppList.remove(position - mListView.getHeaderViewsCount());
         mAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+        Toast.makeText(HeaderFooterActivity.this, "onItemLongClick   position--->" + position, Toast.LENGTH_SHORT).show();
+        Log.i(TAG, "onItemLongClick   " + position);
+        return false;
+    }
+
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        Toast.makeText(HeaderFooterActivity.this, "onItemClick   position--->" + position, Toast.LENGTH_SHORT).show();
+        Log.i(TAG, "onItemClick   " + position);
     }
 
 }

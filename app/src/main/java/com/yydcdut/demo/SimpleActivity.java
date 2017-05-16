@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
+import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -25,10 +26,10 @@ import java.util.List;
 /**
  * Created by yuyidong on 16/1/23.
  */
-public class SimpleActivity extends AppCompatActivity implements SlideAndDragListView.OnListItemLongClickListener,
+public class SimpleActivity extends AppCompatActivity implements AdapterView.OnItemLongClickListener,
+        AdapterView.OnItemClickListener, AbsListView.OnScrollListener,
         SlideAndDragListView.OnDragListener, SlideAndDragListView.OnSlideListener,
-        SlideAndDragListView.OnListItemClickListener, SlideAndDragListView.OnMenuItemClickListener,
-        SlideAndDragListView.OnItemDeleteListener, SlideAndDragListView.OnListScrollListener {
+        SlideAndDragListView.OnMenuItemClickListener, SlideAndDragListView.OnItemDeleteListener {
     private static final String TAG = SimpleActivity.class.getSimpleName();
 
     private Menu mMenu;
@@ -81,13 +82,13 @@ public class SimpleActivity extends AppCompatActivity implements SlideAndDragLis
         mListView = (SlideAndDragListView) findViewById(R.id.lv_edit);
         mListView.setMenu(mMenu);
         mListView.setAdapter(mAdapter);
-        mListView.setOnListItemLongClickListener(this);
+        mListView.setOnScrollListener(this);
         mListView.setOnDragListener(this, mAppList);
-        mListView.setOnListItemClickListener(this);
+        mListView.setOnItemClickListener(this);
         mListView.setOnSlideListener(this);
         mListView.setOnMenuItemClickListener(this);
         mListView.setOnItemDeleteListener(this);
-        mListView.setOnListScrollListener(this);
+        mListView.setOnItemLongClickListener(this);
     }
 
     private BaseAdapter mAdapter = new BaseAdapter() {
@@ -139,28 +140,20 @@ public class SimpleActivity extends AppCompatActivity implements SlideAndDragLis
             public void onClick(View v) {
                 Object o = v.getTag();
                 if (o instanceof Integer) {
-                    Toast.makeText(SimpleActivity.this, "button click-->" + ((Integer) o), Toast.LENGTH_SHORT).show();
+                    if (mToast != null) {
+                        mToast.setText("button click-->" + ((Integer) o));
+                    }
+                    mToast = Toast.makeText(SimpleActivity.this, "button click-->" + ((Integer) o), Toast.LENGTH_SHORT);
+                    mToast.show();
                 }
             }
         };
     };
 
     @Override
-    public void onListItemLongClick(View view, int position) {
-//        boolean bool = mListView.startDrag(position);
-//        Toast.makeText(SimpleActivity.this, "onItemLongClick   position--->" + position + "   drag-->" + bool, Toast.LENGTH_SHORT).show();
-        if (mToast != null) {
-            mToast.cancel();
-        }
-        mToast = Toast.makeText(SimpleActivity.this, "onItemLongClick   position--->" + position, Toast.LENGTH_SHORT);
-        mToast.show();
-        Log.i(TAG, "onListItemLongClick   " + position);
-    }
-
-    @Override
     public void onDragViewStart(int position) {
         if (mToast != null) {
-            mToast.cancel();
+            mToast.setText("onDragViewStart   position--->" + position);
         }
         mToast = Toast.makeText(SimpleActivity.this, "onDragViewStart   position--->" + position, Toast.LENGTH_SHORT);
         mToast.show();
@@ -176,7 +169,7 @@ public class SimpleActivity extends AppCompatActivity implements SlideAndDragLis
     @Override
     public void onDragViewDown(int position) {
         if (mToast != null) {
-            mToast.cancel();
+            mToast.setText("onDragViewDown   position--->" + position);
         }
         mToast = Toast.makeText(SimpleActivity.this, "onDragViewDown   position--->" + position, Toast.LENGTH_SHORT);
         mToast.show();
@@ -184,19 +177,9 @@ public class SimpleActivity extends AppCompatActivity implements SlideAndDragLis
     }
 
     @Override
-    public void onListItemClick(View v, int position) {
-        if (mToast != null) {
-            mToast.cancel();
-        }
-        mToast = Toast.makeText(SimpleActivity.this, "onItemClick   position--->" + position, Toast.LENGTH_SHORT);
-        mToast.show();
-        Log.i(TAG, "onListItemClick   " + position);
-    }
-
-    @Override
     public void onSlideOpen(View view, View parentView, int position, int direction) {
         if (mToast != null) {
-            mToast.cancel();
+            mToast.setText("onSlideOpen   position--->" + position + "  direction--->" + direction);
         }
         mToast = Toast.makeText(SimpleActivity.this, "onSlideOpen   position--->" + position + "  direction--->" + direction, Toast.LENGTH_SHORT);
         mToast.show();
@@ -206,7 +189,7 @@ public class SimpleActivity extends AppCompatActivity implements SlideAndDragLis
     @Override
     public void onSlideClose(View view, View parentView, int position, int direction) {
         if (mToast != null) {
-            mToast.cancel();
+            mToast.setText("onSlideClose   position--->" + position + "  direction--->" + direction);
         }
         mToast = Toast.makeText(SimpleActivity.this, "onSlideClose   position--->" + position + "  direction--->" + direction, Toast.LENGTH_SHORT);
         mToast.show();
@@ -245,11 +228,11 @@ public class SimpleActivity extends AppCompatActivity implements SlideAndDragLis
     @Override
     public void onScrollStateChanged(AbsListView view, int scrollState) {
         switch (scrollState) {
-            case SlideAndDragListView.OnListScrollListener.SCROLL_STATE_IDLE:
+            case AbsListView.OnScrollListener.SCROLL_STATE_IDLE:
                 break;
-            case SlideAndDragListView.OnListScrollListener.SCROLL_STATE_TOUCH_SCROLL:
+            case AbsListView.OnScrollListener.SCROLL_STATE_TOUCH_SCROLL:
                 break;
-            case SlideAndDragListView.OnListScrollListener.SCROLL_STATE_FLING:
+            case AbsListView.OnScrollListener.SCROLL_STATE_FLING:
                 break;
         }
     }
@@ -279,19 +262,19 @@ public class SimpleActivity extends AppCompatActivity implements SlideAndDragLis
                 break;
             case R.id.menu_item_click:
                 if (item.getTitle().toString().startsWith("Enable")) {
-                    mListView.setOnListItemClickListener(this);
+                    mListView.setOnItemClickListener(this);
                     item.setTitle("Disable Item Click");
                 } else {
-                    mListView.setOnListItemClickListener(null);
+                    mListView.setOnItemClickListener(null);
                     item.setTitle("Enable Item Click");
                 }
                 break;
             case R.id.menu_item_long_click:
                 if (item.getTitle().toString().startsWith("Enable")) {
-                    mListView.setOnListItemLongClickListener(this);
+                    mListView.setOnItemLongClickListener(this);
                     item.setTitle("Disable Item Long Click");
                 } else {
-                    mListView.setOnListItemLongClickListener(null);
+                    mListView.setOnItemLongClickListener(null);
                     item.setTitle("Enable Item Long Click");
                 }
                 break;
@@ -305,4 +288,26 @@ public class SimpleActivity extends AppCompatActivity implements SlideAndDragLis
         return true;
     }
 
+    @Override
+    public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+//        boolean bool = mListView.startDrag(position);
+//        Toast.makeText(SimpleActivity.this, "onItemLongClick   position--->" + position + "   drag-->" + bool, Toast.LENGTH_SHORT).show();
+        if (mToast != null) {
+            mToast.setText("onItemLongClick   position--->" + position);
+        }
+        mToast = Toast.makeText(SimpleActivity.this, "onItemLongClick   position--->" + position, Toast.LENGTH_SHORT);
+        mToast.show();
+        Log.i(TAG, "onItemLongClick   " + position);
+        return true;
+    }
+
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        if (mToast != null) {
+            mToast.setText("onItemClick   position--->" + position);
+        }
+        mToast = Toast.makeText(SimpleActivity.this, "onItemClick   position--->" + position, Toast.LENGTH_SHORT);
+        mToast.show();
+        Log.i(TAG, "onItemClick   " + position);
+    }
 }

@@ -8,6 +8,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -24,10 +25,9 @@ import java.util.List;
 /**
  * Created by yuyidong on 16/1/23.
  */
-public class DifferentActivity extends AppCompatActivity implements SlideAndDragListView.OnListItemLongClickListener,
+public class DifferentActivity extends AppCompatActivity implements AdapterView.OnItemLongClickListener, AdapterView.OnItemClickListener,
         SlideAndDragListView.OnDragListener, SlideAndDragListView.OnSlideListener,
-        SlideAndDragListView.OnListItemClickListener, SlideAndDragListView.OnMenuItemClickListener,
-        SlideAndDragListView.OnItemDeleteListener {
+        SlideAndDragListView.OnMenuItemClickListener, SlideAndDragListView.OnItemDeleteListener {
     private static final String TAG = DifferentActivity.class.getSimpleName();
 
     private List<Menu> mMenuList;
@@ -147,9 +147,9 @@ public class DifferentActivity extends AppCompatActivity implements SlideAndDrag
         mListView = (SlideAndDragListView) findViewById(R.id.lv_edit);
         mListView.setMenu(mMenuList);
         mListView.setAdapter(mAdapter);
-        mListView.setOnListItemLongClickListener(this);
+        mListView.setOnItemLongClickListener(this);
         mListView.setOnDragListener(this, mQQList);
-        mListView.setOnListItemClickListener(this);
+        mListView.setOnItemClickListener(this);
         mListView.setOnSlideListener(this);
         mListView.setOnMenuItemClickListener(this);
         mListView.setOnItemDeleteListener(this);
@@ -220,14 +220,6 @@ public class DifferentActivity extends AppCompatActivity implements SlideAndDrag
     };
 
     @Override
-    public void onListItemLongClick(View view, int position) {
-//        boolean bool = mListView.startDrag(position);
-//        Toast.makeText(DifferentActivity.this, "onItemLongClick   position--->" + position + "   drag-->" + bool, Toast.LENGTH_SHORT).show();
-        Toast.makeText(DifferentActivity.this, "onItemLongClick   position--->" + position, Toast.LENGTH_SHORT).show();
-        Log.i(TAG, "onListItemLongClick   " + position);
-    }
-
-    @Override
     public void onDragViewStart(int position) {
         Toast.makeText(DifferentActivity.this, "onDragViewStart   position--->" + position, Toast.LENGTH_SHORT).show();
         Log.i(TAG, "onDragViewStart   " + position);
@@ -243,12 +235,6 @@ public class DifferentActivity extends AppCompatActivity implements SlideAndDrag
     public void onDragViewDown(int position) {
         Toast.makeText(DifferentActivity.this, "onDragViewDown   position--->" + position, Toast.LENGTH_SHORT).show();
         Log.i(TAG, "onDragViewDown   " + position);
-    }
-
-    @Override
-    public void onListItemClick(View v, int position) {
-        Toast.makeText(DifferentActivity.this, "onItemClick   position--->" + position, Toast.LENGTH_SHORT).show();
-        Log.i(TAG, "onListItemClick   " + position);
     }
 
     @Override
@@ -321,5 +307,18 @@ public class DifferentActivity extends AppCompatActivity implements SlideAndDrag
     public void onItemDelete(View view, int position) {
         mQQList.remove(position - mListView.getHeaderViewsCount());
         mAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        Toast.makeText(DifferentActivity.this, "onItemClick   position--->" + position, Toast.LENGTH_SHORT).show();
+        Log.i(TAG, "onItemClick   " + position);
+    }
+
+    @Override
+    public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+        Toast.makeText(DifferentActivity.this, "onItemLongClick   position--->" + position, Toast.LENGTH_SHORT).show();
+        Log.i(TAG, "onItemLongClick   " + position);
+        return false;
     }
 }

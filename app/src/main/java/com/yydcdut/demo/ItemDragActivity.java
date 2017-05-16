@@ -11,6 +11,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
+import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -25,10 +26,10 @@ import java.util.List;
 /**
  * Created by yuyidong on 16/4/20.
  */
-public class ItemDragActivity extends AppCompatActivity implements SlideAndDragListView.OnListItemLongClickListener,
+public class ItemDragActivity extends AppCompatActivity implements AdapterView.OnItemClickListener,
+        AdapterView.OnItemLongClickListener, AbsListView.OnScrollListener,
         SlideAndDragListView.OnDragListener, SlideAndDragListView.OnSlideListener,
-        SlideAndDragListView.OnListItemClickListener, SlideAndDragListView.OnMenuItemClickListener,
-        SlideAndDragListView.OnItemDeleteListener, SlideAndDragListView.OnListScrollListener {
+        SlideAndDragListView.OnMenuItemClickListener, SlideAndDragListView.OnItemDeleteListener {
     private static final String TAG = ItemDragActivity.class.getSimpleName();
 
     private Menu mMenu;
@@ -80,13 +81,13 @@ public class ItemDragActivity extends AppCompatActivity implements SlideAndDragL
         mListView = (SlideAndDragListView) findViewById(R.id.lv_edit);
         mListView.setMenu(mMenu);
         mListView.setAdapter(mAdapter);
-        mListView.setOnListItemLongClickListener(this);
+        mListView.setOnItemClickListener(this);
         mListView.setOnDragListener(this, mAppList);
-        mListView.setOnListItemClickListener(this);
+        mListView.setOnItemLongClickListener(this);
         mListView.setOnSlideListener(this);
         mListView.setOnMenuItemClickListener(this);
         mListView.setOnItemDeleteListener(this);
-        mListView.setOnListScrollListener(this);
+        mListView.setOnScrollListener(this);
     }
 
     private BaseAdapter mAdapter = new BaseAdapter() {
@@ -146,12 +147,6 @@ public class ItemDragActivity extends AppCompatActivity implements SlideAndDragL
     };
 
     @Override
-    public void onListItemLongClick(View view, int position) {
-        Toast.makeText(ItemDragActivity.this, "onItemLongClick   position--->" + position, Toast.LENGTH_SHORT).show();
-        Log.i(TAG, "onListItemLongClick   " + position);
-    }
-
-    @Override
     public void onDragViewStart(int position) {
         Toast.makeText(ItemDragActivity.this, "onDragViewStart   position--->" + position, Toast.LENGTH_SHORT).show();
         Log.i(TAG, "onDragViewStart   " + position);
@@ -167,12 +162,6 @@ public class ItemDragActivity extends AppCompatActivity implements SlideAndDragL
     public void onDragViewDown(int position) {
         Toast.makeText(ItemDragActivity.this, "onDragViewDown   position--->" + position, Toast.LENGTH_SHORT).show();
         Log.i(TAG, "onDragViewDown   " + position);
-    }
-
-    @Override
-    public void onListItemClick(View v, int position) {
-        Toast.makeText(ItemDragActivity.this, "onItemClick   position--->" + position, Toast.LENGTH_SHORT).show();
-        Log.i(TAG, "onListItemClick   " + position);
     }
 
     @Override
@@ -219,11 +208,11 @@ public class ItemDragActivity extends AppCompatActivity implements SlideAndDragL
     @Override
     public void onScrollStateChanged(AbsListView view, int scrollState) {
         switch (scrollState) {
-            case SlideAndDragListView.OnListScrollListener.SCROLL_STATE_IDLE:
+            case AbsListView.OnScrollListener.SCROLL_STATE_IDLE:
                 break;
-            case SlideAndDragListView.OnListScrollListener.SCROLL_STATE_TOUCH_SCROLL:
+            case AbsListView.OnScrollListener.SCROLL_STATE_TOUCH_SCROLL:
                 break;
-            case SlideAndDragListView.OnListScrollListener.SCROLL_STATE_FLING:
+            case AbsListView.OnScrollListener.SCROLL_STATE_FLING:
                 break;
         }
     }
@@ -231,5 +220,18 @@ public class ItemDragActivity extends AppCompatActivity implements SlideAndDragL
     @Override
     public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
 
+    }
+
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        Toast.makeText(ItemDragActivity.this, "onItemClick   position--->" + position, Toast.LENGTH_SHORT).show();
+        Log.i(TAG, "onItemClick   " + position);
+    }
+
+    @Override
+    public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+        Toast.makeText(ItemDragActivity.this, "onItemLongClick   position--->" + position, Toast.LENGTH_SHORT).show();
+        Log.i(TAG, "onItemLongClick   " + position);
+        return false;
     }
 }
