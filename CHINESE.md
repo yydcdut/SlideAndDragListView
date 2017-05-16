@@ -4,7 +4,7 @@
 
 一个可以左右滑动item和拖放item的ListView。
 
-<img width="300" height="553" src="https://raw.githubusercontent.com/yydcdut/SlideAndDragListView/master/gif/v1.1.gif" />
+![sdlv](https://raw.githubusercontent.com/yydcdut/SlideAndDragListView/master/gif/v1.1.gif)
 
 Demo: <a href="https://github.com/yydcdut/SlideAndDragListView/blob/master/apk/sdlv.apk?raw=true">下载</a> 或者 <a href="http://fir.im/sjfh">二维码</a>
 

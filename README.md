@@ -4,7 +4,7 @@
 
 A ListView that you can slide ( or swipe ) the items, drag and drop the items to other places.
 
-<img width="300" height="553" src="https://raw.githubusercontent.com/yydcdut/SlideAndDragListView/master/gif/v1.1.gif" />
+![sdlv](https://raw.githubusercontent.com/yydcdut/SlideAndDragListView/master/gif/v1.1.gif)
 
 中文：<a href="https://github.com/yydcdut/SlideAndDragListView/blob/master/CHINESE.md">CHINESE.md</a>
 
