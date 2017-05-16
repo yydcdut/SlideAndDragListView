@@ -516,35 +516,48 @@ class SlideListView<T> extends DragListView<T> implements WrapperAdapter.OnAdapt
         return Menu.ITEM_NOTHING;
     }
 
-    @Deprecated
     @Override
-    public void setOnItemClickListener(OnItemClickListener listener) {
+    public void setOnItemClickListener(final OnItemClickListener listener) {
+        mOnListItemClickListener = new SlideAndDragListView.OnListItemClickListener() {
+            @Override
+            public void onListItemClick(View v, int position) {
+                listener.onItemClick(SlideListView.this, v, position, SlideListView.this.getItemIdAtPosition(position));
+            }
+        };
     }
 
     /**
-     * 设置监听器
+     * {@link #setOnItemClickListener(OnItemClickListener)}
      *
      * @param listener
      */
+    @Deprecated
     public void setOnListItemClickListener(SlideAndDragListView.OnListItemClickListener listener) {
         mOnListItemClickListener = listener;
     }
 
+    @Override
+    public void setOnItemLongClickListener(final OnItemLongClickListener listener) {
+        if (listener == null) {
+            super.setOnItemLongClickListener(null);
+            mOnListItemLongClickListener = null;
+            return;
+        }
+        mOnListItemLongClickListener = new SlideAndDragListView.OnListItemLongClickListener() {
+            @Override
+            public void onListItemLongClick(View view, int position) {
+                listener.onItemLongClick(SlideListView.this, view, position, SlideListView.this.getItemIdAtPosition(position));
+            }
+        };
+        super.setOnItemLongClickListener(this);
+    }
+
     /**
-     * {@link #setOnListItemLongClickListener(SlideAndDragListView.OnListItemLongClickListener)}
+     * {@link #setOnItemLongClickListener(OnItemLongClickListener)}
      *
      * @param listener
      */
     @Deprecated
-    @Override
-    public void setOnItemLongClickListener(OnItemLongClickListener listener) {
-    }
-
-    /**
-     * 设置监听器
-     *
-     * @param listener
-     */
     public void setOnListItemLongClickListener(SlideAndDragListView.OnListItemLongClickListener listener) {
         mOnListItemLongClickListener = listener;
         super.setOnItemLongClickListener(this);
@@ -554,11 +567,27 @@ class SlideListView<T> extends DragListView<T> implements WrapperAdapter.OnAdapt
         mOnItemDeleteListener = onItemDeleteListener;
     }
 
-    @Deprecated
     @Override
-    public void setOnScrollListener(OnScrollListener l) {
+    public void setOnScrollListener(final OnScrollListener l) {
+        mOnListScrollListener = new SlideAndDragListView.OnListScrollListener() {
+            @Override
+            public void onScrollStateChanged(AbsListView view, int scrollState) {
+                l.onScrollStateChanged(view, scrollState);
+            }
+
+            @Override
+            public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+                l.onScroll(view, firstVisibleItem, visibleItemCount, totalItemCount);
+            }
+        };
     }
 
+    /**
+     * {@link #setOnScrollListener(OnScrollListener)}
+     *
+     * @param onListScrollListener
+     */
+    @Deprecated
     public void setOnListScrollListener(SlideAndDragListView.OnListScrollListener onListScrollListener) {
         mOnListScrollListener = onListScrollListener;
     }
