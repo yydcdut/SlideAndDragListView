@@ -533,6 +533,9 @@ public class SlideAndDragListView<T> extends FrameLayout implements Callback.OnD
      */
     @Deprecated
     public void setOnListItemClickListener(SlideAndDragListView.OnListItemClickListener listener) {
+        if (listener == null) {
+            return;
+        }
         mSlideListView.setOnListItemClickListener(listener);
     }
 
