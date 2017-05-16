@@ -258,6 +258,19 @@ slideAndDragListView.OnSlideListener() {
 
 `public void onSlideClose(View view, View parentView, int position, int direction)`. The parameter `view` is the ListView item that is slide close,`parentView` here is SDLV, `position` is the position of the view in the list, and the parameter `direction` is the item slided direction.
 
+### Item Delete Listener
+
+``` java
+slideAndDragListView.setOnItemDeleteListener(new SlideAndDragListView.OnItemDeleteListener() {
+            @Override
+            public void onItemDelete(View view, int position) {
+
+            }
+        });
+```
+
+`public void onItemDelete(View view, int position)` will invoked after `int onMenuItemClick(View v, int itemPosition, int buttonPosition, int direction)` return `Menu.ITEM_DELETE_FROM_BOTTOM_TO_TOP`.
+
 ## API
 
 ### Close Menu
