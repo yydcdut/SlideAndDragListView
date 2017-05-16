@@ -2,6 +2,7 @@ package com.yydcdut.sdlv;
 
 import android.content.Context;
 import android.util.AttributeSet;
+import android.util.SparseArray;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewConfiguration;
@@ -9,9 +10,7 @@ import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ListAdapter;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Created by yuyidong on 15/9/28.
@@ -43,7 +42,7 @@ class SlideListView<T> extends DragListView<T> implements WrapperAdapter.OnAdapt
     private int mXDown;
     private int mYDown;
     /* Menu */
-    private Map<Integer, Menu> mMenuMap;//todo SpareArray
+    private SparseArray<Menu> mMenuSparseArray;
     /* WrapperAdapter */
     private WrapperAdapter mWrapperAdapter;
     /* 手指滑动的最短距离 */
@@ -72,6 +71,7 @@ class SlideListView<T> extends DragListView<T> implements WrapperAdapter.OnAdapt
     public SlideListView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         mShortestDistance = ViewConfiguration.get(context).getScaledTouchSlop();
+        super.setOnItemLongClickListener(this);
     }
 
     @Override
@@ -279,17 +279,6 @@ class SlideListView<T> extends DragListView<T> implements WrapperAdapter.OnAdapt
     }
 
     /**
-     * 上下左右不能超出50
-     *
-     * @param ev
-     * @return
-     */
-    private boolean fingerNotMove(MotionEvent ev) {
-        return (mXDown - ev.getX() < mShortestDistance && mXDown - ev.getX() > -mShortestDistance &&
-                mYDown - ev.getY() < mShortestDistance && mYDown - ev.getY() > -mShortestDistance);
-    }
-
-    /**
      * 左右得超出50，上下不能超出50
      *
      * @param ev
@@ -343,12 +332,12 @@ class SlideListView<T> extends DragListView<T> implements WrapperAdapter.OnAdapt
      * @param menu
      */
     public void setMenu(Menu menu) {
-        if (mMenuMap != null) {
-            mMenuMap.clear();
+        if (mMenuSparseArray != null) {
+            mMenuSparseArray.clear();
         } else {
-            mMenuMap = new HashMap<>(1);
+            mMenuSparseArray = new SparseArray<>();
         }
-        mMenuMap.put(menu.getMenuViewType(), menu);
+        mMenuSparseArray.put(menu.getMenuViewType(), menu);
     }
 
     /**
@@ -357,13 +346,13 @@ class SlideListView<T> extends DragListView<T> implements WrapperAdapter.OnAdapt
      * @param list
      */
     public void setMenu(List<Menu> list) {
-        if (mMenuMap != null) {
-            mMenuMap.clear();
+        if (mMenuSparseArray != null) {
+            mMenuSparseArray.clear();
         } else {
-            mMenuMap = new HashMap<>(list.size());
+            mMenuSparseArray = new SparseArray<>();
         }
         for (Menu menu : list) {
-            mMenuMap.put(menu.getMenuViewType(), menu);
+            mMenuSparseArray.put(menu.getMenuViewType(), menu);
         }
     }
 
@@ -373,13 +362,13 @@ class SlideListView<T> extends DragListView<T> implements WrapperAdapter.OnAdapt
      * @param menus
      */
     public void setMenu(Menu... menus) {
-        if (mMenuMap != null) {
-            mMenuMap.clear();
+        if (mMenuSparseArray != null) {
+            mMenuSparseArray.clear();
         } else {
-            mMenuMap = new HashMap<>(menus.length);
+            mMenuSparseArray = new SparseArray<>();
         }
         for (Menu menu : menus) {
-            mMenuMap.put(menu.getMenuViewType(), menu);
+            mMenuSparseArray.put(menu.getMenuViewType(), menu);
         }
     }
 
@@ -402,10 +391,10 @@ class SlideListView<T> extends DragListView<T> implements WrapperAdapter.OnAdapt
 
     @Override
     public void setAdapter(final ListAdapter adapter) {
-        if (mMenuMap == null || mMenuMap.size() == 0) {
+        if (mMenuSparseArray == null || mMenuSparseArray.size() == 0) {
             throw new IllegalArgumentException("先设置Menu");
         }
-        mWrapperAdapter = new WrapperAdapter(getContext(), this, adapter, mMenuMap);
+        mWrapperAdapter = new WrapperAdapter(getContext(), this, adapter, mMenuSparseArray);
         mWrapperAdapter.setOnAdapterSlideListenerProxy(this);
         mWrapperAdapter.setOnAdapterMenuClickListenerProxy(this);
         mWrapperAdapter.setOnItemDeleteListenerProxy(this);
@@ -539,7 +528,6 @@ class SlideListView<T> extends DragListView<T> implements WrapperAdapter.OnAdapt
     @Override
     public void setOnItemLongClickListener(final OnItemLongClickListener listener) {
         if (listener == null) {
-            super.setOnItemLongClickListener(null);
             mOnListItemLongClickListener = null;
             return;
         }
@@ -549,7 +537,6 @@ class SlideListView<T> extends DragListView<T> implements WrapperAdapter.OnAdapt
                 listener.onItemLongClick(SlideListView.this, view, position, SlideListView.this.getItemIdAtPosition(position));
             }
         };
-        super.setOnItemLongClickListener(this);
     }
 
     /**
@@ -560,7 +547,6 @@ class SlideListView<T> extends DragListView<T> implements WrapperAdapter.OnAdapt
     @Deprecated
     public void setOnListItemLongClickListener(SlideAndDragListView.OnListItemLongClickListener listener) {
         mOnListItemLongClickListener = listener;
-        super.setOnItemLongClickListener(this);
     }
 
     public void setOnItemDeleteListener(SlideAndDragListView.OnItemDeleteListener onItemDeleteListener) {

@@ -5,6 +5,7 @@ import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.database.DataSetObserver;
+import android.util.SparseArray;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
@@ -15,7 +16,6 @@ import android.widget.WrapperListAdapter;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Created by yuyidong on 15/9/28.
@@ -29,7 +29,7 @@ class WrapperAdapter implements WrapperListAdapter, ItemMainLayout.OnItemSlideLi
     /* 适配器 */
     private ListAdapter mAdapter;
     /* 用户自定义参数 */
-    private Map<Integer, Menu> mMenuMap;
+    private SparseArray<Menu> mMenuSparseArray;
     /* SDLV */
     private SlideListView mListView;
     /* 当前滑动的item的位置 */
@@ -57,12 +57,12 @@ class WrapperAdapter implements WrapperListAdapter, ItemMainLayout.OnItemSlideLi
     private onItemDeleteListenerProxy mOnItemDeleteListenerProxy;
     private OnScrollListenerProxy mOnScrollListenerProxy;
 
-    protected WrapperAdapter(Context context, SlideListView listView, ListAdapter adapter, Map<Integer, Menu> map) {
+    protected WrapperAdapter(Context context, SlideListView listView, ListAdapter adapter, SparseArray<Menu> sparseArray) {
         mContext = context;
         mListView = listView;
         mListView.setOnSuperScrollListener(this);
         mAdapter = adapter;
-        mMenuMap = map;
+        mMenuSparseArray = sparseArray;
         mAdapter.registerDataSetObserver(mDataSetObserver);
         mListView.add1OnDragDropListener(this);
         mItemIdTopMap = new HashMap<>();
@@ -133,7 +133,7 @@ class WrapperAdapter implements WrapperListAdapter, ItemMainLayout.OnItemSlideLi
             View contentView = mAdapter.getView(position, convertView, parent);
             itemMainLayout = new ItemMainLayout(mContext, contentView);
             int type = mAdapter.getItemViewType(position);
-            Menu menu = mMenuMap.get(type);
+            Menu menu = mMenuSparseArray.get(type);
             if (menu == null) {
                 throw new IllegalArgumentException("No menu matches any view types in ListView");
             }
@@ -278,7 +278,7 @@ class WrapperAdapter implements WrapperListAdapter, ItemMainLayout.OnItemSlideLi
 
     protected boolean isWannaTransparentWhileDragging(int position) {
         int type = getItemViewType(position);
-        Menu menu = mMenuMap.get(type);
+        Menu menu = mMenuSparseArray.get(type);
         return menu.isWannaTransparentWhileDragging();
     }
 
