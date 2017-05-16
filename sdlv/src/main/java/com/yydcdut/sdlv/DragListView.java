@@ -19,7 +19,7 @@ class DragListView<T> extends ListView {
     /* 监听器 */
     private SlideAndDragListView.OnDragListener mOnDragListener;
     /* 监听器 */
-    private OnDragDropListener[] mOnDragDropListeners;
+    private Callback.OnDragDropListener[] mOnDragDropListeners;
 
     public DragListView(Context context) {
         this(context, null);
@@ -31,7 +31,7 @@ class DragListView<T> extends ListView {
 
     public DragListView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        mOnDragDropListeners = new OnDragDropListener[2];
+        mOnDragDropListeners = new Callback.OnDragDropListener[2];
     }
 
     protected void setDragPosition(int position, boolean isWannaTransparentWhileDragging) {
@@ -114,20 +114,12 @@ class DragListView<T> extends ListView {
         }
     }
 
-    protected void add0OnDragDropListener(OnDragDropListener listener) {
+    protected void add0OnDragDropListener(Callback.OnDragDropListener listener) {
         mOnDragDropListeners[0] = listener;
     }
 
-    protected void add1OnDragDropListener(OnDragDropListener listener) {
+    protected void add1OnDragDropListener(Callback.OnDragDropListener listener) {
         mOnDragDropListeners[1] = listener;
     }
 
-    protected interface OnDragDropListener {
-
-        void onDragStarted(int x, int y, View view);
-
-        void onDragMoving(int x, int y, View view);
-
-        void onDragFinished(int x, int y);
-    }
 }

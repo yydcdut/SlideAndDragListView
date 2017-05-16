@@ -27,7 +27,7 @@ import java.util.List;
 /**
  * Created by yuyidong on 2017/5/10.
  */
-public class SlideAndDragListView<T> extends FrameLayout implements DragListView.OnDragDropListener {
+public class SlideAndDragListView<T> extends FrameLayout implements Callback.OnDragDropListener {
     /* drag的时候透明度 */
     private static final float DRAG_VIEW_ALPHA = 0.7f;
     /* drag的View */

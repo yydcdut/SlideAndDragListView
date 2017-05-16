@@ -21,7 +21,7 @@ import java.util.HashMap;
  * Created by yuyidong on 15/9/28.
  */
 class WrapperAdapter implements WrapperListAdapter, ItemMainLayout.OnItemSlideListenerProxy, View.OnClickListener,
-        AbsListView.OnScrollListener, ItemMainLayout.OnItemDeleteListenerProxy, DragListView.OnDragDropListener {
+        AbsListView.OnScrollListener, ItemMainLayout.OnItemDeleteListenerProxy, Callback.OnDragDropListener {
     private static final int TAG_LEFT = 3 << 24;
     private static final int TAG_RIGHT = 4 << 24;
     /* 上下文 */
