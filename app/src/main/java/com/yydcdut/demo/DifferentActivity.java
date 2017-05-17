@@ -33,6 +33,7 @@ public class DifferentActivity extends AppCompatActivity implements AdapterView.
     private List<Menu> mMenuList;
     private List<QQ> mQQList;
     private SlideAndDragListView<QQ> mListView;
+    private Toast mToast;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,6 +42,7 @@ public class DifferentActivity extends AppCompatActivity implements AdapterView.
         initData();
         initMenu();
         initUiAndListener();
+        mToast = Toast.makeText(DifferentActivity.this, "", Toast.LENGTH_SHORT);
     }
 
     public void initData() {
@@ -86,7 +88,7 @@ public class DifferentActivity extends AppCompatActivity implements AdapterView.
 
     public void initMenu() {
         mMenuList = new ArrayList<>(2);
-        Menu menu0 = new Menu(false, true, 0);
+        Menu menu0 = new Menu(true, 0);
         menu0.addItem(new MenuItem.Builder().setWidth((int) getResources().getDimension(R.dimen.slv_item_bg_btn2_width))
                 .setBackground(new ColorDrawable(Color.RED))
                 .setText("删除")
@@ -113,7 +115,7 @@ public class DifferentActivity extends AppCompatActivity implements AdapterView.
                 .setDirection(MenuItem.DIRECTION_LEFT)
                 .setIcon(getResources().getDrawable(R.drawable.ic_launcher))
                 .build());
-        Menu menu1 = new Menu(true, false, 1);
+        Menu menu1 = new Menu(false, 1);
         menu1.addItem(new MenuItem.Builder().setWidth((int) getResources().getDimension(R.dimen.slv_item_bg_btn2_width))
                 .setBackground(new ColorDrawable(Color.RED))
                 .setText("删除")
@@ -221,7 +223,8 @@ public class DifferentActivity extends AppCompatActivity implements AdapterView.
 
     @Override
     public void onDragViewStart(int position) {
-        Toast.makeText(DifferentActivity.this, "onDragViewStart   position--->" + position, Toast.LENGTH_SHORT).show();
+        mToast.setText("onDragViewStart   position--->" + position);
+        mToast.show();
         Log.i(TAG, "onDragViewStart   " + position);
     }
 
@@ -233,19 +236,22 @@ public class DifferentActivity extends AppCompatActivity implements AdapterView.
 
     @Override
     public void onDragViewDown(int position) {
-        Toast.makeText(DifferentActivity.this, "onDragViewDown   position--->" + position, Toast.LENGTH_SHORT).show();
+        mToast.setText("onDragViewDown   position--->" + position);
+        mToast.show();
         Log.i(TAG, "onDragViewDown   " + position);
     }
 
     @Override
     public void onSlideOpen(View view, View parentView, int position, int direction) {
-        Toast.makeText(DifferentActivity.this, "onSlideOpen   position--->" + position + "  direction--->" + direction, Toast.LENGTH_SHORT).show();
+        mToast.setText("onSlideOpen   position--->" + position + "  direction--->" + direction);
+        mToast.show();
         Log.i(TAG, "onSlideOpen   " + position);
     }
 
     @Override
     public void onSlideClose(View view, View parentView, int position, int direction) {
-        Toast.makeText(DifferentActivity.this, "onSlideClose   position--->" + position + "  direction--->" + direction, Toast.LENGTH_SHORT).show();
+        mToast.setText("onSlideClose   position--->" + position + "  direction--->" + direction);
+        mToast.show();
         Log.i(TAG, "onSlideClose   " + position);
     }
 
@@ -311,13 +317,15 @@ public class DifferentActivity extends AppCompatActivity implements AdapterView.
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        Toast.makeText(DifferentActivity.this, "onItemClick   position--->" + position, Toast.LENGTH_SHORT).show();
+        mToast.setText("onItemClick   position--->" + position);
+        mToast.show();
         Log.i(TAG, "onItemClick   " + position);
     }
 
     @Override
     public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-        Toast.makeText(DifferentActivity.this, "onItemLongClick   position--->" + position, Toast.LENGTH_SHORT).show();
+        mToast.setText("onItemLongClick   position--->" + position);
+        mToast.show();
         Log.i(TAG, "onItemLongClick   " + position);
         return false;
     }

@@ -1,9 +1,6 @@
 package com.yydcdut.sdlv;
 
 import android.content.Context;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
-import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.ListView;
@@ -34,21 +31,14 @@ class DragListView<T> extends ListView {
         mOnDragDropListeners = new Callback.OnDragDropListener[2];
     }
 
-    protected void setDragPosition(int position, boolean isWannaTransparentWhileDragging) {
+    protected void setDragPosition(int position) {
         View view = getChildAt(position - getFirstVisiblePosition());
         if (mOnDragListener != null && view instanceof ItemMainLayout) {
             ItemMainLayout itemMainLayout = (ItemMainLayout) getChildAt(position - getFirstVisiblePosition());
-            Drawable backgroundDrawable = itemMainLayout.getItemCustomView().getBackground();
-            if (isWannaTransparentWhileDragging) {
-                Compat.setBackgroundDrawable(itemMainLayout.getItemCustomView(), new ColorDrawable(Color.TRANSPARENT));
-            }
             itemMainLayout.getItemLeftBackGroundLayout().setVisibility(GONE);
             itemMainLayout.getItemRightBackGroundLayout().setVisibility(GONE);
             SlideAndDragListView slideAndDragListView = (SlideAndDragListView) getParent();
             slideAndDragListView.setInterceptTouchEvent(true);
-            if (isWannaTransparentWhileDragging) {
-                Compat.setBackgroundDrawable(itemMainLayout.getItemCustomView(), backgroundDrawable);
-            }
         }
     }
 
@@ -119,7 +109,16 @@ class DragListView<T> extends ListView {
             mOnDragDropListeners[1].onDragFinished(x, y);
         }
         if (mOnDragListener != null) {
-            mOnDragListener.onDragViewMoving(getPositionForView(getViewByPoint(x, y)));
+            View view = getViewByPoint(x, y);
+            if (view == null) {
+                if (y < 0) {
+                    mOnDragListener.onDragViewDown(getFirstVisiblePosition());
+                } else {
+                    mOnDragListener.onDragViewDown(getLastVisiblePosition());
+                }
+            } else {
+                mOnDragListener.onDragViewDown(getPositionForView(view));
+            }
         }
     }
 

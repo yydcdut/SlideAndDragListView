@@ -1,6 +1,6 @@
 # SlideAndDragListView
 
-  [![Download](https://api.bintray.com/packages/yydcdut/maven/sdlv/images/download.svg)](https://bintray.com/yydcdut/maven/sdlv/_latestVersion)       [![License](http://img.shields.io/:license-apache-blue.svg)](LICENSE.txt)  [![Build Status](https://travis-ci.org/yydcdut/SlideAndDragListView.svg?branch=master)](https://travis-ci.org/yydcdut/SlideAndDragListView)    [![API](https://img.shields.io/badge/API-11%2B-brightgreen.svg?style=flat)](https://android-arsenal.com/api?level=11)  <a href="http://www.methodscount.com/?lib=com.yydcdut.sdlv%3Asdlv%3A0.6.0-beta"><img src="https://img.shields.io/badge/Methods count-287-e91e63.svg"></img></a>   <a href="http://www.methodscount.com/?lib=com.yydcdut.sdlv%3Asdlv%3A0.6.0-beta"><img src="https://img.shields.io/badge/Size-29 KB-e91e63.svg"></img></a>
+  [![Download](https://api.bintray.com/packages/yydcdut/maven/sdlv/images/download.svg)](https://bintray.com/yydcdut/maven/sdlv/_latestVersion)       [![License](http://img.shields.io/:license-apache-blue.svg)](LICENSE.txt)  [![Build Status](https://travis-ci.org/yydcdut/SlideAndDragListView.svg?branch=master)](https://travis-ci.org/yydcdut/SlideAndDragListView)    [![API](https://img.shields.io/badge/API-11%2B-brightgreen.svg?style=flat)](https://android-arsenal.com/api?level=11)  <a href="http://www.methodscount.com/?lib=com.yydcdut.sdlv%3Asdlv%3A0.6.1"><img src="https://img.shields.io/badge/Methods count-287-e91e63.svg"></img></a>   <a href="http://www.methodscount.com/?lib=com.yydcdut.sdlv%3Asdlv%3A0.6.1"><img src="https://img.shields.io/badge/Size-29 KB-e91e63.svg"></img></a>
 
 一个可以左右滑动item和拖放item的ListView。
 
@@ -32,18 +32,8 @@ SlideAndDragListView 用于各种优先级列表：收藏夹，播放列表，�
 ## Gradle
 
 ``` groovy
-compile 'com.yydcdut.sdlv:sdlv:0.6.0-beta@aar'
+compile 'com.yydcdut.sdlv:sdlv:0.6.1'
 ```
-
-或者
-
-``` groovy
-compile 'com.yydcdut.sdlv:sdlv:0.6.0-beta'
-```
-
-## aar
-
-<a href="https://github.com/yydcdut/SlideAndDragListView/blob/master/aar/sdlv.aar?raw=true">下载</a>
 
 ## Jar
 
@@ -69,7 +59,7 @@ compile 'com.yydcdut.sdlv:sdlv:0.6.0-beta'
 - 创建`Menu`并添加`MenuItem`
 
 ``` java
-Menu menu = new Menu(true, true, 0);//第1个参数表示在拖拽的时候 item 的背景是否透明，第2个参数表示滑动item是否能滑的过头，像弹簧那样(true表示过头，就像Gif中显示的那样；false表示不过头，就像Android QQ中的那样)
+Menu menu = new Menu(true, 0);//第1个参数表示滑动item是否能滑的过头，像弹簧那样(true表示过头，就像Gif中显示的那样；false表示不过头，就像Android QQ中的那样)
 menu.addItem(new MenuItem.Builder().setWidth(90)//单个菜单button的宽度
                 .setBackground(new ColorDrawable(Color.RED))//设置菜单的背景
                 .setText("One")//set text string
@@ -85,7 +75,7 @@ menu.addItem(new MenuItem.Builder().setWidth(120)
 listView.setMenu(menu);
 ```
 
-类 `Menu` 的构造函数中的第一个参数表示在拖拽的时候 item 的背景是否透明；第二个参数表示滑动item是否能滑的过头，就像弹簧效果那样， true 表示过头，就像 Gif 中显示的那样；false表示不过头。
+类 `Menu` 的构造函数中的第一个参数表示滑动item是否能滑的过头，就像弹簧效果那样， true 表示过头，就像 Gif 中显示的那样；false表示不过头。
 
 如果是`true`:
 
@@ -95,7 +85,7 @@ listView.setMenu(menu);
 
 <img width="350" height="70" src="https://raw.githubusercontent.com/yydcdut/SlideAndDragListView/master/gif/wannaOver_false.gif" />
 
-第三个参数表示 ItemViewType 类型，也就是`BaseAdapter`中的`int getItemViewType( int )`。
+第二个参数表示 ItemViewType 类型，也就是`BaseAdapter`中的`int getItemViewType( int )`。
 
 ### 步骤3
 
@@ -284,6 +274,14 @@ slideAndDragListView.deleteSlideItem();
 ```
 
 调用 API 手动删除 Menu。
+
+### 拖放
+
+```java
+slideAndDragListView.startDrag(position);
+```
+
+调用 API 手动实施拖拽。
 
 # License
 

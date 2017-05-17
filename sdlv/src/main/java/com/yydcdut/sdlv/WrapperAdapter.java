@@ -276,12 +276,6 @@ class WrapperAdapter implements WrapperListAdapter, ItemMainLayout.OnItemSlideLi
         return ItemMainLayout.SCROLL_BACK_CLICK_NOTHING;
     }
 
-    protected boolean isWannaTransparentWhileDragging(int position) {
-        int type = getItemViewType(position);
-        Menu menu = mMenuSparseArray.get(type);
-        return menu.isWannaTransparentWhileDragging();
-    }
-
     protected void removeDataSetObserver() {
         if (mAdapter != null) {
             mAdapter.unregisterDataSetObserver(mDataSetObserver);

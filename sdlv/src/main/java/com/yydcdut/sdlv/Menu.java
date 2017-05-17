@@ -15,20 +15,15 @@ public final class Menu {
     private List<MenuItem> mRightMenuItems;
 
     private boolean mWannaOver = true;
-    private boolean mWannaTransparentWhileDragging = true;
 
     private int mMenuViewType = 0;
 
-    public Menu(boolean wannaTransparentWhileDragging) {
-        this(wannaTransparentWhileDragging, true);
+
+    public Menu(boolean wannaOver) {
+        this(wannaOver, 0);
     }
 
-    public Menu(boolean wannaTransparentWhileDragging, boolean wannaOver) {
-        this(wannaTransparentWhileDragging, wannaOver, 0);
-    }
-
-    public Menu(boolean wannaTransparentWhileDragging, boolean wannaOver, int menuViewType) {
-        mWannaTransparentWhileDragging = wannaTransparentWhileDragging;
+    public Menu(boolean wannaOver, int menuViewType) {
         mWannaOver = wannaOver;
         mLeftMenuItems = new ArrayList<>();
         mRightMenuItems = new ArrayList<>();
@@ -37,10 +32,6 @@ public final class Menu {
 
     protected boolean isWannaOver() {
         return mWannaOver;
-    }
-
-    protected boolean isWannaTransparentWhileDragging() {
-        return mWannaTransparentWhileDragging;
     }
 
     public void addItem(MenuItem menuItem) {

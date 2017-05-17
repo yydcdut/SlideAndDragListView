@@ -451,7 +451,7 @@ class ItemMainLayout extends FrameLayout {
     /**
      * 在滑动的时候禁止掉StateListDrawable
      */
-    private void disableBackgroundDrawable() {
+    protected void disableBackgroundDrawable() {
         if (mNormalCustomBackgroundDrawable != null) {
             Compat.setBackgroundDrawable(getItemCustomView(), mNormalCustomBackgroundDrawable);
         }
@@ -464,7 +464,7 @@ class ItemMainLayout extends FrameLayout {
     /**
      * 在没有滑动的时候恢复StateListDrawable
      */
-    private void enableBackgroundDrawable() {
+    protected void enableBackgroundDrawable() {
         if (mTotalCustomBackgroundDrawable != null) {
             Compat.setBackgroundDrawable(getItemCustomView(), mTotalCustomBackgroundDrawable);
         }

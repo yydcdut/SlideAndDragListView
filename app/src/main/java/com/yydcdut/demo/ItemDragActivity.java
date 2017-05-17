@@ -35,6 +35,7 @@ public class ItemDragActivity extends AppCompatActivity implements AdapterView.O
     private Menu mMenu;
     private List<ApplicationInfo> mAppList;
     private SlideAndDragListView<ApplicationInfo> mListView;
+    private Toast mToast;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -43,6 +44,7 @@ public class ItemDragActivity extends AppCompatActivity implements AdapterView.O
         initData();
         initMenu();
         initUiAndListener();
+        mToast = Toast.makeText(ItemDragActivity.this, "", Toast.LENGTH_SHORT);
     }
 
     public void initData() {
@@ -50,7 +52,7 @@ public class ItemDragActivity extends AppCompatActivity implements AdapterView.O
     }
 
     public void initMenu() {
-        mMenu = new Menu(true, true);
+        mMenu = new Menu(true);
         mMenu.addItem(new MenuItem.Builder().setWidth((int) getResources().getDimension(R.dimen.slv_item_bg_btn_width) * 2)
                 .setBackground(Utils.getDrawable(this, R.drawable.btn_left0))
                 .setText("One")
@@ -83,7 +85,7 @@ public class ItemDragActivity extends AppCompatActivity implements AdapterView.O
         mListView.setAdapter(mAdapter);
         mListView.setOnItemClickListener(this);
         mListView.setOnDragListener(this, mAppList);
-        mListView.setOnItemLongClickListener(this);
+//        mListView.setOnItemLongClickListener(this);
         mListView.setOnSlideListener(this);
         mListView.setOnMenuItemClickListener(this);
         mListView.setOnItemDeleteListener(this);
@@ -137,10 +139,10 @@ public class ItemDragActivity extends AppCompatActivity implements AdapterView.O
         private View.OnTouchListener mOnTouchListener = new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-//                Object o = v.getTag();
-//                if (o != null && o instanceof Integer) {
-//                    mListView.startDrag(((Integer) o).intValue());
-//                }
+                Object o = v.getTag();
+                if (o != null && o instanceof Integer) {
+                    mListView.startDrag(((Integer) o).intValue());
+                }
                 return false;
             }
         };
@@ -148,7 +150,8 @@ public class ItemDragActivity extends AppCompatActivity implements AdapterView.O
 
     @Override
     public void onDragViewStart(int position) {
-        Toast.makeText(ItemDragActivity.this, "onDragViewStart   position--->" + position, Toast.LENGTH_SHORT).show();
+        mToast.setText("onDragViewStart   position--->" + position);
+        mToast.show();
         Log.i(TAG, "onDragViewStart   " + position);
     }
 
@@ -160,19 +163,22 @@ public class ItemDragActivity extends AppCompatActivity implements AdapterView.O
 
     @Override
     public void onDragViewDown(int position) {
-        Toast.makeText(ItemDragActivity.this, "onDragViewDown   position--->" + position, Toast.LENGTH_SHORT).show();
+        mToast.setText("onDragViewDown   position--->" + position);
+        mToast.show();
         Log.i(TAG, "onDragViewDown   " + position);
     }
 
     @Override
     public void onSlideOpen(View view, View parentView, int position, int direction) {
-        Toast.makeText(ItemDragActivity.this, "onSlideOpen   position--->" + position + "  direction--->" + direction, Toast.LENGTH_SHORT).show();
+        mToast.setText("onSlideOpen   position--->" + position + "  direction--->" + direction);
+        mToast.show();
         Log.i(TAG, "onSlideOpen   " + position);
     }
 
     @Override
     public void onSlideClose(View view, View parentView, int position, int direction) {
-        Toast.makeText(ItemDragActivity.this, "onSlideClose   position--->" + position + "  direction--->" + direction, Toast.LENGTH_SHORT).show();
+        mToast.setText("onSlideClose   position--->" + position + "  direction--->" + direction);
+        mToast.show();
         Log.i(TAG, "onSlideClose   " + position);
     }
 
@@ -224,13 +230,15 @@ public class ItemDragActivity extends AppCompatActivity implements AdapterView.O
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        Toast.makeText(ItemDragActivity.this, "onItemClick   position--->" + position, Toast.LENGTH_SHORT).show();
+        mToast.setText("onItemClick   position--->" + position);
+        mToast.show();
         Log.i(TAG, "onItemClick   " + position);
     }
 
     @Override
     public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-        Toast.makeText(ItemDragActivity.this, "onItemLongClick   position--->" + position, Toast.LENGTH_SHORT).show();
+        mToast.setText("onItemLongClick   position--->" + position);
+        mToast.show();
         Log.i(TAG, "onItemLongClick   " + position);
         return false;
     }

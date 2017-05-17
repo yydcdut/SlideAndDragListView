@@ -33,6 +33,7 @@ public class HeaderFooterActivity extends AppCompatActivity implements AdapterVi
     private Menu mMenu;
     private List<ApplicationInfo> mAppList;
     private SlideAndDragListView<ApplicationInfo> mListView;
+    private Toast mToast;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,6 +42,7 @@ public class HeaderFooterActivity extends AppCompatActivity implements AdapterVi
         initData();
         initMenu();
         initUiAndListener();
+        mToast = Toast.makeText(HeaderFooterActivity.this, "", Toast.LENGTH_SHORT);
     }
 
     public void initData() {
@@ -48,7 +50,7 @@ public class HeaderFooterActivity extends AppCompatActivity implements AdapterVi
     }
 
     public void initMenu() {
-        mMenu = new Menu(true, true);
+        mMenu = new Menu(true);
         mMenu.addItem(new MenuItem.Builder().setWidth((int) getResources().getDimension(R.dimen.slv_item_bg_btn_width) * 2)
                 .setBackground(Utils.getDrawable(this, R.drawable.btn_left0))
                 .setText("One")
@@ -152,7 +154,8 @@ public class HeaderFooterActivity extends AppCompatActivity implements AdapterVi
 
     @Override
     public void onDragViewStart(int position) {
-        Toast.makeText(HeaderFooterActivity.this, "onDragViewStart   position--->" + position, Toast.LENGTH_SHORT).show();
+        mToast.setText("onDragViewStart   position--->" + position);
+        mToast.show();
         Log.i(TAG, "onDragViewStart   " + position);
     }
 
@@ -164,19 +167,22 @@ public class HeaderFooterActivity extends AppCompatActivity implements AdapterVi
 
     @Override
     public void onDragViewDown(int position) {
-        Toast.makeText(HeaderFooterActivity.this, "onDragViewDown   position--->" + position, Toast.LENGTH_SHORT).show();
+        mToast.setText("onDragViewDown   position--->" + position);
+        mToast.show();
         Log.i(TAG, "onDragViewDown   " + position);
     }
 
     @Override
     public void onSlideOpen(View view, View parentView, int position, int direction) {
-        Toast.makeText(HeaderFooterActivity.this, "onSlideOpen   position--->" + position + "  direction--->" + direction, Toast.LENGTH_SHORT).show();
+        mToast.setText("onSlideOpen   position--->" + position + "  direction--->" + direction);
+        mToast.show();
         Log.i(TAG, "onSlideOpen   " + position + "  direction--->" + direction);
     }
 
     @Override
     public void onSlideClose(View view, View parentView, int position, int direction) {
-        Toast.makeText(HeaderFooterActivity.this, "onSlideClose   position--->" + position + "  direction--->" + direction, Toast.LENGTH_SHORT).show();
+        mToast.setText("onSlideClose   position--->" + position + "  direction--->" + direction);
+        mToast.show();
         Log.i(TAG, "onSlideClose   " + position + "  direction--->" + direction);
     }
 
@@ -211,14 +217,16 @@ public class HeaderFooterActivity extends AppCompatActivity implements AdapterVi
 
     @Override
     public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-        Toast.makeText(HeaderFooterActivity.this, "onItemLongClick   position--->" + position, Toast.LENGTH_SHORT).show();
+        mToast.setText("onItemLongClick   position--->" + position);
+        mToast.show();
         Log.i(TAG, "onItemLongClick   " + position);
         return false;
     }
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        Toast.makeText(HeaderFooterActivity.this, "onItemClick   position--->" + position, Toast.LENGTH_SHORT).show();
+        mToast.setText("onItemClick   position--->" + position);
+        mToast.show();
         Log.i(TAG, "onItemClick   " + position);
     }
 
