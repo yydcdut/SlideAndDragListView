@@ -142,6 +142,9 @@ public class SlideAndDragListView<T> extends FrameLayout implements Callback.OnD
     }
 
     private Bitmap createDraggedChildBitmap(View view) {
+        if (view instanceof ItemMainLayout) {
+            ((ItemMainLayout) view).disableBackgroundDrawable();
+        }
         view.setDrawingCacheEnabled(true);
         Bitmap cache = view.getDrawingCache();
         Bitmap bitmap = null;
@@ -154,6 +157,9 @@ public class SlideAndDragListView<T> extends FrameLayout implements Callback.OnD
         }
         view.destroyDrawingCache();
         view.setDrawingCacheEnabled(false);
+        if (view instanceof ItemMainLayout) {
+            ((ItemMainLayout) view).enableBackgroundDrawable();
+        }
         return bitmap;
     }
 
@@ -734,6 +740,10 @@ public class SlideAndDragListView<T> extends FrameLayout implements Callback.OnD
 
     public void deleteSlideItem() {
         mSlideListView.deleteSlideItem();
+    }
+
+    public boolean startDrag(int position) {
+        return mSlideListView.startDrag(position);
     }
     //-------------------    API    -------------------
 

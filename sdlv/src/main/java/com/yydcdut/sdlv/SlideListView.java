@@ -444,12 +444,12 @@ class SlideListView<T> extends DragListView<T> implements WrapperAdapter.OnAdapt
      * @param position
      * @return
      */
-    protected boolean startDrag(int position) {
+    public boolean startDrag(int position) {
         boolean canDrag = scrollBackByDrag(position);
         //找到那个位置的view
         View view = getChildAt(position - getFirstVisiblePosition());
         if (canDrag && view instanceof ItemMainLayout) {
-            setDragPosition(position, mWrapperAdapter.isWannaTransparentWhileDragging(position));
+            setDragPosition(position);
         }
         return canDrag && view instanceof ItemMainLayout;
     }

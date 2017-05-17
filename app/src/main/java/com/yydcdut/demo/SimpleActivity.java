@@ -44,6 +44,7 @@ public class SimpleActivity extends AppCompatActivity implements AdapterView.OnI
         initData();
         initMenu();
         initUiAndListener();
+        mToast = Toast.makeText(SimpleActivity.this, "", Toast.LENGTH_SHORT);
     }
 
     public void initData() {
@@ -51,7 +52,7 @@ public class SimpleActivity extends AppCompatActivity implements AdapterView.OnI
     }
 
     public void initMenu() {
-        mMenu = new Menu(true, true);
+        mMenu = new Menu(true);
         mMenu.addItem(new MenuItem.Builder().setWidth((int) getResources().getDimension(R.dimen.slv_item_bg_btn_width) * 2)
                 .setBackground(Utils.getDrawable(this, R.drawable.btn_left0))
                 .setText("One")
@@ -140,10 +141,7 @@ public class SimpleActivity extends AppCompatActivity implements AdapterView.OnI
             public void onClick(View v) {
                 Object o = v.getTag();
                 if (o instanceof Integer) {
-                    if (mToast != null) {
-                        mToast.setText("button click-->" + ((Integer) o));
-                    }
-                    mToast = Toast.makeText(SimpleActivity.this, "button click-->" + ((Integer) o), Toast.LENGTH_SHORT);
+                    mToast.setText("button click-->" + ((Integer) o));
                     mToast.show();
                 }
             }
@@ -152,10 +150,7 @@ public class SimpleActivity extends AppCompatActivity implements AdapterView.OnI
 
     @Override
     public void onDragViewStart(int position) {
-        if (mToast != null) {
-            mToast.setText("onDragViewStart   position--->" + position);
-        }
-        mToast = Toast.makeText(SimpleActivity.this, "onDragViewStart   position--->" + position, Toast.LENGTH_SHORT);
+        mToast.setText("onDragViewStart   position--->" + position);
         mToast.show();
         Log.i(TAG, "onDragViewStart   " + position);
     }
@@ -168,30 +163,21 @@ public class SimpleActivity extends AppCompatActivity implements AdapterView.OnI
 
     @Override
     public void onDragViewDown(int position) {
-        if (mToast != null) {
-            mToast.setText("onDragViewDown   position--->" + position);
-        }
-        mToast = Toast.makeText(SimpleActivity.this, "onDragViewDown   position--->" + position, Toast.LENGTH_SHORT);
+        mToast.setText("onDragViewDown   position--->" + position);
         mToast.show();
         Log.i(TAG, "onDragViewDown   " + position);
     }
 
     @Override
     public void onSlideOpen(View view, View parentView, int position, int direction) {
-        if (mToast != null) {
-            mToast.setText("onSlideOpen   position--->" + position + "  direction--->" + direction);
-        }
-        mToast = Toast.makeText(SimpleActivity.this, "onSlideOpen   position--->" + position + "  direction--->" + direction, Toast.LENGTH_SHORT);
+        mToast.setText("onSlideOpen   position--->" + position + "  direction--->" + direction);
         mToast.show();
         Log.i(TAG, "onSlideOpen   " + position);
     }
 
     @Override
     public void onSlideClose(View view, View parentView, int position, int direction) {
-        if (mToast != null) {
-            mToast.setText("onSlideClose   position--->" + position + "  direction--->" + direction);
-        }
-        mToast = Toast.makeText(SimpleActivity.this, "onSlideClose   position--->" + position + "  direction--->" + direction, Toast.LENGTH_SHORT);
+        mToast.setText("onSlideClose   position--->" + position + "  direction--->" + direction);
         mToast.show();
         Log.i(TAG, "onSlideClose   " + position);
     }
@@ -290,12 +276,7 @@ public class SimpleActivity extends AppCompatActivity implements AdapterView.OnI
 
     @Override
     public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-//        boolean bool = mListView.startDrag(position);
-//        Toast.makeText(SimpleActivity.this, "onItemLongClick   position--->" + position + "   drag-->" + bool, Toast.LENGTH_SHORT).show();
-        if (mToast != null) {
-            mToast.setText("onItemLongClick   position--->" + position);
-        }
-        mToast = Toast.makeText(SimpleActivity.this, "onItemLongClick   position--->" + position, Toast.LENGTH_SHORT);
+        mToast.setText("onItemLongClick   position--->" + position);
         mToast.show();
         Log.i(TAG, "onItemLongClick   " + position);
         return true;
@@ -303,10 +284,7 @@ public class SimpleActivity extends AppCompatActivity implements AdapterView.OnI
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        if (mToast != null) {
-            mToast.setText("onItemClick   position--->" + position);
-        }
-        mToast = Toast.makeText(SimpleActivity.this, "onItemClick   position--->" + position, Toast.LENGTH_SHORT);
+        mToast.setText("onItemClick   position--->" + position);
         mToast.show();
         Log.i(TAG, "onItemClick   " + position);
     }
