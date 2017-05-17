@@ -1,6 +1,6 @@
 # SlideAndDragListView
 
-  [![Download](https://api.bintray.com/packages/yydcdut/maven/sdlv/images/download.svg)](https://bintray.com/yydcdut/maven/sdlv/_latestVersion)       [![License](http://img.shields.io/:license-apache-blue.svg)](LICENSE.txt)  [![Build Status](https://travis-ci.org/yydcdut/SlideAndDragListView.svg?branch=master)](https://travis-ci.org/yydcdut/SlideAndDragListView)    [![API](https://img.shields.io/badge/API-11%2B-brightgreen.svg?style=flat)](https://android-arsenal.com/api?level=11)  <a href="http://www.methodscount.com/?lib=com.yydcdut.sdlv%3Asdlv%3A0.6.0-beta"><img src="https://img.shields.io/badge/Methods count-287-e91e63.svg"></img></a>   <a href="http://www.methodscount.com/?lib=com.yydcdut.sdlv%3Asdlv%3A0.6.0-beta"><img src="https://img.shields.io/badge/Size-29 KB-e91e63.svg"></img></a>
+  [![Download](https://api.bintray.com/packages/yydcdut/maven/sdlv/images/download.svg)](https://bintray.com/yydcdut/maven/sdlv/_latestVersion)       [![License](http://img.shields.io/:license-apache-blue.svg)](LICENSE.txt)  [![Build Status](https://travis-ci.org/yydcdut/SlideAndDragListView.svg?branch=master)](https://travis-ci.org/yydcdut/SlideAndDragListView)    [![API](https://img.shields.io/badge/API-11%2B-brightgreen.svg?style=flat)](https://android-arsenal.com/api?level=11)  <a href="http://www.methodscount.com/?lib=com.yydcdut.sdlv%3Asdlv%3A0.6.1"><img src="https://img.shields.io/badge/Methods count-287-e91e63.svg"></img></a>   <a href="http://www.methodscount.com/?lib=com.yydcdut.sdlv%3Asdlv%3A0.6.1"><img src="https://img.shields.io/badge/Size-29 KB-e91e63.svg"></img></a>
 
 A ListView that you can slide ( or swipe ) the items, drag and drop the items to other places.
 
@@ -32,18 +32,8 @@ SlideAndDragListView is useful for all kinds of prioritized lists: favorites, pl
 ## Gradle
 
 ``` groovy
-compile 'com.yydcdut.sdlv:sdlv:0.6.0-beta@aar'
+compile 'com.yydcdut.sdlv:sdlv:0.6.1'
 ```
-
-Or
-
-``` groovy
-compile 'com.yydcdut.sdlv:sdlv:0.6.0-beta'
-```
-
-## aar
-
-<a href="https://github.com/yydcdut/SlideAndDragListView/blob/master/aar/sdlv.aar?raw=true">DOWNLOAD</a>
 
 ## Jar
 
@@ -69,7 +59,7 @@ compile 'com.yydcdut.sdlv:sdlv:0.6.0-beta'
 - Create a `Menu` and add `MenuItem`
 
 ``` java
-Menu menu = new Menu(true, true, 0);//the second parameter is whether can slide over
+Menu menu = new Menu(true, 0);//the first parameter is whether can slide over
 menu.addItem(new MenuItem.Builder().setWidth(90)//set Width
                 .setBackground(new ColorDrawable(Color.RED))// set background
                 .setText("One")//set text string
@@ -85,7 +75,7 @@ menu.addItem(new MenuItem.Builder().setWidth(120)
 slideAndDragListView.setMenu(menu);
 ```
 
-The class `Menu`, the construct function `Menu(bool wannaTransparentWhileDragging, boolean wannaOver, int menuViewType)`, the first parameter means whether set background transparent while dragging, the second parameter means whether can slide over.
+The class `Menu`, the construct function `Menu(boolean wannaOver, int menuViewType)`,  the first parameter means whether can slide over.
 
 If it’s `true`:
 
@@ -95,7 +85,7 @@ If it’s `false`:
 
 <img width="350" height="70" src="https://raw.githubusercontent.com/yydcdut/SlideAndDragListView/master/gif/wannaOver_false.gif" />
 
-The third parameter stands for view type, the value of `int getItemViewType(int )` in `BaseAdapter`.
+The second parameter stands for view type, the value of `int getItemViewType(int )` in `BaseAdapter`.
 
 ### Step 3
 
@@ -288,6 +278,14 @@ slideAndDragListView.deleteSlideItem();
 ```
 
 Delete menu manually.
+
+### Drag
+
+```java
+slideAndDragListView.startDrag(position);
+```
+
+Drag list item.
 
 # License
 

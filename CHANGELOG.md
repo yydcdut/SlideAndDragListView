@@ -1,3 +1,9 @@
+## 0.6.1
+
+* delete `isWannaTransparentWhileDragging`
+* correct drag listener
+* add drag API
+
 ## 0.6.0-beta
 
 * Recode drag & drop
