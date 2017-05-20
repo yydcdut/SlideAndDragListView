@@ -6,9 +6,9 @@
 
 ![sdlv](https://raw.githubusercontent.com/yydcdut/SlideAndDragListView/master/gif/v1.1.gif)
 
-Demo: <a href="https://github.com/yydcdut/SlideAndDragListView/blob/master/apk/sdlv.apk?raw=true">下载</a> 或者 <a href="http://fir.im/sjfh">二维码</a>
+Demo: [下载](https://github.com/yydcdut/SlideAndDragListView/blob/master/apk/sdlv.apk?raw=true) 或者 [二维码](http://fir.im/sjfh)
 
-更新日志: <a href="https://github.com/yydcdut/SlideAndDragListView/blob/master/CHANGELOG.md">CHANGELOG.md</a>
+更新日志: [CHANGELOG.md](https://github.com/yydcdut/SlideAndDragListView/blob/master/CHANGELOG.md)
 
 # 简介
 
@@ -37,7 +37,7 @@ compile 'com.yydcdut.sdlv:sdlv:0.6.1'
 
 ## Jar
 
-<a href="https://github.com/yydcdut/SlideAndDragListView/blob/master/jar/sdlv.jar?raw=true">下载</a>
+[下载](https://github.com/yydcdut/SlideAndDragListView/blob/master/jar/sdlv.jar?raw=true)
 
 # 控件的使用
 
@@ -49,8 +49,8 @@ compile 'com.yydcdut.sdlv:sdlv:0.6.1'
 
 ``` xml
 <com.yydcdut.sdlv.SlideAndDragListView
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent">
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 </com.yydcdut.sdlv.SlideAndDragListView>
 ```
 

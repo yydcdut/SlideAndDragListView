@@ -6,11 +6,11 @@ A ListView that you can slide ( or swipe ) the items, drag and drop the items to
 
 ![sdlv](https://raw.githubusercontent.com/yydcdut/SlideAndDragListView/master/gif/v1.1.gif)
 
-中文：<a href="https://github.com/yydcdut/SlideAndDragListView/blob/master/CHINESE.md">CHINESE.md</a>
+中文：[CHINESE.md](https://github.com/yydcdut/SlideAndDragListView/blob/master/CHINESE.md)
 
-Demo: <a href="https://github.com/yydcdut/SlideAndDragListView/blob/master/apk/sdlv.apk?raw=true">DOWNLOAD</a> or <a href="http://fir.im/sjfh">QR Code</a>
+Demo: [DOWNLOAD](https://github.com/yydcdut/SlideAndDragListView/blob/master/apk/sdlv.apk?raw=true) or [QR Code](http://fir.im/sjfh)
 
-ChangeLog: <a href="https://github.com/yydcdut/SlideAndDragListView/blob/master/CHANGELOG.md">CHINESE.md</a>
+ChangeLog: [CHANGELOG.md](https://github.com/yydcdut/SlideAndDragListView/blob/master/CHANGELOG.md)
 
 # Overview
 
@@ -37,7 +37,7 @@ compile 'com.yydcdut.sdlv:sdlv:0.6.1'
 
 ## Jar
 
-<a href="https://github.com/yydcdut/SlideAndDragListView/blob/master/jar/sdlv.jar?raw=true">DOWNLOAD</a>
+[DOWNLOAD](https://github.com/yydcdut/SlideAndDragListView/blob/master/jar/sdlv.jar?raw=true)
 
 # Widget Usage
 
@@ -49,8 +49,8 @@ compile 'com.yydcdut.sdlv:sdlv:0.6.1'
 
 ``` xml
 <com.yydcdut.sdlv.SlideAndDragListView
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent">
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 </com.yydcdut.sdlv.SlideAndDragListView>
 ```
 
