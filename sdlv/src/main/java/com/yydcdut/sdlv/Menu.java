@@ -14,24 +14,24 @@ public final class Menu {
     private List<MenuItem> mLeftMenuItems;
     private List<MenuItem> mRightMenuItems;
 
-    private boolean mWannaOver = true;
+    private boolean isSlideOver = true;
 
     private int mMenuViewType = 0;
 
 
-    public Menu(boolean wannaOver) {
-        this(wannaOver, 0);
+    public Menu(boolean slideOver) {
+        this(slideOver, 0);
     }
 
-    public Menu(boolean wannaOver, int menuViewType) {
-        mWannaOver = wannaOver;
+    public Menu(boolean slideOver, int menuViewType) {
+        isSlideOver = slideOver;
         mLeftMenuItems = new ArrayList<>();
         mRightMenuItems = new ArrayList<>();
         mMenuViewType = menuViewType;
     }
 
-    protected boolean isWannaOver() {
-        return mWannaOver;
+    protected boolean isSlideOver() {
+        return isSlideOver;
     }
 
     public void addItem(MenuItem menuItem) {

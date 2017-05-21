@@ -75,7 +75,7 @@ menu.addItem(new MenuItem.Builder().setWidth(120)
 slideAndDragListView.setMenu(menu);
 ```
 
-The class `Menu`, the construct function `Menu(boolean wannaOver, int menuViewType)`,  the first parameter means whether can slide over.
+The class `Menu`, the construct function `Menu(boolean slideOver, int menuViewType)`,  the first parameter means whether can slide over.
 
 If it’s `true`:
 
@@ -85,7 +85,7 @@ If it’s `false`:
 
 <img width="350" height="70" src="https://raw.githubusercontent.com/yydcdut/SlideAndDragListView/master/gif/wannaOver_false.gif" />
 
-The second parameter stands for view type, the value of `int getItemViewType(int )` in `BaseAdapter`.
+The second parameter stands for view type, the value of `int getItemViewType(int)` in `BaseAdapter`.
 
 ### Step 3
 

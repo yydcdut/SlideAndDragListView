@@ -2,7 +2,7 @@
 
   [![Download](https://api.bintray.com/packages/yydcdut/maven/sdlv/images/download.svg)](https://bintray.com/yydcdut/maven/sdlv/_latestVersion)       [![License](http://img.shields.io/:license-apache-blue.svg)](LICENSE.txt)  [![Build Status](https://travis-ci.org/yydcdut/SlideAndDragListView.svg?branch=master)](https://travis-ci.org/yydcdut/SlideAndDragListView)    [![API](https://img.shields.io/badge/API-11%2B-brightgreen.svg?style=flat)](https://android-arsenal.com/api?level=11)  <a href="http://www.methodscount.com/?lib=com.yydcdut.sdlv%3Asdlv%3A0.6.1"><img src="https://img.shields.io/badge/Methods count-287-e91e63.svg"></img></a>   <a href="http://www.methodscount.com/?lib=com.yydcdut.sdlv%3Asdlv%3A0.6.1"><img src="https://img.shields.io/badge/Size-29 KB-e91e63.svg"></img></a>
 
-一个可以左右滑动item和拖放item的ListView。
+一个可以左右滑动 item 和拖放 item 的 ListView
 
 ![sdlv](https://raw.githubusercontent.com/yydcdut/SlideAndDragListView/master/gif/v1.1.gif)
 
@@ -12,15 +12,15 @@ Demo: [下载](https://github.com/yydcdut/SlideAndDragListView/blob/master/apk/s
 
 # 简介
 
-SlideAndDragListView (SDLV) 继承与ListView，SDLV可以向左或者向右滑动Item，并且可以拖放item达到排序的目的。
+SlideAndDragListView (SDLV) 继承与 ListView，SDLV 可以向左或者向右滑动 item，并且可以拖放 item 达到排序的目的
 
 一些特点：
 
-1. 清晰的拖放操作。
-2. 在拖放的时候的直观和平滑滚动。
-3. 支持item的单击和长单击事件。
-4. 丰富的回调接口。
-5. 滑动item的方向可以是向左、向右或者两者。
+1. 清晰的拖放操作
+2. 在拖放的时候的直观和平滑滚动
+3. 支持item的单击和长单击事件
+4. 丰富的回调接口
+5. 滑动 item 的方向可以是向左、向右或者两者
 6. 等等......
 
 SlideAndDragListView 用于各种优先级列表：收藏夹，播放列表，清单等。我希望你觉得它有用，同时，如果遇到什么问题，或者有什么建议，可以邮件我或者 issue！
@@ -41,11 +41,11 @@ compile 'com.yydcdut.sdlv:sdlv:0.6.1'
 
 # 控件的使用
 
-## 菜单的单击事件和item的滑动方向
+## 菜单的单击事件和 item 的滑动方向
 
 ### 步骤1
 
-- 在layout的xml文件中添加SlideAndDragListView
+- 在 layout 的 xml 文件中添加 SlideAndDragListView
 
 ``` xml
 <com.yydcdut.sdlv.SlideAndDragListView
@@ -56,11 +56,11 @@ compile 'com.yydcdut.sdlv:sdlv:0.6.1'
 
 ### 步骤2
 
-- 创建`Menu`并添加`MenuItem`
+- 创建 `Menu` 并添加 `MenuItem`
 
 ``` java
-Menu menu = new Menu(true, 0);//第1个参数表示滑动item是否能滑的过头，像弹簧那样(true表示过头，就像Gif中显示的那样；false表示不过头，就像Android QQ中的那样)
-menu.addItem(new MenuItem.Builder().setWidth(90)//单个菜单button的宽度
+Menu menu = new Menu(true, 0);//第1个参数表示滑动 item 是否能滑的过头，像弹簧那样( true 表示过头，就像 Gif 中显示的那样；false 表示不过头，就像 Android QQ 中的那样)
+menu.addItem(new MenuItem.Builder().setWidth(90)//单个菜单 button 的宽度
                 .setBackground(new ColorDrawable(Color.RED))//设置菜单的背景
                 .setText("One")//set text string
                 .setTextColor(Color.GRAY)//set text color
@@ -68,16 +68,16 @@ menu.addItem(new MenuItem.Builder().setWidth(90)//单个菜单button的宽度
                 .build());
 menu.addItem(new MenuItem.Builder().setWidth(120)
                 .setBackground(new ColorDrawable(Color.BLACK))
-                .setDirection(MenuItem.DIRECTION_RIGHT)//设置方向 (默认方向为DIRECTION_LEFT)
+                .setDirection(MenuItem.DIRECTION_RIGHT)//设置方向 (默认方向为 DIRECTION_LEFT )
                 .setIcon(getResources().getDrawable(R.drawable.ic_launcher))// set icon
                 .build());
 //set in sdlv
 listView.setMenu(menu);
 ```
 
-类 `Menu` 的构造函数中的第一个参数表示滑动item是否能滑的过头，就像弹簧效果那样， true 表示过头，就像 Gif 中显示的那样；false表示不过头。
+类 `Menu` 的构造函数中的第一个参数表示滑动 item 是否能滑的过头，就像弹簧效果那样， true 表示过头，就像 Gif 中显示的那样；false 表示不过头
 
-如果是`true`:
+如果是`true`:
 
 <img width="350" height="70" src="https://raw.githubusercontent.com/yydcdut/SlideAndDragListView/master/gif/wannaOver_true.gif" />
 
@@ -85,7 +85,7 @@ listView.setMenu(menu);
 
 <img width="350" height="70" src="https://raw.githubusercontent.com/yydcdut/SlideAndDragListView/master/gif/wannaOver_false.gif" />
 
-第二个参数表示 ItemViewType 类型，也就是`BaseAdapter`中的`int getItemViewType( int )`。
+第二个参数表示 ItemViewType 类型，也就是 `BaseAdapter` 中的 `int getItemViewType( int )`
 
 ### 步骤3
 
@@ -126,9 +126,9 @@ slideAndDragListView.setOnMenuItemClickListener(new SlideAndDragListView.OnMenuI
         });
 ```
 
-注意：如果想要滑动的话必须得设置OnSlideListener监听器。
+注意：如果想要滑动的话必须得设置 OnSlideListener 监听器！！！
 
-Menu.ITEM_NOTHING`:
+`Menu.ITEM_NOTHING`:
 
 <img width="350" height="70" src="https://raw.githubusercontent.com/yydcdut/SlideAndDragListView/master/gif/ITEM_NOTHING.gif" />
 
@@ -140,7 +140,7 @@ Menu.ITEM_NOTHING`:
 
 <img width="350" height="70" src="https://raw.githubusercontent.com/yydcdut/SlideAndDragListView/master/gif/ITEM_DELETE_FROM_BOTTOM_TO_TOP.gif" />
 
-## 创建不同类型的Menu
+## 创建不同类型的 Menu
 
 - 设置 adapter 中的 `ViewType`
 
@@ -220,11 +220,11 @@ slideAndDragListView.setOnDragListener(new SlideAndDragListView.OnDragListener()
         }, mDataList);
 ```
 
-`public void onDragViewStart(int position)`.参数 `position` 表示的是刚开始拖动的时候取的item在ListView中的位置。
+`public void onDragViewStart(int position)`.参数 `position` 表示的是刚开始拖动的时候取的 item 在 ListView 中的位置
 
-`public void onDragViewMoving(int position)` .参数 `position` 表示的是当前拖动的item在ListView的位置，当处于拖动的时候这个函数是会一直回调的。
+`public void onDragViewMoving(int position)` .参数 `position` 表示的是当前拖动的item在 ListView 的位置，当处于拖动的时候这个函数是会一直回调的
 
-`public void onDragViewDown(int position)` . 参数 `position` i傲世的是拖动的item最放到了ListView的哪个位置。
+`public void onDragViewDown(int position)` . 参数 `position` 表示的是拖动的 item 最放到了 ListView 的哪个位置
 
 ## 其他监听器
 
@@ -255,7 +255,7 @@ slideAndDragListView.setOnItemDeleteListener(new SlideAndDragListView.OnItemDele
         });
 ```
 
-`public void onItemDelete(View view, int position)` 的调用是在 `int onMenuItemClick(View v, int itemPosition, int buttonPosition, int direction)` 返回`Menu.ITEM_DELETE_FROM_BOTTOM_TO_TOP`之后。
+`public void onItemDelete(View view, int position)` 的调用是在 `int onMenuItemClick(View v, int itemPosition, int buttonPosition, int direction)` 返回 `Menu.ITEM_DELETE_FROM_BOTTOM_TO_TOP` 之后
 
 ## API
 
@@ -265,7 +265,7 @@ slideAndDragListView.setOnItemDeleteListener(new SlideAndDragListView.OnItemDele
 slideAndDragListView.closeSlidedItem();
 ```
 
-调用 API 手动关闭 Menu。
+调用 API 手动关闭 Menu
 
 ### 删除 Menu
 
@@ -273,7 +273,7 @@ slideAndDragListView.closeSlidedItem();
 slideAndDragListView.deleteSlideItem();
 ```
 
-调用 API 手动删除 Menu。
+调用 API 手动删除 Menu
 
 ### 拖放
 
@@ -281,7 +281,7 @@ slideAndDragListView.deleteSlideItem();
 slideAndDragListView.startDrag(position);
 ```
 
-调用 API 手动实施拖拽。
+调用 API 手动实施拖拽
 
 # License
 
