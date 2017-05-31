@@ -534,25 +534,6 @@ class SlideListView<T> extends DragListView<T> implements WrapperAdapter.OnAdapt
         };
     }
 
-    /**
-     * {@link #setOnItemClickListener(OnItemClickListener)}
-     *
-     * @param listener
-     */
-    @Deprecated
-    public void setOnListItemClickListener(final SlideAndDragListView.OnListItemClickListener listener) {
-        if (listener == null) {
-            mOnListItemClickListener = null;
-            return;
-        }
-        mOnListItemClickListener = new Callback.OnItemClickListenerWrapper() {
-            @Override
-            public void onListItemClick(View v, int position) {
-                listener.onListItemClick(v, position);
-            }
-        };
-    }
-
     @Override
     public void setOnItemLongClickListener(final OnItemLongClickListener listener) {
         if (listener == null) {
@@ -563,26 +544,6 @@ class SlideListView<T> extends DragListView<T> implements WrapperAdapter.OnAdapt
             @Override
             public void onListItemLongClick(View view, int position) {
                 listener.onItemLongClick(SlideListView.this, view, position, SlideListView.this.getItemIdAtPosition(position));
-            }
-        };
-    }
-
-    /**
-     * {@link #setOnItemLongClickListener(OnItemLongClickListener)}
-     *
-     * @param listener
-     */
-    @Deprecated
-    public void setOnListItemLongClickListener(final SlideAndDragListView.OnListItemLongClickListener listener) {
-        if (listener == null) {
-            mOnListItemLongClickListener = null;
-            return;
-        }
-        mOnListItemLongClickListener = new Callback.OnItemLongClickListenerWrapper() {
-
-            @Override
-            public void onListItemLongClick(View view, int position) {
-                listener.onListItemLongClick(view, position);
             }
         };
     }
@@ -606,30 +567,6 @@ class SlideListView<T> extends DragListView<T> implements WrapperAdapter.OnAdapt
             @Override
             public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
                 l.onScroll(view, firstVisibleItem, visibleItemCount, totalItemCount);
-            }
-        };
-    }
-
-    /**
-     * {@link #setOnScrollListener(OnScrollListener)}
-     *
-     * @param onListScrollListener
-     */
-    @Deprecated
-    public void setOnListScrollListener(final SlideAndDragListView.OnListScrollListener onListScrollListener) {
-        if (onListScrollListener == null) {
-            mOnListScrollListener = null;
-            return;
-        }
-        mOnListScrollListener = new Callback.OnScrollListenerWrapper() {
-            @Override
-            public void onScrollStateChanged(AbsListView view, int scrollState) {
-                onListScrollListener.onScrollStateChanged(view, scrollState);
-            }
-
-            @Override
-            public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
-                onListScrollListener.onScroll(view, firstVisibleItem, visibleItemCount, totalItemCount);
             }
         };
     }

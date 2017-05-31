@@ -542,23 +542,6 @@ public class SlideAndDragListView<T> extends FrameLayout implements Callback.OnD
     }
 
     //-------------------    click    -------------------
-    @Deprecated
-    public interface OnListItemClickListener {
-        void onListItemClick(View v, int position);
-    }
-
-    /**
-     * {@link #setOnItemClickListener(AdapterView.OnItemClickListener)}
-     *
-     * @param listener
-     */
-    @Deprecated
-    public void setOnListItemClickListener(SlideAndDragListView.OnListItemClickListener listener) {
-        if (listener == null) {
-            return;
-        }
-        mSlideListView.setOnListItemClickListener(listener);
-    }
 
     /**
      * Register a callback to be invoked when an item in this AdapterView has
@@ -572,21 +555,6 @@ public class SlideAndDragListView<T> extends FrameLayout implements Callback.OnD
     //-------------------    click    -------------------
 
     //-------------------    long click    -------------------
-    @Deprecated
-    public interface OnListItemLongClickListener {
-        @Deprecated
-        void onListItemLongClick(View view, int position);
-    }
-
-    /**
-     * {@link #setOnItemLongClickListener(AdapterView.OnItemLongClickListener)}
-     *
-     * @param listener
-     */
-    @Deprecated
-    public void setOnListItemLongClickListener(SlideAndDragListView.OnListItemLongClickListener listener) {
-        mSlideListView.setOnListItemLongClickListener(listener);
-    }
 
     /**
      * Register a callback to be invoked when an item in this AdapterView has
@@ -598,33 +566,6 @@ public class SlideAndDragListView<T> extends FrameLayout implements Callback.OnD
         mSlideListView.setOnItemLongClickListener(listener);
     }
     //-------------------    long click    -------------------
-
-    //-------------------    scroll    -------------------
-    @Deprecated
-    public interface OnListScrollListener {
-        @Deprecated
-        int SCROLL_STATE_IDLE = 0;
-        @Deprecated
-        int SCROLL_STATE_TOUCH_SCROLL = 1;
-        @Deprecated
-        int SCROLL_STATE_FLING = 2;
-
-        @Deprecated
-        void onScrollStateChanged(AbsListView view, int scrollState);
-
-        @Deprecated
-        void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount);
-    }
-
-    /**
-     * {@link #setOnScrollListener(AbsListView.OnScrollListener)}
-     *
-     * @param onListScrollListener
-     */
-    @Deprecated
-    public void setOnListScrollListener(SlideAndDragListView.OnListScrollListener onListScrollListener) {
-        mSlideListView.setOnListScrollListener(onListScrollListener);
-    }
 
     /**
      * Set the listener that will receive notifications every time the list scrolls.
