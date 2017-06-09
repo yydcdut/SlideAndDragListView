@@ -74,6 +74,9 @@ public class HeaderFooterActivity extends AppCompatActivity implements AdapterVi
                 .setBackground(Utils.getDrawable(this, R.drawable.btn_right1))
                 .setDirection(MenuItem.DIRECTION_RIGHT)
                 .setIcon(getResources().getDrawable(R.drawable.ic_launcher))
+                .setText("Four")
+                .setTextColor(Color.BLACK)
+                .setTextSize(14)
                 .build());
     }
 
@@ -130,7 +133,7 @@ public class HeaderFooterActivity extends AppCompatActivity implements AdapterVi
             CustomViewHolder cvh;
             if (convertView == null) {
                 cvh = new CustomViewHolder();
-                convertView = LayoutInflater.from(HeaderFooterActivity.this).inflate(R.layout.item_custom, null);
+                convertView = LayoutInflater.from(HeaderFooterActivity.this).inflate(R.layout.item_custom_2, null);
                 cvh.imgLogo = (ImageView) convertView.findViewById(R.id.img_item_edit);
                 cvh.txtName = (TextView) convertView.findViewById(R.id.txt_item_edit);
                 cvh.imgLogo2 = (ImageView) convertView.findViewById(R.id.img_item_edit2);

@@ -22,6 +22,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 /**
@@ -41,25 +42,35 @@ class SDMenuItemView extends BaseLayout {
         layoutParams.gravity = Gravity.CENTER;
         setLayoutParams(layoutParams);
         addView(createBG());
-        if (!TextUtils.isEmpty(mMenuItem.text)) {
+
+        if (!TextUtils.isEmpty(mMenuItem.text) && mMenuItem.icon != null) {
+            mImageView = createImageView();
             mTextView = createTextView();
-            addView(mTextView);
+            LinearLayout linearLayout = new LinearLayout(getContext());
+            linearLayout.setOrientation(LinearLayout.VERTICAL);
+            linearLayout.addView(mImageView);
+            linearLayout.addView(mTextView);
+            linearLayout.setGravity(Gravity.CENTER);
+            addView(linearLayout);
         } else if (mMenuItem.icon != null) {
             mImageView = createImageView();
             addView(mImageView);
+        } else if (!TextUtils.isEmpty(mMenuItem.text)) {
+            mTextView = createTextView();
+            addView(mTextView);
         } else {
-            addView(createEmptyTextView());
+            addView(createEmptyView());
         }
     }
 
-    protected ImageView createBG() {
+    private ImageView createBG() {
         ImageView imageView = new ImageView(getContext());
         imageView.setImageDrawable(mMenuItem.background);
         imageView.setScaleType(ImageView.ScaleType.FIT_XY);
         return imageView;
     }
 
-    protected TextView createTextView() {
+    private TextView createTextView() {
         TextView textView = new TextView(getContext());
         textView.setText(mMenuItem.text);
         textView.setTextSize(mMenuItem.textSize);
@@ -68,7 +79,7 @@ class SDMenuItemView extends BaseLayout {
         return textView;
     }
 
-    protected View createEmptyTextView() {
+    private View createEmptyView() {
         View view = new View(getContext());
         return view;
     }
