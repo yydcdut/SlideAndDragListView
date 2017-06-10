@@ -1,3 +1,8 @@
+## 0.6.2
+
+* delete deprecated method
+* support display menu with text and image at same time
+
 ## 0.6.1
 
 * delete `isWannaTransparentWhileDragging`
