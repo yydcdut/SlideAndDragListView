@@ -36,7 +36,8 @@ import java.util.HashMap;
  * Created by yuyidong on 15/9/28.
  */
 class WrapperAdapter implements WrapperListAdapter, ItemMainLayout.OnItemSlideListenerProxy, View.OnClickListener,
-        AbsListView.OnScrollListener, ItemMainLayout.OnItemDeleteListenerProxy, Callback.OnDragDropListener {
+        AbsListView.OnScrollListener, ItemMainLayout.OnItemDeleteListenerProxy, Callback.OnDragDropListener,
+        ItemMainLayout.OnItemScrollBackListenerProxy {
     private static final int TAG_LEFT = 3 << 24;
     private static final int TAG_RIGHT = 4 << 24;
     /* 上下文 */
@@ -71,6 +72,7 @@ class WrapperAdapter implements WrapperListAdapter, ItemMainLayout.OnItemSlideLi
     private OnAdapterMenuClickListenerProxy mOnAdapterMenuClickListenerProxy;
     private onItemDeleteListenerProxy mOnItemDeleteListenerProxy;
     private OnScrollListenerProxy mOnScrollListenerProxy;
+    private OnItemScrollBackListenerProxy mOnItemScrollBackListenerProxy;
 
     protected WrapperAdapter(Context context, SlideListView listView, ListAdapter adapter, SparseArray<Menu> sparseArray) {
         mContext = context;
@@ -257,6 +259,16 @@ class WrapperAdapter implements WrapperListAdapter, ItemMainLayout.OnItemSlideLi
         }
     }
 
+    private void returnSlideItemPosition(ItemMainLayout.OnItemScrollBackListenerProxy onItemScrollBackListenerProxy) {
+        if (mSlideItemPosition != -1) {
+            ItemMainLayout itemMainLayout = (ItemMainLayout) mListView.getChildAt(mSlideItemPosition - mListView.getFirstVisiblePosition());
+            if (itemMainLayout != null) {
+                itemMainLayout.scrollBack(onItemScrollBackListenerProxy);
+            }
+            mSlideItemPosition = -1;
+        }
+    }
+
     protected void deleteSlideItemPosition() {
         if (mSlideItemPosition != -1) {
             ItemMainLayout itemMainLayout = (ItemMainLayout) mListView.getChildAt(mSlideItemPosition - mListView.getFirstVisiblePosition());
@@ -340,7 +352,7 @@ class WrapperAdapter implements WrapperListAdapter, ItemMainLayout.OnItemSlideLi
                     break;
                 case Menu.ITEM_SCROLL_BACK:
                     //归位
-                    returnSlideItemPosition();
+                    returnSlideItemPosition(this);
                     break;
                 case Menu.ITEM_DELETE_FROM_BOTTOM_TO_TOP:
                     deleteSlideItemPosition();
@@ -528,6 +540,13 @@ class WrapperAdapter implements WrapperListAdapter, ItemMainLayout.OnItemSlideLi
         });
     }
 
+    @Override
+    public void onScrollBack(View view) {
+        if (mOnItemScrollBackListenerProxy != null) {
+            mOnItemScrollBackListenerProxy.onScrollBack(view);
+        }
+    }
+
     protected interface OnAdapterMenuClickListenerProxy {
         int onMenuItemClick(View v, int itemPosition, int buttonPosition, int direction);
     }
@@ -556,5 +575,13 @@ class WrapperAdapter implements WrapperListAdapter, ItemMainLayout.OnItemSlideLi
         void onDeleteBegin();
 
         void onItemDelete(View view, int position);
+    }
+
+    public void setOnItemScrollBackListenerProxy(OnItemScrollBackListenerProxy onItemScrollBackListenerProxy) {
+        mOnItemScrollBackListenerProxy = onItemScrollBackListenerProxy;
+    }
+
+    protected interface OnItemScrollBackListenerProxy {
+        void onScrollBack(View view);
     }
 }

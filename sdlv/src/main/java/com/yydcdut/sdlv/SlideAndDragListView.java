@@ -587,6 +587,16 @@ public class SlideAndDragListView<T> extends FrameLayout implements Callback.OnD
     }
     //-------------------    item delete    -------------------
 
+    //-------------------    item scroll back    -------------------
+    public interface OnItemScrollBackListener {
+        void onScrollBack(View view);
+    }
+
+    public void setOnItemScrollBackListener(OnItemScrollBackListener onItemScrollBackListener) {
+        mSlideListView.setOnItemScrollBackListener(onItemScrollBackListener);
+    }
+    //-------------------    item scroll back    -------------------
+
     //-------------------    item slide    -------------------
 
     /**

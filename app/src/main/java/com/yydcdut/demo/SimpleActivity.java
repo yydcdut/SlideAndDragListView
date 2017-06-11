@@ -29,7 +29,8 @@ import java.util.List;
 public class SimpleActivity extends AppCompatActivity implements AdapterView.OnItemLongClickListener,
         AdapterView.OnItemClickListener, AbsListView.OnScrollListener,
         SlideAndDragListView.OnDragListener, SlideAndDragListView.OnSlideListener,
-        SlideAndDragListView.OnMenuItemClickListener, SlideAndDragListView.OnItemDeleteListener {
+        SlideAndDragListView.OnMenuItemClickListener, SlideAndDragListView.OnItemDeleteListener,
+        SlideAndDragListView.OnItemScrollBackListener {
     private static final String TAG = SimpleActivity.class.getSimpleName();
 
     private Menu mMenu;
@@ -90,6 +91,7 @@ public class SimpleActivity extends AppCompatActivity implements AdapterView.OnI
         mListView.setOnMenuItemClickListener(this);
         mListView.setOnItemDeleteListener(this);
         mListView.setOnItemLongClickListener(this);
+        mListView.setOnItemScrollBackListener(this);
     }
 
     private BaseAdapter mAdapter = new BaseAdapter() {
@@ -287,5 +289,10 @@ public class SimpleActivity extends AppCompatActivity implements AdapterView.OnI
         mToast.setText("onItemClick   position--->" + position);
         mToast.show();
         Log.i(TAG, "onItemClick   " + position);
+    }
+
+    @Override
+    public void onScrollBack(View view) {
+        Log.d("yuyidong", "onScrollBack");
     }
 }

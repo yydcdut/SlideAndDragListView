@@ -72,6 +72,7 @@ class ItemMainLayout extends FrameLayout {
     private int mTouchSlop = 0;
     /* 滑动的监听器 */
     private OnItemSlideListenerProxy mOnItemSlideListenerProxy;
+    private OnItemScrollBackListenerProxy mOnItemScrollBackListenerProxy;
     /* Drawable */
     private Drawable mNormalCustomBackgroundDrawable;
     private Drawable mTotalCustomBackgroundDrawable;
@@ -390,6 +391,10 @@ class ItemMainLayout extends FrameLayout {
                 setBackGroundVisible(false, false);
                 //当item归位的时候才将drawable设置回去
                 enableBackgroundDrawable();
+                if (mOnItemScrollBackListenerProxy != null) {
+                    mOnItemScrollBackListenerProxy.onScrollBack(this);
+                    mOnItemScrollBackListenerProxy = null;
+                }
             }
         }
         super.computeScroll();
@@ -399,6 +404,21 @@ class ItemMainLayout extends FrameLayout {
      * 归位
      */
     protected void scrollBack() {
+        mIntention = INTENTION_SCROLL_BACK;
+        mScroller.startScroll(mItemCustomView.getLeft(), 0, -mItemCustomView.getLeft(), 0, SCROLL_BACK_TIME);
+        if (mOnItemSlideListenerProxy != null && mScrollState != SCROLL_STATE_CLOSE) {
+            mOnItemSlideListenerProxy.onSlideClose(this, getItemCustomView().getLeft() < 0 ? MenuItem.DIRECTION_LEFT : MenuItem.DIRECTION_RIGHT);
+        }
+        postInvalidate();
+        mScrollState = SCROLL_STATE_CLOSE;
+        enableBackgroundDrawable();
+    }
+
+    /**
+     * 归位
+     */
+    protected void scrollBack(OnItemScrollBackListenerProxy onItemScrollBackListenerProxy) {
+        mOnItemScrollBackListenerProxy = onItemScrollBackListenerProxy;
         mIntention = INTENTION_SCROLL_BACK;
         mScroller.startScroll(mItemCustomView.getLeft(), 0, -mItemCustomView.getLeft(), 0, SCROLL_BACK_TIME);
         if (mOnItemSlideListenerProxy != null && mScrollState != SCROLL_STATE_CLOSE) {
@@ -510,6 +530,10 @@ class ItemMainLayout extends FrameLayout {
         void onDeleteBegin();
 
         void onDelete(View view);
+    }
+
+    protected interface OnItemScrollBackListenerProxy {
+        void onScrollBack(View view);
     }
 
     /**

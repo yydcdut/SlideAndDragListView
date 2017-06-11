@@ -32,7 +32,7 @@ import java.util.List;
  */
 class SlideListView<T> extends DragListView<T> implements WrapperAdapter.OnAdapterSlideListenerProxy,
         WrapperAdapter.OnAdapterMenuClickListenerProxy, WrapperAdapter.onItemDeleteListenerProxy,
-        WrapperAdapter.OnScrollListenerProxy, AbsListView.OnItemLongClickListener {
+        WrapperAdapter.OnScrollListenerProxy, AbsListView.OnItemLongClickListener, WrapperAdapter.OnItemScrollBackListenerProxy {
     /* onTouch里面的状态 */
     private static final int STATE_NOTHING = -1;//抬起状态
     private static final int STATE_DOWN = 0;//按下状态
@@ -73,6 +73,7 @@ class SlideListView<T> extends DragListView<T> implements WrapperAdapter.OnAdapt
     private Callback.OnItemLongClickListenerWrapper mOnListItemLongClickListener;
     private Callback.OnItemClickListenerWrapper mOnListItemClickListener;
     private SlideAndDragListView.OnItemDeleteListener mOnItemDeleteListener;
+    private SlideAndDragListView.OnItemScrollBackListener mOnItemScrollBackListener;
     private Callback.OnScrollListenerWrapper mOnListScrollListener;
 
     public SlideListView(Context context) {
@@ -414,6 +415,7 @@ class SlideListView<T> extends DragListView<T> implements WrapperAdapter.OnAdapt
         mWrapperAdapter.setOnAdapterMenuClickListenerProxy(this);
         mWrapperAdapter.setOnItemDeleteListenerProxy(this);
         mWrapperAdapter.setOnScrollListenerProxy(this);
+        mWrapperAdapter.setOnItemScrollBackListenerProxy(this);
         super.setAdapter(mWrapperAdapter);
     }
 
@@ -548,9 +550,14 @@ class SlideListView<T> extends DragListView<T> implements WrapperAdapter.OnAdapt
         };
     }
 
-    public void setOnItemDeleteListener(SlideAndDragListView.OnItemDeleteListener onItemDeleteListener) {
+    protected void setOnItemDeleteListener(SlideAndDragListView.OnItemDeleteListener onItemDeleteListener) {
         mOnItemDeleteListener = onItemDeleteListener;
     }
+
+    public void setOnItemScrollBackListener(SlideAndDragListView.OnItemScrollBackListener onItemScrollBackListener) {
+        mOnItemScrollBackListener = onItemScrollBackListener;
+    }
+
 
     @Override
     public void setOnScrollListener(final OnScrollListener l) {
@@ -580,4 +587,10 @@ class SlideListView<T> extends DragListView<T> implements WrapperAdapter.OnAdapt
         super.setOnScrollListener(l);
     }
 
+    @Override
+    public void onScrollBack(View view) {
+        if (mOnItemScrollBackListener != null) {
+            mOnItemScrollBackListener.onScrollBack(view);
+        }
+    }
 }
