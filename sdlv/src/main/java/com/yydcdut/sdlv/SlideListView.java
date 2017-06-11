@@ -452,6 +452,7 @@ class SlideListView<T> extends DragListView<T> implements WrapperAdapter.OnAdapt
         if (mOnItemDeleteListener != null && view instanceof ItemMainLayout) {
             ItemMainLayout itemMainLayout = (ItemMainLayout) view;
             mOnItemDeleteListener.onItemDelete(itemMainLayout.getItemCustomView(), position);
+            mOnItemDeleteListener.onItemDeleteAnimationFinished(itemMainLayout.getItemCustomView(), position);
         }
     }
 
@@ -590,7 +591,7 @@ class SlideListView<T> extends DragListView<T> implements WrapperAdapter.OnAdapt
     @Override
     public void onScrollBack(View view) {
         if (mOnItemScrollBackListener != null) {
-            mOnItemScrollBackListener.onScrollBack(view);
+            mOnItemScrollBackListener.onScrollBackAnimationFinished(view);
         }
     }
 }

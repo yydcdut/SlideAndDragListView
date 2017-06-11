@@ -209,6 +209,11 @@ public class SimpleActivity extends AppCompatActivity implements AdapterView.OnI
 
     @Override
     public void onItemDelete(View view, int position) {
+
+    }
+
+    @Override
+    public void onItemDeleteAnimationFinished(View view, int position) {
         mAppList.remove(position - mListView.getHeaderViewsCount());
         mAdapter.notifyDataSetChanged();
     }
@@ -292,7 +297,7 @@ public class SimpleActivity extends AppCompatActivity implements AdapterView.OnI
     }
 
     @Override
-    public void onScrollBack(View view) {
-        Log.d("yuyidong", "onScrollBack");
+    public void onScrollBackAnimationFinished(View view) {
+        Log.d("yuyidong", "onScrollBackAnimationFinished");
     }
 }
