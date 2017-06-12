@@ -1,6 +1,6 @@
 # SlideAndDragListView
 
-  [![Download](https://api.bintray.com/packages/yydcdut/maven/sdlv/images/download.svg)](https://bintray.com/yydcdut/maven/sdlv/_latestVersion)       [![License](http://img.shields.io/:license-apache-blue.svg)](LICENSE.txt)  [![Build Status](https://travis-ci.org/yydcdut/SlideAndDragListView.svg?branch=master)](https://travis-ci.org/yydcdut/SlideAndDragListView)    [![API](https://img.shields.io/badge/API-11%2B-brightgreen.svg?style=flat)](https://android-arsenal.com/api?level=11)  <a href="http://www.methodscount.com/?lib=com.yydcdut.sdlv%3Asdlv%3A0.6.2"><img src="https://img.shields.io/badge/Methods count-287-e91e63.svg"></img></a>   <a href="http://www.methodscount.com/?lib=com.yydcdut.sdlv%3Asdlv%3A0.6.2"><img src="https://img.shields.io/badge/Size-29 KB-e91e63.svg"></img></a>
+  [![Download](https://api.bintray.com/packages/yydcdut/maven/sdlv/images/download.svg)](https://bintray.com/yydcdut/maven/sdlv/_latestVersion)       [![License](http://img.shields.io/:license-apache-blue.svg)](LICENSE.txt)  [![Build Status](https://travis-ci.org/yydcdut/SlideAndDragListView.svg?branch=master)](https://travis-ci.org/yydcdut/SlideAndDragListView)    [![API](https://img.shields.io/badge/API-11%2B-brightgreen.svg?style=flat)](https://android-arsenal.com/api?level=11)  <a href="http://www.methodscount.com/?lib=com.yydcdut.sdlv%3Asdlv%3A0.6.3"><img src="https://img.shields.io/badge/Methods count-287-e91e63.svg"></img></a>   <a href="http://www.methodscount.com/?lib=com.yydcdut.sdlv%3Asdlv%3A0.6.3"><img src="https://img.shields.io/badge/Size-29 KB-e91e63.svg"></img></a>
 
 一个可以左右滑动 item 和拖放 item 的 ListView
 
@@ -32,7 +32,7 @@ SlideAndDragListView 用于各种优先级列表：收藏夹，播放列表，�
 ## Gradle
 
 ``` groovy
-compile 'com.yydcdut.sdlv:sdlv:0.6.2'
+compile 'com.yydcdut.sdlv:sdlv:0.6.3'
 ```
 
 ## Jar
@@ -93,41 +93,29 @@ listView.setMenu(menu);
 - 实现 menu item 的单击事件
 
 ``` java
-slideAndDragListView.setOnSlideListener(new SlideAndDragListView.OnSlideListener() {
-            @Override
-            public void onSlideOpen(View view, View parentView, int position, int direction) {
-
-            }
-
-            @Override
-            public void onSlideClose(View view, View parentView, int position, int direction) {
-
-            }
-        });
-slideAndDragListView.setOnMenuItemClickListener(new SlideAndDragListView.OnMenuItemClickListener() {
-            @Override
-            public int onMenuItemClick(View v, int itemPosition, int buttonPosition, int direction) {
-                switch (direction) {
-                    case MenuItem.DIRECTION_LEFT:
-                        switch (buttonPosition) {
-                            case 0://One
-                                return Menu.ITEM_SCROLL_BACK;
-                        }
-                        break;
-                    case MenuItem.DIRECTION_RIGHT:
-                        switch (buttonPosition) {
-                            case 0://icon
-                                return Menu.ITEM_DELETE_FROM_BOTTOM_TO_TOP;
-                        }
-                        break;
-                    default :
-                        return Menu.ITEM_NOTHING;
+slideAndDragListView.setOnMenuItemClickListener(new OnMenuItemClickListener() {
+    @Override
+    public int onMenuItemClick(View v, int itemPosition, int buttonPosition, int direction) {
+        switch (direction) {
+            case MenuItem.DIRECTION_LEFT:
+                switch (buttonPosition) {
+                    case 0://One
+                        return Menu.ITEM_SCROLL_BACK;
                 }
-            }
-        });
+                break;
+            case MenuItem.DIRECTION_RIGHT:
+                switch (buttonPosition) {
+                    case 0://icon
+                        return Menu.ITEM_DELETE_FROM_BOTTOM_TO_TOP;
+                }
+                break;
+            default :
+                return Menu.ITEM_NOTHING;
+        }
+        return Menu.ITEM_NOTHING;
+    }
+});
 ```
-
-注意：如果想要滑动的话必须得设置 OnSlideListener 监听器！！！
 
 `Menu.ITEM_NOTHING`:
 
@@ -203,22 +191,22 @@ listView.setMenu(menuList)
 ## 拖放
 
 ``` java
-slideAndDragListView.setOnDragListener(new SlideAndDragListView.OnDragListener() {
-            @Override
-            public void onDragViewStart(int position) {
+slideAndDragListView.setOnDragListener(new OnDragListener() {
+    @Override
+    public void onDragViewStart(int position) {
+        
+    }
 
-            }
+    @Override
+    public void onDragViewMoving(int position) {
 
-            @Override
-            public void onDragViewMoving(int position) {
+    }
 
-            }
+    @Override
+    public void onDragViewDown(int position) {
 
-            @Override
-            public void onDragViewDown(int position) {
-
-            }
-        }, mDataList);
+    }
+}, dataList);
 ```
 
 `public void onDragViewStart(int position)`.参数 `position` 表示的是刚开始拖动的时候取的 item 在 ListView 中的位置
@@ -232,31 +220,44 @@ slideAndDragListView.setOnDragListener(new SlideAndDragListView.OnDragListener()
 ### Item 滑动监听器
 
 ``` java
-SlideAndDragListView.OnSlideListener() {
-            @Override
-            public void onSlideOpen(View view, View parentView, int position, int direction) {
+slideAndDragListView.setOnSlideListener(new OnSlideListener() {
+    @Override
+    public void onSlideOpen(View view, View parentView, int position, int direction) {
+        
+    }
 
-            }
+    @Override
+    public void onSlideClose(View view, View parentView, int position, int direction) {
 
-            @Override
-            public void onSlideClose(View view, View parentView, int position, int direction) {
-
-            }
-        });
+    }
+});
 ```
 
 ### Item 删除监听器
 
 ``` java
-slideAndDragListView.setOnItemDeleteListener(new SlideAndDragListView.OnItemDeleteListener() {
-            @Override
-            public void onItemDelete(View view, int position) {
-
-            }
-        });
+slideAndDragListView.setOnItemDeleteListener(new OnItemDeleteListener() {
+    @Override
+    public void onItemDeleteAnimationFinished(View view, int position) {
+        
+    }
+});
 ```
 
 `public void onItemDelete(View view, int position)` 的调用是在 `int onMenuItemClick(View v, int itemPosition, int buttonPosition, int direction)` 返回 `Menu.ITEM_DELETE_FROM_BOTTOM_TO_TOP` 之后
+
+### Item 回滚监听器
+
+```java
+slideAndDragListView.setOnItemScrollBackListener(new OnItemScrollBackListener() {
+    @Override
+    public void onScrollBackAnimationFinished(View view, int position) {
+
+    }
+});
+```
+
+`public void onScrollBackAnimationFinished(View view, int position)` 的调用是在 `int onMenuItemClick(View v, int itemPosition, int buttonPosition, int direction)` 返回 `Menu.ITEM_SCROLL_BACK` 之后
 
 ## API
 

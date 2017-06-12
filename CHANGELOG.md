@@ -1,3 +1,7 @@
+## 0.6.3
+
+* add scroll back listener
+
 ## 0.6.2
 
 * delete deprecated method

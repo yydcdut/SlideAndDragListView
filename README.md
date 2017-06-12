@@ -1,6 +1,6 @@
 # SlideAndDragListView
 
-  [![Download](https://api.bintray.com/packages/yydcdut/maven/sdlv/images/download.svg)](https://bintray.com/yydcdut/maven/sdlv/_latestVersion)       [![License](http://img.shields.io/:license-apache-blue.svg)](LICENSE.txt)  [![Build Status](https://travis-ci.org/yydcdut/SlideAndDragListView.svg?branch=master)](https://travis-ci.org/yydcdut/SlideAndDragListView)    [![API](https://img.shields.io/badge/API-11%2B-brightgreen.svg?style=flat)](https://android-arsenal.com/api?level=11)  <a href="http://www.methodscount.com/?lib=com.yydcdut.sdlv%3Asdlv%3A0.6.2"><img src="https://img.shields.io/badge/Methods count-287-e91e63.svg"></img></a>   <a href="http://www.methodscount.com/?lib=com.yydcdut.sdlv%3Asdlv%3A0.6.2"><img src="https://img.shields.io/badge/Size-29 KB-e91e63.svg"></img></a>
+  [![Download](https://api.bintray.com/packages/yydcdut/maven/sdlv/images/download.svg)](https://bintray.com/yydcdut/maven/sdlv/_latestVersion)       [![License](http://img.shields.io/:license-apache-blue.svg)](LICENSE.txt)  [![Build Status](https://travis-ci.org/yydcdut/SlideAndDragListView.svg?branch=master)](https://travis-ci.org/yydcdut/SlideAndDragListView)    [![API](https://img.shields.io/badge/API-11%2B-brightgreen.svg?style=flat)](https://android-arsenal.com/api?level=11)  <a href="http://www.methodscount.com/?lib=com.yydcdut.sdlv%3Asdlv%3A0.6.3"><img src="https://img.shields.io/badge/Methods count-287-e91e63.svg"></img></a>   <a href="http://www.methodscount.com/?lib=com.yydcdut.sdlv%3Asdlv%3A0.6.3"><img src="https://img.shields.io/badge/Size-29 KB-e91e63.svg"></img></a>
 
 A ListView that you can slide ( or swipe ) the items, drag and drop the items to other places.
 
@@ -32,7 +32,7 @@ SlideAndDragListView is useful for all kinds of prioritized lists: favorites, pl
 ## Gradle
 
 ``` groovy
-compile 'com.yydcdut.sdlv:sdlv:0.6.2'
+compile 'com.yydcdut.sdlv:sdlv:0.6.3'
 ```
 
 ## Jar
@@ -93,41 +93,29 @@ The second parameter stands for view type, the value of `int getItemViewType(int
 - Implement menu item click listener
 
 ``` java
-slideAndDragListView.setOnSlideListener(new SlideAndDragListView.OnSlideListener() {
-            @Override
-            public void onSlideOpen(View view, View parentView, int position, int direction) {
-
-            }
-
-            @Override
-            public void onSlideClose(View view, View parentView, int position, int direction) {
-
-            }
-        });
-slideAndDragListView.setOnMenuItemClickListener(new SlideAndDragListView.OnMenuItemClickListener() {
-            @Override
-            public int onMenuItemClick(View v, int itemPosition, int buttonPosition, int direction) {
-                switch (direction) {
-                    case MenuItem.DIRECTION_LEFT:
-                        switch (buttonPosition) {
-                            case 0://One
-                                return Menu.ITEM_SCROLL_BACK;
-                        }
-                        break;
-                    case MenuItem.DIRECTION_RIGHT:
-                        switch (buttonPosition) {
-                            case 0://icon
-                                return Menu.ITEM_DELETE_FROM_BOTTOM_TO_TOP;
-                        }
-                        break;
-                    default :
-                        return Menu.ITEM_NOTHING;
+slideAndDragListView.setOnMenuItemClickListener(new OnMenuItemClickListener() {
+    @Override
+    public int onMenuItemClick(View v, int itemPosition, int buttonPosition, int direction) {
+        switch (direction) {
+            case MenuItem.DIRECTION_LEFT:
+                switch (buttonPosition) {
+                    case 0://One
+                        return Menu.ITEM_SCROLL_BACK;
                 }
-            }
-        });
+                break;
+            case MenuItem.DIRECTION_RIGHT:
+                switch (buttonPosition) {
+                    case 0://icon
+                        return Menu.ITEM_DELETE_FROM_BOTTOM_TO_TOP;
+                }
+                break;
+            default :
+                return Menu.ITEM_NOTHING;
+        }
+        return Menu.ITEM_NOTHING;
+    }
+});
 ```
-
-Have to set `OnSlideListener`!!!!!!
 
 `Menu.ITEM_NOTHING`:
 
@@ -203,22 +191,22 @@ listView.setMenu(menuList)
 ## Drag
 
 ``` java
-slideAndDragListView.setOnDragListener(new SlideAndDragListView.OnDragListener() {
-            @Override
-            public void onDragViewStart(int position) {
+slideAndDragListView.setOnDragListener(new OnDragListener() {
+    @Override
+    public void onDragViewStart(int position) {
+        
+    }
 
-            }
+    @Override
+    public void onDragViewMoving(int position) {
 
-            @Override
-            public void onDragViewMoving(int position) {
+    }
 
-            }
+    @Override
+    public void onDragViewDown(int position) {
 
-            @Override
-            public void onDragViewDown(int position) {
-
-            }
-        }, mDataList);
+    }
+}, dataList);
 ```
 
 `public void onDragViewStart(int position)`.The parameter `position` is the position in ListView where dragged from.
@@ -232,17 +220,17 @@ slideAndDragListView.setOnDragListener(new SlideAndDragListView.OnDragListener()
 ### Item Slide Listener
 
 ``` java
-slideAndDragListView.OnSlideListener() {
-            @Override
-            public void onSlideOpen(View view, View parentView, int position, int direction) {
+slideAndDragListView.setOnSlideListener(new OnSlideListener() {
+    @Override
+    public void onSlideOpen(View view, View parentView, int position, int direction) {
+        
+    }
 
-            }
+    @Override
+    public void onSlideClose(View view, View parentView, int position, int direction) {
 
-            @Override
-            public void onSlideClose(View view, View parentView, int position, int direction) {
-
-            }
-        });
+    }
+});
 ```
 
 `public void onSlideOpen(View view, View parentView, int position, int direction)`. The parameter `view` is the ListView item that is slide open, `parentView` here is SDLV, `position` is the position of the view in the list, and the parameter `direction` is the item slided direction.
@@ -252,15 +240,28 @@ slideAndDragListView.OnSlideListener() {
 ### Item Delete Listener
 
 ``` java
-slideAndDragListView.setOnItemDeleteListener(new SlideAndDragListView.OnItemDeleteListener() {
-            @Override
-            public void onItemDelete(View view, int position) {
-
-            }
-        });
+slideAndDragListView.setOnItemDeleteListener(new OnItemDeleteListener() {
+    @Override
+    public void onItemDeleteAnimationFinished(View view, int position) {
+        
+    }
+});
 ```
 
-`public void onItemDelete(View view, int position)` will invoked after `int onMenuItemClick(View v, int itemPosition, int buttonPosition, int direction)` return `Menu.ITEM_DELETE_FROM_BOTTOM_TO_TOP`.
+`public void onItemDeleteAnimationFinished(View view, int position)` will invoked after `int onMenuItemClick(View v, int itemPosition, int buttonPosition, int direction)` return `Menu.ITEM_DELETE_FROM_BOTTOM_TO_TOP`.
+
+### Item Menu Scroll Back Listener
+
+```java
+slideAndDragListView.setOnItemScrollBackListener(new OnItemScrollBackListener() {
+    @Override
+    public void onScrollBackAnimationFinished(View view, int position) {
+
+    }
+});
+```
+
+`public void onScrollBackAnimationFinished(View view, int position)` will invoked after `int onMenuItemClick(View v, int itemPosition, int buttonPosition, int direction)` return `Menu.ITEM_SCROLL_BACK`.
 
 ## API
 
