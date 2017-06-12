@@ -208,11 +208,6 @@ public class SimpleActivity extends AppCompatActivity implements AdapterView.OnI
     }
 
     @Override
-    public void onItemDelete(View view, int position) {
-
-    }
-
-    @Override
     public void onItemDeleteAnimationFinished(View view, int position) {
         mAppList.remove(position - mListView.getHeaderViewsCount());
         mAdapter.notifyDataSetChanged();

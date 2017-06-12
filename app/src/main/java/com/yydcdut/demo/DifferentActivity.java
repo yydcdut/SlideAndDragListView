@@ -310,10 +310,6 @@ public class DifferentActivity extends AppCompatActivity implements AdapterView.
     }
 
     @Override
-    public void onItemDelete(View view, int position) {
-    }
-
-    @Override
     public void onItemDeleteAnimationFinished(View view, int position) {
         mQQList.remove(position - mListView.getHeaderViewsCount());
         mAdapter.notifyDataSetChanged();

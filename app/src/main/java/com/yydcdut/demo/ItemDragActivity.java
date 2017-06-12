@@ -206,10 +206,6 @@ public class ItemDragActivity extends AppCompatActivity implements AdapterView.O
     }
 
     @Override
-    public void onItemDelete(View view, int position) {
-    }
-
-    @Override
     public void onItemDeleteAnimationFinished(View view, int position) {
         mAppList.remove(position - mListView.getHeaderViewsCount());
         mAdapter.notifyDataSetChanged();

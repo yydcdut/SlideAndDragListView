@@ -579,8 +579,6 @@ public class SlideAndDragListView<T> extends FrameLayout implements Callback.OnD
 
     //-------------------    item delete    -------------------
     public interface OnItemDeleteListener {
-        @Deprecated
-        void onItemDelete(View view, int position);
 
         void onItemDeleteAnimationFinished(View view, int position);
     }

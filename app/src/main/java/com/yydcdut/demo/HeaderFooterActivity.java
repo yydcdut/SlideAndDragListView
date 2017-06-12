@@ -213,10 +213,6 @@ public class HeaderFooterActivity extends AppCompatActivity implements AdapterVi
     }
 
     @Override
-    public void onItemDelete(View view, int position) {
-    }
-
-    @Override
     public void onItemDeleteAnimationFinished(View view, int position) {
         mAppList.remove(position - mListView.getHeaderViewsCount());
         mAdapter.notifyDataSetChanged();
