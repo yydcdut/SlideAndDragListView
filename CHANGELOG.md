@@ -1,6 +1,7 @@
 ## 0.6.3
 
 * add scroll back listener
+* rename onItemDelete to onItemDeleteAnimationFinished
 
 ## 0.6.2
 
