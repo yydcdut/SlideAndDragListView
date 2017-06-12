@@ -543,7 +543,7 @@ class WrapperAdapter implements WrapperListAdapter, ItemMainLayout.OnItemSlideLi
     @Override
     public void onScrollBack(View view) {
         if (mOnItemScrollBackListenerProxy != null) {
-            mOnItemScrollBackListenerProxy.onScrollBack(view);
+            mOnItemScrollBackListenerProxy.onScrollBack(view, mListView.getPositionForView(view));
         }
     }
 
@@ -582,6 +582,6 @@ class WrapperAdapter implements WrapperListAdapter, ItemMainLayout.OnItemSlideLi
     }
 
     protected interface OnItemScrollBackListenerProxy {
-        void onScrollBack(View view);
+        void onScrollBack(View view, int position);
     }
 }

@@ -592,7 +592,7 @@ public class SlideAndDragListView<T> extends FrameLayout implements Callback.OnD
 
     //-------------------    item scroll back    -------------------
     public interface OnItemScrollBackListener {
-        void onScrollBackAnimationFinished(View view);
+        void onScrollBackAnimationFinished(View view, int position);
     }
 
     public void setOnItemScrollBackListener(OnItemScrollBackListener onItemScrollBackListener) {

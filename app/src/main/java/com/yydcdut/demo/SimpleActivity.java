@@ -297,7 +297,7 @@ public class SimpleActivity extends AppCompatActivity implements AdapterView.OnI
     }
 
     @Override
-    public void onScrollBackAnimationFinished(View view) {
+    public void onScrollBackAnimationFinished(View view, int position) {
         Log.d("yuyidong", "onScrollBackAnimationFinished");
     }
 }

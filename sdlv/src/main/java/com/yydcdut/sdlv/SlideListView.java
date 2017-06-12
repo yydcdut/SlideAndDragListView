@@ -589,9 +589,9 @@ class SlideListView<T> extends DragListView<T> implements WrapperAdapter.OnAdapt
     }
 
     @Override
-    public void onScrollBack(View view) {
+    public void onScrollBack(View view, int position) {
         if (mOnItemScrollBackListener != null) {
-            mOnItemScrollBackListener.onScrollBackAnimationFinished(view);
+            mOnItemScrollBackListener.onScrollBackAnimationFinished(view, position);
         }
     }
 }
