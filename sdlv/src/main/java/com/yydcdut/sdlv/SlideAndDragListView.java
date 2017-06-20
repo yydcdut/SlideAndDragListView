@@ -707,6 +707,17 @@ public class SlideAndDragListView<T> extends FrameLayout implements Callback.OnD
         mSlideListView.setItemChecked(position, value);
     }
 
+    /**
+     * Call the OnItemClickListener, if it is defined. Performs all normal
+     * actions associated with clicking: reporting accessibility event, playing
+     * a sound, etc.
+     *
+     * @param view     The view within the AdapterView that was clicked.
+     * @param position The position of the view in the adapter.
+     * @param id       The row id of the item that was clicked.
+     * @return True if there was an assigned OnItemClickListener that was
+     * called, false otherwise is returned.
+     */
     public boolean performItemClick(View view, int position, long id) {
         return mSlideListView.performItemClick(view, position, id);
     }
@@ -1245,6 +1256,212 @@ public class SlideAndDragListView<T> extends FrameLayout implements Callback.OnD
         }
     }
     //-------------------    AbsListView    -------------------
+    //-------------------    AdapterView    -------------------
+
+    /**
+     * Register a callback to be invoked when an item in this AdapterView has
+     * been selected.
+     *
+     * @param listener The callback that will run
+     */
+    public void setOnItemSelectedListener(AdapterView.OnItemSelectedListener listener) {
+        mSlideListView.setOnItemSelectedListener(listener);
+    }
+
+    public final AdapterView.OnItemSelectedListener getOnItemSelectedListener() {
+        return mSlideListView.getOnItemSelectedListener();
+    }
+
+    /**
+     * This method is not supported and throws an UnsupportedOperationException when called.
+     *
+     * @param child Ignored.
+     * @throws UnsupportedOperationException Every time this method is invoked.
+     */
+    @Override
+    public void addView(View child) {
+        throw new UnsupportedOperationException("addView(View) is not supported in SlideAndDragListView");
+    }
+
+    /**
+     * This method is not supported and throws an UnsupportedOperationException when called.
+     *
+     * @param child Ignored.
+     * @param index Ignored.
+     * @throws UnsupportedOperationException Every time this method is invoked.
+     */
+    @Override
+    public void addView(View child, int index) {
+        throw new UnsupportedOperationException("addView(View, int) is not supported in SlideAndDragListView");
+    }
+
+    /**
+     * This method is not supported and throws an UnsupportedOperationException when called.
+     *
+     * @param child  Ignored.
+     * @param params Ignored.
+     * @throws UnsupportedOperationException Every time this method is invoked.
+     */
+    @Override
+    public void addView(View child, ViewGroup.LayoutParams params) {
+        throw new UnsupportedOperationException("addView(View, LayoutParams) "
+                + "is not supported in SlideAndDragListView");
+    }
+
+    /**
+     * This method is not supported and throws an UnsupportedOperationException when called.
+     *
+     * @param child  Ignored.
+     * @param index  Ignored.
+     * @param params Ignored.
+     * @throws UnsupportedOperationException Every time this method is invoked.
+     */
+    @Override
+    public void addView(View child, int index, ViewGroup.LayoutParams params) {
+        throw new UnsupportedOperationException("addView(View, int, LayoutParams) "
+                + "is not supported in SlideAndDragListView");
+    }
+
+    /**
+     * This method is not supported and throws an UnsupportedOperationException when called.
+     *
+     * @param child Ignored.
+     * @throws UnsupportedOperationException Every time this method is invoked.
+     */
+    @Override
+    public void removeView(View child) {
+        throw new UnsupportedOperationException("removeView(View) is not supported in SlideAndDragListView");
+    }
+
+    /**
+     * This method is not supported and throws an UnsupportedOperationException when called.
+     *
+     * @param index Ignored.
+     * @throws UnsupportedOperationException Every time this method is invoked.
+     */
+    @Override
+    public void removeViewAt(int index) {
+        throw new UnsupportedOperationException("removeViewAt(int) is not supported in SlideAndDragListView");
+    }
+
+    /**
+     * This method is not supported and throws an UnsupportedOperationException when called.
+     *
+     * @throws UnsupportedOperationException Every time this method is invoked.
+     */
+    @Override
+    public void removeAllViews() {
+        throw new UnsupportedOperationException("removeAllViews() is not supported in SlideAndDragListView");
+    }
+
+    /**
+     * Return the position of the currently selected item within the adapter's data set
+     *
+     * @return int Position (starting at 0), or {@link AdapterView#INVALID_POSITION} if there is nothing selected.
+     */
+    @ViewDebug.CapturedViewProperty
+    public int getSelectedItemPosition() {
+        return mSlideListView.getSelectedItemPosition();
+    }
+
+    /**
+     * @return The id corresponding to the currently selected item, or {@link AdapterView#INVALID_ROW_ID}
+     * if nothing is selected.
+     */
+    @ViewDebug.CapturedViewProperty
+    public long getSelectedItemId() {
+        return mSlideListView.getSelectedItemId();
+    }
+
+    /**
+     * @return The data corresponding to the currently selected item, or
+     * null if there is nothing selected.
+     */
+    public Object getSelectedItem() {
+        return mSlideListView.getSelectedItem();
+    }
+
+    /**
+     * @return The number of items owned by the Adapter associated with this
+     * AdapterView. (This is the number of data items, which may be
+     * larger than the number of visible views.)
+     */
+    @ViewDebug.CapturedViewProperty
+    public int getCount() {
+        return mSlideListView.getCount();
+    }
+
+    /**
+     * Get the position within the adapter's data set for the view, where view is a an adapter item
+     * or a descendant of an adapter item.
+     *
+     * @param view an adapter item, or a descendant of an adapter item. This must be visible in this
+     *             AdapterView at the time of the call.
+     * @return the position within the adapter's data set of the view, or {@link AdapterView#INVALID_POSITION}
+     * if the view does not correspond to a list item (or it is not currently visible).
+     */
+    public int getPositionForView(View view) {
+        return mSlideListView.getPositionForView(view);
+    }
+
+    /**
+     * Returns the position within the adapter's data set for the first item
+     * displayed on screen.
+     *
+     * @return The position within the adapter's data set
+     */
+    public int getFirstVisiblePosition() {
+        return mSlideListView.getFirstVisiblePosition();
+    }
+
+    /**
+     * Returns the position within the adapter's data set for the last item
+     * displayed on screen.
+     *
+     * @return The position within the adapter's data set
+     */
+    public int getLastVisiblePosition() {
+        return mSlideListView.getLastVisiblePosition();
+    }
+
+    /**
+     * Sets the view to show if the adapter is empty
+     */
+    public void setEmptyView(View emptyView) {
+        mSlideListView.setEmptyView(emptyView);
+    }
+
+    /**
+     * When the current adapter is empty, the AdapterView can display a special view
+     * called the empty view. The empty view is used to provide feedback to the user
+     * that no data is available in this AdapterView.
+     *
+     * @return The view to show if the adapter is empty.
+     */
+    public View getEmptyView() {
+        return mSlideListView.getEmptyView();
+    }
+
+    /**
+     * Gets the data associated with the specified position in the list.
+     *
+     * @param position Which data to get
+     * @return The data associated with the specified position in the list
+     */
+    public Object getItemAtPosition(int position) {
+        return mSlideListView.getItemAtPosition(position);
+    }
+
+    public long getItemIdAtPosition(int position) {
+        return mSlideListView.getItemIdAtPosition(position);
+    }
+
+    @Override
+    public void setOnClickListener(OnClickListener l) {
+        throw new RuntimeException("Don't call setOnClickListener for a SlideAndDragListView. "
+                + "You probably want setOnItemClickListener instead");
+    }
+    //-------------------    AdapterView    -------------------
     //-------------------    click    -------------------
 
     /**
