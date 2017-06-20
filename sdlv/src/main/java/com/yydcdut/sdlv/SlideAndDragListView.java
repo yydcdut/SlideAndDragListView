@@ -952,18 +952,6 @@ public class SlideAndDragListView<T> extends FrameLayout implements Callback.OnD
     public void setStackFromBottom(boolean stackFromBottom) {
         mSlideListView.setStackFromBottom(stackFromBottom);
     }
-    //-------------------    AbsListView    -------------------
-    //-------------------    click    -------------------
-
-    /**
-     * Register a callback to be invoked when an item in this AdapterView has
-     * been clicked.
-     *
-     * @param listener The callback that will be invoked.
-     */
-    public void setOnItemClickListener(AdapterView.OnItemClickListener listener) {
-        mSlideListView.setOnItemClickListener(listener);
-    }
 
     /**
      * Sets the initial value for the text filter.
@@ -1256,9 +1244,19 @@ public class SlideAndDragListView<T> extends FrameLayout implements Callback.OnD
             mSlideListView.setSelectionFromTop(position, y);
         }
     }
-
+    //-------------------    AbsListView    -------------------
     //-------------------    click    -------------------
 
+    /**
+     * Register a callback to be invoked when an item in this AdapterView has
+     * been clicked.
+     *
+     * @param listener The callback that will be invoked.
+     */
+    public void setOnItemClickListener(AdapterView.OnItemClickListener listener) {
+        mSlideListView.setOnItemClickListener(listener);
+    }
+    //-------------------    click    -------------------
     //-------------------    long click    -------------------
 
     /**
@@ -1271,6 +1269,7 @@ public class SlideAndDragListView<T> extends FrameLayout implements Callback.OnD
         mSlideListView.setOnItemLongClickListener(listener);
     }
     //-------------------    long click    -------------------
+    //-------------------    scroll    -------------------
 
     /**
      * Set the listener that will receive notifications every time the list scrolls.
