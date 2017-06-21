@@ -419,6 +419,10 @@ class SlideListView<T> extends DragListView<T> implements WrapperAdapter.OnAdapt
         super.setAdapter(mWrapperAdapter);
     }
 
+    protected WrapperAdapter getWrapperAdapter() {
+        return mWrapperAdapter;
+    }
+
     @Override
     public void onScrollStateChangedProxy(AbsListView view, int scrollState) {
         if (scrollState == WrapperAdapter.SCROLL_STATE_IDLE) {
@@ -443,7 +447,6 @@ class SlideListView<T> extends DragListView<T> implements WrapperAdapter.OnAdapt
     @Override
     public void onDeleteBegin() {
         mIsDeleteAnimationRunning = true;
-
     }
 
     @Override

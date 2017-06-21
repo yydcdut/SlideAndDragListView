@@ -399,6 +399,14 @@ class WrapperAdapter implements WrapperListAdapter, ItemMainLayout.OnItemSlideLi
         }
     }
 
+    protected void setStartLimit(int startLimit) {
+        mStartLimit = startLimit;
+    }
+
+    protected void setEndLimit(int endLimit) {
+        mEndLimit = endLimit;
+    }
+
     private void setInDragging(boolean inDragging) {
         isInDragging = inDragging;
     }

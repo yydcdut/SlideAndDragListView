@@ -235,6 +235,224 @@ public class SlideAndDragListView<T> extends FrameLayout implements Callback.OnD
         }
     };
 
+    //-------------------    click    -------------------
+
+    /**
+     * Register a callback to be invoked when an item in this AdapterView has
+     * been clicked.
+     *
+     * @param listener The callback that will be invoked.
+     */
+    public void setOnItemClickListener(AdapterView.OnItemClickListener listener) {
+        mSlideListView.setOnItemClickListener(listener);
+    }
+    //-------------------    click    -------------------
+    //-------------------    long click    -------------------
+
+    /**
+     * Register a callback to be invoked when an item in this AdapterView has
+     * been clicked and held
+     *
+     * @param listener The callback that will run
+     */
+    public void setOnItemLongClickListener(AdapterView.OnItemLongClickListener listener) {
+        mSlideListView.setOnItemLongClickListener(listener);
+    }
+    //-------------------    long click    -------------------
+    //-------------------    scroll    -------------------
+
+    /**
+     * Set the listener that will receive notifications every time the list scrolls.
+     *
+     * @param l the scroll listener
+     */
+    public void setOnScrollListener(AbsListView.OnScrollListener l) {
+        mSlideListView.setOnScrollListener(l);
+    }
+    //-------------------    scroll    -------------------
+
+    //-------------------    item delete    -------------------
+    public interface OnItemDeleteListener {
+
+        void onItemDeleteAnimationFinished(View view, int position);
+    }
+
+    public void setOnItemDeleteListener(SlideAndDragListView.OnItemDeleteListener onItemDeleteListener) {
+        mSlideListView.setOnItemDeleteListener(onItemDeleteListener);
+    }
+    //-------------------    item delete    -------------------
+
+    //-------------------    item scroll back    -------------------
+    public interface OnItemScrollBackListener {
+        void onScrollBackAnimationFinished(View view, int position);
+    }
+
+    public void setOnItemScrollBackListener(OnItemScrollBackListener onItemScrollBackListener) {
+        mSlideListView.setOnItemScrollBackListener(onItemScrollBackListener);
+    }
+    //-------------------    item scroll back    -------------------
+
+    //-------------------    item slide    -------------------
+
+    /**
+     * item的滑动的监听器
+     */
+    public interface OnSlideListener {
+        /**
+         * 当滑动开的时候触发
+         *
+         * @param view
+         * @param parentView
+         * @param position
+         */
+        void onSlideOpen(View view, View parentView, int position, int direction);
+
+        /**
+         * 当滑动归位的时候触发
+         *
+         * @param view
+         * @param parentView
+         * @param position
+         */
+        void onSlideClose(View view, View parentView, int position, int direction);
+    }
+
+    /**
+     * 设置item滑动监听器
+     *
+     * @param listener
+     */
+    public void setOnSlideListener(SlideAndDragListView.OnSlideListener listener) {
+        mSlideListView.setOnSlideListener(listener);
+    }
+    //-------------------    item slide    -------------------
+
+    //-------------------    menu click    -------------------
+
+    /**
+     * item中的button监听器
+     */
+    public interface OnMenuItemClickListener {
+        /**
+         * 点击事件
+         *
+         * @param v
+         * @param itemPosition   第几个item
+         * @param buttonPosition 第几个button
+         * @param direction      方向
+         * @return 参考Menu的几个常量
+         */
+        int onMenuItemClick(View v, int itemPosition, int buttonPosition, int direction);
+    }
+
+    /**
+     * 设置item中的button点击事件的监听器
+     *
+     * @param onMenuItemClickListener
+     */
+    public void setOnMenuItemClickListener(OnMenuItemClickListener onMenuItemClickListener) {
+        mSlideListView.setOnMenuItemClickListener(onMenuItemClickListener);
+    }
+    //-------------------    menu click    -------------------
+
+    //-------------------    drag & drop    -------------------
+
+    /**
+     * 当发生drag的时候触发的监听器
+     */
+    public interface OnDragListener {
+        /**
+         * 开始drag
+         *
+         * @param position
+         */
+        void onDragViewStart(int position);
+
+        /**
+         * drag的正在移动
+         *
+         * @param position
+         */
+        void onDragViewMoving(int position);
+
+        /**
+         * drag的放下了
+         *
+         * @param position
+         */
+        void onDragViewDown(int position);
+    }
+
+    /**
+     * 设置drag的监听器，加入数据
+     *
+     * @param onDragListener
+     * @param dataList
+     */
+    public void setOnDragListener(OnDragListener onDragListener, List<T> dataList) {
+        mSlideListView.setOnDragListener(onDragListener, dataList);
+    }
+    //-------------------    drag & drop    -------------------
+
+    //-------------------    API    -------------------
+    public void closeSlidedItem() {
+        mSlideListView.closeSlidedItem();
+    }
+
+    public void deleteSlideItem() {
+        mSlideListView.deleteSlideItem();
+    }
+
+    public boolean startDrag(int position) {
+        return mSlideListView.startDrag(position);
+    }
+
+    public void setNotDragHeaderCount(int headerCount) {
+        WrapperAdapter adapter = mSlideListView.getWrapperAdapter();
+        if (adapter != null) {
+            adapter.setStartLimit(headerCount);
+        }
+    }
+
+    public void setNotDragFooterCount(int footerCount) {
+        WrapperAdapter adapter = mSlideListView.getWrapperAdapter();
+        if (adapter != null) {
+            adapter.setEndLimit(footerCount);
+        }
+    }
+    //-------------------    API    -------------------
+
+    //-------------------    menu    -------------------
+
+    /**
+     * 设置Menu
+     *
+     * @param menu
+     */
+    public void setMenu(Menu menu) {
+        mSlideListView.setMenu(menu);
+    }
+
+    /**
+     * 设置menu
+     *
+     * @param list
+     */
+    public void setMenu(List<Menu> list) {
+        mSlideListView.setMenu(list);
+    }
+
+    /**
+     * 设置Menu
+     *
+     * @param menus
+     */
+    public void setMenu(Menu... menus) {
+        mSlideListView.setMenu(menus);
+    }
+    //-------------------    menu    -------------------
+    //-------------------    ListView    -------------------
+
     /**
      * @return The maximum amount a list view will scroll in response to
      * an arrow event.
@@ -579,7 +797,7 @@ public class SlideAndDragListView<T> extends FrameLayout implements Callback.OnD
     public long[] getCheckItemIds() {
         return mSlideListView.getCheckItemIds();
     }
-
+    //-------------------    ListView    -------------------
     //-------------------    AbsListView    -------------------
 
     /**
@@ -1303,207 +1521,4 @@ public class SlideAndDragListView<T> extends FrameLayout implements Callback.OnD
     }
 
     //-------------------    AdapterView    -------------------
-    //-------------------    click    -------------------
-
-    /**
-     * Register a callback to be invoked when an item in this AdapterView has
-     * been clicked.
-     *
-     * @param listener The callback that will be invoked.
-     */
-    public void setOnItemClickListener(AdapterView.OnItemClickListener listener) {
-        mSlideListView.setOnItemClickListener(listener);
-    }
-    //-------------------    click    -------------------
-    //-------------------    long click    -------------------
-
-    /**
-     * Register a callback to be invoked when an item in this AdapterView has
-     * been clicked and held
-     *
-     * @param listener The callback that will run
-     */
-    public void setOnItemLongClickListener(AdapterView.OnItemLongClickListener listener) {
-        mSlideListView.setOnItemLongClickListener(listener);
-    }
-    //-------------------    long click    -------------------
-    //-------------------    scroll    -------------------
-
-    /**
-     * Set the listener that will receive notifications every time the list scrolls.
-     *
-     * @param l the scroll listener
-     */
-    public void setOnScrollListener(AbsListView.OnScrollListener l) {
-        mSlideListView.setOnScrollListener(l);
-    }
-    //-------------------    scroll    -------------------
-
-    //-------------------    item delete    -------------------
-    public interface OnItemDeleteListener {
-
-        void onItemDeleteAnimationFinished(View view, int position);
-    }
-
-    public void setOnItemDeleteListener(SlideAndDragListView.OnItemDeleteListener onItemDeleteListener) {
-        mSlideListView.setOnItemDeleteListener(onItemDeleteListener);
-    }
-    //-------------------    item delete    -------------------
-
-    //-------------------    item scroll back    -------------------
-    public interface OnItemScrollBackListener {
-        void onScrollBackAnimationFinished(View view, int position);
-    }
-
-    public void setOnItemScrollBackListener(OnItemScrollBackListener onItemScrollBackListener) {
-        mSlideListView.setOnItemScrollBackListener(onItemScrollBackListener);
-    }
-    //-------------------    item scroll back    -------------------
-
-    //-------------------    item slide    -------------------
-
-    /**
-     * item的滑动的监听器
-     */
-    public interface OnSlideListener {
-        /**
-         * 当滑动开的时候触发
-         *
-         * @param view
-         * @param parentView
-         * @param position
-         */
-        void onSlideOpen(View view, View parentView, int position, int direction);
-
-        /**
-         * 当滑动归位的时候触发
-         *
-         * @param view
-         * @param parentView
-         * @param position
-         */
-        void onSlideClose(View view, View parentView, int position, int direction);
-    }
-
-    /**
-     * 设置item滑动监听器
-     *
-     * @param listener
-     */
-    public void setOnSlideListener(SlideAndDragListView.OnSlideListener listener) {
-        mSlideListView.setOnSlideListener(listener);
-    }
-    //-------------------    item slide    -------------------
-
-    //-------------------    menu click    -------------------
-
-    /**
-     * item中的button监听器
-     */
-    public interface OnMenuItemClickListener {
-        /**
-         * 点击事件
-         *
-         * @param v
-         * @param itemPosition   第几个item
-         * @param buttonPosition 第几个button
-         * @param direction      方向
-         * @return 参考Menu的几个常量
-         */
-        int onMenuItemClick(View v, int itemPosition, int buttonPosition, int direction);
-    }
-
-    /**
-     * 设置item中的button点击事件的监听器
-     *
-     * @param onMenuItemClickListener
-     */
-    public void setOnMenuItemClickListener(OnMenuItemClickListener onMenuItemClickListener) {
-        mSlideListView.setOnMenuItemClickListener(onMenuItemClickListener);
-    }
-    //-------------------    menu click    -------------------
-
-    //-------------------    drag & drop    -------------------
-
-    /**
-     * 当发生drag的时候触发的监听器
-     */
-    public interface OnDragListener {
-        /**
-         * 开始drag
-         *
-         * @param position
-         */
-        void onDragViewStart(int position);
-
-        /**
-         * drag的正在移动
-         *
-         * @param position
-         */
-        void onDragViewMoving(int position);
-
-        /**
-         * drag的放下了
-         *
-         * @param position
-         */
-        void onDragViewDown(int position);
-    }
-
-    /**
-     * 设置drag的监听器，加入数据
-     *
-     * @param onDragListener
-     * @param dataList
-     */
-    public void setOnDragListener(OnDragListener onDragListener, List<T> dataList) {
-        mSlideListView.setOnDragListener(onDragListener, dataList);
-    }
-    //-------------------    drag & drop    -------------------
-
-    //-------------------    API    -------------------
-    public void closeSlidedItem() {
-        mSlideListView.closeSlidedItem();
-    }
-
-    public void deleteSlideItem() {
-        mSlideListView.deleteSlideItem();
-    }
-
-    public boolean startDrag(int position) {
-        return mSlideListView.startDrag(position);
-    }
-    //-------------------    API    -------------------
-
-    //-------------------    menu    -------------------
-
-    /**
-     * 设置Menu
-     *
-     * @param menu
-     */
-    public void setMenu(Menu menu) {
-        mSlideListView.setMenu(menu);
-    }
-
-    /**
-     * 设置menu
-     *
-     * @param list
-     */
-    public void setMenu(List<Menu> list) {
-        mSlideListView.setMenu(list);
-    }
-
-    /**
-     * 设置Menu
-     *
-     * @param menus
-     */
-    public void setMenu(Menu... menus) {
-        mSlideListView.setMenu(menus);
-    }
-    //-------------------    menu    -------------------
-
 }
