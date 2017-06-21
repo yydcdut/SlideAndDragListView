@@ -81,7 +81,7 @@ class WrapperAdapter implements WrapperListAdapter, ItemMainLayout.OnItemSlideLi
         mAdapter = adapter;
         mMenuSparseArray = sparseArray;
         mAdapter.registerDataSetObserver(mDataSetObserver);
-        mListView.add1OnDragDropListener(this);
+        mListView.serAdapterDragDropListener(this);
         mItemIdTopMap = new HashMap<>();
     }
 
@@ -404,10 +404,15 @@ class WrapperAdapter implements WrapperListAdapter, ItemMainLayout.OnItemSlideLi
     }
 
     @Override
-    public void onDragStarted(int x, int y, View view) {
-        setInDragging(true);
+    public boolean onDragStarted(int x, int y, View view) {
         int itemIndex = mListView.getPositionForView(view) - mListView.getHeaderViewsCount();
-        popDragEntry(itemIndex);
+        if (itemIndex > mStartLimit && itemIndex < mEndLimit) {
+            setInDragging(true);
+            popDragEntry(itemIndex);
+        } else {
+            setInDragging(false);
+        }
+        return isInDragging;
     }
 
     private void popDragEntry(int index) {

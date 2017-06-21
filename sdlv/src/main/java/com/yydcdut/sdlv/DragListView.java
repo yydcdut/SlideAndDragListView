@@ -31,7 +31,8 @@ class DragListView<T> extends ListView {
     /* 监听器 */
     private SlideAndDragListView.OnDragListener mOnDragListener;
     /* 监听器 */
-    private Callback.OnDragDropListener[] mOnDragDropListeners;
+    private Callback.OnDragDropListener mAdapterDragDropListener;
+    private Callback.OnDragDropListener mDragListDragDropListener;
 
     public DragListView(Context context) {
         this(context, null);
@@ -43,7 +44,6 @@ class DragListView<T> extends ListView {
 
     public DragListView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        mOnDragDropListeners = new Callback.OnDragDropListener[2];
     }
 
     protected void setDragPosition(int position) {
@@ -89,13 +89,14 @@ class DragListView<T> extends ListView {
         if (view == null) {
             return;
         }
-        if (mOnDragDropListeners[0] != null) {
-            mOnDragDropListeners[0].onDragStarted(x, y, view);
+        boolean isDragging = false;
+        if (mAdapterDragDropListener != null) {
+            isDragging = mAdapterDragDropListener.onDragStarted(x, y, view);
         }
-        if (mOnDragDropListeners[1] != null) {
-            mOnDragDropListeners[1].onDragStarted(x, y, view);
+        if (mDragListDragDropListener != null && isDragging) {
+            mDragListDragDropListener.onDragStarted(x, y, view);
         }
-        if (mOnDragListener != null) {
+        if (mOnDragListener != null && isDragging) {
             mOnDragListener.onDragViewStart(getPositionForView(view));
         }
     }
@@ -105,11 +106,11 @@ class DragListView<T> extends ListView {
         if (view == null) {
             return;
         }
-        if (mOnDragDropListeners[0] != null) {
-            mOnDragDropListeners[0].onDragMoving(x, y, view);
+        if (mDragListDragDropListener != null) {
+            mDragListDragDropListener.onDragMoving(x, y, view);
         }
-        if (mOnDragDropListeners[1] != null) {
-            mOnDragDropListeners[1].onDragMoving(x, y, view);
+        if (mAdapterDragDropListener != null) {
+            mAdapterDragDropListener.onDragMoving(x, y, view);
         }
         if (mOnDragListener != null) {
             mOnDragListener.onDragViewMoving(getPositionForView(view));
@@ -117,11 +118,11 @@ class DragListView<T> extends ListView {
     }
 
     protected void handleDragFinished(int x, int y) {
-        if (mOnDragDropListeners[0] != null) {
-            mOnDragDropListeners[0].onDragFinished(x, y);
+        if (mDragListDragDropListener != null) {
+            mDragListDragDropListener.onDragFinished(x, y);
         }
-        if (mOnDragDropListeners[1] != null) {
-            mOnDragDropListeners[1].onDragFinished(x, y);
+        if (mAdapterDragDropListener != null) {
+            mAdapterDragDropListener.onDragFinished(x, y);
         }
         if (mOnDragListener != null) {
             View view = getViewByPoint(x, y);
@@ -137,12 +138,12 @@ class DragListView<T> extends ListView {
         }
     }
 
-    protected void add0OnDragDropListener(Callback.OnDragDropListener listener) {
-        mOnDragDropListeners[0] = listener;
+    protected void setListDragDropListener(Callback.OnDragDropListener listener) {
+        mDragListDragDropListener = listener;
     }
 
-    protected void add1OnDragDropListener(Callback.OnDragDropListener listener) {
-        mOnDragDropListeners[1] = listener;
+    protected void serAdapterDragDropListener(Callback.OnDragDropListener listener) {
+        mAdapterDragDropListener = listener;
     }
 
 }

@@ -101,7 +101,7 @@ public class SlideAndDragListView<T> extends FrameLayout implements Callback.OnD
         mDragView = new ImageView(context);
         addView(mDragView, new LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
         mDragView.setVisibility(GONE);
-        mSlideListView.add0OnDragDropListener(this);
+        mSlideListView.setListDragDropListener(this);
     }
 
     protected void setInterceptTouchEvent(boolean interceptTouchEvent) {
@@ -149,10 +149,10 @@ public class SlideAndDragListView<T> extends FrameLayout implements Callback.OnD
     }
 
     @Override
-    public void onDragStarted(int x, int y, View view) {
+    public boolean onDragStarted(int x, int y, View view) {
         mDragViewBitmap = createDraggedChildBitmap(view);
         if (mDragViewBitmap == null) {
-            return;
+            return false;
         }
         mDragView.setImageBitmap(mDragViewBitmap);
         mDragView.setVisibility(VISIBLE);
@@ -160,6 +160,7 @@ public class SlideAndDragListView<T> extends FrameLayout implements Callback.OnD
         mDragView.setX(mSlideListView.getPaddingLeft() + getPaddingLeft());
         mDragDelta = y - view.getTop();
         mDragView.setY(y - mDragDelta);
+        return true;
     }
 
     private Bitmap createDraggedChildBitmap(View view) {

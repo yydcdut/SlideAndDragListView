@@ -25,7 +25,7 @@ interface Callback {
 
     interface OnDragDropListener {
 
-        void onDragStarted(int x, int y, View view);
+        boolean onDragStarted(int x, int y, View view);
 
         void onDragMoving(int x, int y, View view);
 
