@@ -444,7 +444,7 @@ public class SlideAndDragListView<T> extends FrameLayout implements Callback.OnD
     }
 
     public boolean isOpaque() {
-        return mSlideListView.isOpaque();
+        return super.isOpaque() && mSlideListView.isOpaque();
     }
 
     /**
@@ -607,6 +607,14 @@ public class SlideAndDragListView<T> extends FrameLayout implements Callback.OnD
         }
     }
 
+    /**
+     * Initializes an {@link AccessibilityNodeInfo} with information about a
+     * particular item in the list.
+     *
+     * @param view     View representing the list item.
+     * @param position Position of the list item within the adapter.
+     * @param info     Node info to populate.
+     */
     public void onInitializeAccessibilityNodeInfoForItem(
             View view, int position, AccessibilityNodeInfo info) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
@@ -618,6 +626,7 @@ public class SlideAndDragListView<T> extends FrameLayout implements Callback.OnD
 
     @Override
     public void setOverScrollMode(int mode) {
+        super.setOverScrollMode(mode);
         mSlideListView.setOverScrollMode(mode);
     }
 
@@ -832,11 +841,13 @@ public class SlideAndDragListView<T> extends FrameLayout implements Callback.OnD
 
     @Override
     public void setVerticalScrollbarPosition(int position) {
+        super.setVerticalScrollbarPosition(position);
         mSlideListView.setVerticalScrollbarPosition(position);
     }
 
     @Override
     public void setScrollBarStyle(int style) {
+        super.setScrollBarStyle(style);
         mSlideListView.setScrollBarStyle(style);
     }
 
@@ -874,9 +885,11 @@ public class SlideAndDragListView<T> extends FrameLayout implements Callback.OnD
     @Override
     public void sendAccessibilityEvent(int eventType) {
         mSlideListView.sendAccessibilityEvent(eventType);
+        super.sendAccessibilityEvent(eventType);
     }
 
     public boolean performAccessibilityAction(int action, Bundle arguments) {
+        super.performAccessibilityAction(action, arguments);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
             return mSlideListView.performAccessibilityAction(action, arguments);
         } else {
@@ -1292,7 +1305,7 @@ public class SlideAndDragListView<T> extends FrameLayout implements Callback.OnD
      */
     @Override
     public void addView(View child, int index) {
-        throw new UnsupportedOperationException("addView(View, int) is not supported in SlideAndDragListView");
+        mSlideListView.addView(child, index);
     }
 
     /**
@@ -1304,8 +1317,7 @@ public class SlideAndDragListView<T> extends FrameLayout implements Callback.OnD
      */
     @Override
     public void addView(View child, ViewGroup.LayoutParams params) {
-        throw new UnsupportedOperationException("addView(View, LayoutParams) "
-                + "is not supported in SlideAndDragListView");
+        mSlideListView.addView(child, params);
     }
 
     /**
@@ -1318,8 +1330,7 @@ public class SlideAndDragListView<T> extends FrameLayout implements Callback.OnD
      */
     @Override
     public void addView(View child, int index, ViewGroup.LayoutParams params) {
-        throw new UnsupportedOperationException("addView(View, int, LayoutParams) "
-                + "is not supported in SlideAndDragListView");
+        mSlideListView.addView(child, index, params);
     }
 
     /**
@@ -1330,7 +1341,7 @@ public class SlideAndDragListView<T> extends FrameLayout implements Callback.OnD
      */
     @Override
     public void removeView(View child) {
-        throw new UnsupportedOperationException("removeView(View) is not supported in SlideAndDragListView");
+        mSlideListView.removeView(child);
     }
 
     /**
@@ -1341,7 +1352,7 @@ public class SlideAndDragListView<T> extends FrameLayout implements Callback.OnD
      */
     @Override
     public void removeViewAt(int index) {
-        throw new UnsupportedOperationException("removeViewAt(int) is not supported in SlideAndDragListView");
+        mSlideListView.removeViewAt(index);
     }
 
     /**
@@ -1351,7 +1362,7 @@ public class SlideAndDragListView<T> extends FrameLayout implements Callback.OnD
      */
     @Override
     public void removeAllViews() {
-        throw new UnsupportedOperationException("removeAllViews() is not supported in SlideAndDragListView");
+        mSlideListView.removeAllViews();
     }
 
     /**
@@ -1458,8 +1469,7 @@ public class SlideAndDragListView<T> extends FrameLayout implements Callback.OnD
 
     @Override
     public void setOnClickListener(OnClickListener l) {
-        throw new RuntimeException("Don't call setOnClickListener for a SlideAndDragListView. "
-                + "You probably want setOnItemClickListener instead");
+        mSlideListView.setOnClickListener(l);
     }
     //-------------------    AdapterView    -------------------
     //-------------------    click    -------------------
