@@ -21,10 +21,8 @@ import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
-import android.os.Bundle;
 import android.os.Handler;
 import android.util.AttributeSet;
 import android.util.SparseBooleanArray;
@@ -34,8 +32,6 @@ import android.view.View;
 import android.view.ViewConfiguration;
 import android.view.ViewDebug;
 import android.view.ViewGroup;
-import android.view.accessibility.AccessibilityEvent;
-import android.view.accessibility.AccessibilityNodeInfo;
 import android.widget.AbsListView;
 import android.widget.Adapter;
 import android.widget.AdapterView;
@@ -390,10 +386,6 @@ public class SlideAndDragListView<T> extends FrameLayout implements Callback.OnD
         mSlideListView.setAdapter(adapter);
     }
 
-    public boolean requestChildRectangleOnScreen(View child, Rect rect, boolean immediate) {
-        return mSlideListView.requestChildRectangleOnScreen(child, rect, immediate);
-    }
-
     /**
      * Smoothly scroll to the specified adapter position. The view will
      * scroll such that the indicated position is displayed.
@@ -441,10 +433,6 @@ public class SlideAndDragListView<T> extends FrameLayout implements Callback.OnD
      */
     public void setItemsCanFocus(boolean itemsCanFocus) {
         mSlideListView.setItemsCanFocus(itemsCanFocus);
-    }
-
-    public boolean isOpaque() {
-        return super.isOpaque() && mSlideListView.isOpaque();
     }
 
     /**
@@ -591,44 +579,7 @@ public class SlideAndDragListView<T> extends FrameLayout implements Callback.OnD
         return mSlideListView.getCheckItemIds();
     }
 
-    @Override
-    public void onInitializeAccessibilityEvent(AccessibilityEvent event) {
-        super.onInitializeAccessibilityEvent(event);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
-            mSlideListView.onInitializeAccessibilityEvent(event);
-        }
-    }
-
-    @Override
-    public void onInitializeAccessibilityNodeInfo(AccessibilityNodeInfo info) {
-        super.onInitializeAccessibilityNodeInfo(info);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            mSlideListView.onInitializeAccessibilityNodeInfo(info);
-        }
-    }
-
-    /**
-     * Initializes an {@link AccessibilityNodeInfo} with information about a
-     * particular item in the list.
-     *
-     * @param view     View representing the list item.
-     * @param position Position of the list item within the adapter.
-     * @param info     Node info to populate.
-     */
-    public void onInitializeAccessibilityNodeInfoForItem(
-            View view, int position, AccessibilityNodeInfo info) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            mSlideListView.onInitializeAccessibilityNodeInfoForItem(view, position, info);
-        }
-    }
-
     //-------------------    AbsListView    -------------------
-
-    @Override
-    public void setOverScrollMode(int mode) {
-        super.setOverScrollMode(mode);
-        mSlideListView.setOverScrollMode(mode);
-    }
 
     /**
      * Returns the number of items currently selected. This will only be valid
@@ -823,11 +774,6 @@ public class SlideAndDragListView<T> extends FrameLayout implements Callback.OnD
         return mSlideListView.isFastScrollAlwaysVisible();
     }
 
-    @Override
-    public int getVerticalScrollbarWidth() {
-        return mSlideListView.getVerticalScrollbarWidth();
-    }
-
     /**
      * Returns true if the fast scroller is enabled.
      *
@@ -837,18 +783,6 @@ public class SlideAndDragListView<T> extends FrameLayout implements Callback.OnD
     @ViewDebug.ExportedProperty
     public boolean isFastScrollEnabled() {
         return mSlideListView.isFastScrollEnabled();
-    }
-
-    @Override
-    public void setVerticalScrollbarPosition(int position) {
-        super.setVerticalScrollbarPosition(position);
-        mSlideListView.setVerticalScrollbarPosition(position);
-    }
-
-    @Override
-    public void setScrollBarStyle(int style) {
-        super.setScrollBarStyle(style);
-        mSlideListView.setScrollBarStyle(style);
     }
 
     /**
@@ -880,21 +814,6 @@ public class SlideAndDragListView<T> extends FrameLayout implements Callback.OnD
      */
     public boolean isSmoothScrollbarEnabled() {
         return mSlideListView.isSmoothScrollbarEnabled();
-    }
-
-    @Override
-    public void sendAccessibilityEvent(int eventType) {
-        mSlideListView.sendAccessibilityEvent(eventType);
-        super.sendAccessibilityEvent(eventType);
-    }
-
-    public boolean performAccessibilityAction(int action, Bundle arguments) {
-        super.performAccessibilityAction(action, arguments);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-            return mSlideListView.performAccessibilityAction(action, arguments);
-        } else {
-            return false;
-        }
     }
 
     /**
@@ -948,11 +867,6 @@ public class SlideAndDragListView<T> extends FrameLayout implements Callback.OnD
     @ViewDebug.ExportedProperty
     public boolean isTextFilterEnabled() {
         return mSlideListView.isTextFilterEnabled();
-    }
-
-    @Override
-    public void getFocusedRect(Rect r) {
-        mSlideListView.getFocusedRect(r);
     }
 
     /**
@@ -1286,86 +1200,6 @@ public class SlideAndDragListView<T> extends FrameLayout implements Callback.OnD
     }
 
     /**
-     * This method is not supported and throws an UnsupportedOperationException when called.
-     *
-     * @param child Ignored.
-     * @throws UnsupportedOperationException Every time this method is invoked.
-     */
-    @Override
-    public void addView(View child) {
-        throw new UnsupportedOperationException("addView(View) is not supported in SlideAndDragListView");
-    }
-
-    /**
-     * This method is not supported and throws an UnsupportedOperationException when called.
-     *
-     * @param child Ignored.
-     * @param index Ignored.
-     * @throws UnsupportedOperationException Every time this method is invoked.
-     */
-    @Override
-    public void addView(View child, int index) {
-        mSlideListView.addView(child, index);
-    }
-
-    /**
-     * This method is not supported and throws an UnsupportedOperationException when called.
-     *
-     * @param child  Ignored.
-     * @param params Ignored.
-     * @throws UnsupportedOperationException Every time this method is invoked.
-     */
-    @Override
-    public void addView(View child, ViewGroup.LayoutParams params) {
-        mSlideListView.addView(child, params);
-    }
-
-    /**
-     * This method is not supported and throws an UnsupportedOperationException when called.
-     *
-     * @param child  Ignored.
-     * @param index  Ignored.
-     * @param params Ignored.
-     * @throws UnsupportedOperationException Every time this method is invoked.
-     */
-    @Override
-    public void addView(View child, int index, ViewGroup.LayoutParams params) {
-        mSlideListView.addView(child, index, params);
-    }
-
-    /**
-     * This method is not supported and throws an UnsupportedOperationException when called.
-     *
-     * @param child Ignored.
-     * @throws UnsupportedOperationException Every time this method is invoked.
-     */
-    @Override
-    public void removeView(View child) {
-        mSlideListView.removeView(child);
-    }
-
-    /**
-     * This method is not supported and throws an UnsupportedOperationException when called.
-     *
-     * @param index Ignored.
-     * @throws UnsupportedOperationException Every time this method is invoked.
-     */
-    @Override
-    public void removeViewAt(int index) {
-        mSlideListView.removeViewAt(index);
-    }
-
-    /**
-     * This method is not supported and throws an UnsupportedOperationException when called.
-     *
-     * @throws UnsupportedOperationException Every time this method is invoked.
-     */
-    @Override
-    public void removeAllViews() {
-        mSlideListView.removeAllViews();
-    }
-
-    /**
      * Return the position of the currently selected item within the adapter's data set
      *
      * @return int Position (starting at 0), or {@link AdapterView#INVALID_POSITION} if there is nothing selected.
@@ -1467,10 +1301,6 @@ public class SlideAndDragListView<T> extends FrameLayout implements Callback.OnD
         return mSlideListView.getItemIdAtPosition(position);
     }
 
-    @Override
-    public void setOnClickListener(OnClickListener l) {
-        mSlideListView.setOnClickListener(l);
-    }
     //-------------------    AdapterView    -------------------
     //-------------------    click    -------------------
 
