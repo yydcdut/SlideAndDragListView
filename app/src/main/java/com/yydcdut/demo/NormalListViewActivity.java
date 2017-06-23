@@ -20,8 +20,8 @@ import java.util.List;
 /**
  * Created by yuyidong on 16/1/22.
  */
-public class NormalActivity extends AppCompatActivity {
-    private static final String TAG = NormalActivity.class.getSimpleName();
+public class NormalListViewActivity extends AppCompatActivity {
+    private static final String TAG = NormalListViewActivity.class.getSimpleName();
 
     private List<ApplicationInfo> mAppList;
 
@@ -41,14 +41,14 @@ public class NormalActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, final int position, long id) {
                 Log.i(TAG, "onItemClick   position--->" + position);
-                Toast.makeText(NormalActivity.this, "onItemClick   position--->" + position, Toast.LENGTH_SHORT).show();
+                Toast.makeText(NormalListViewActivity.this, "onItemClick   position--->" + position, Toast.LENGTH_SHORT).show();
             }
         });
         listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
                 Log.i(TAG, "onItemLongClick   position--->" + position);
-                Toast.makeText(NormalActivity.this, "onItemLongClick   position--->" + position, Toast.LENGTH_SHORT).show();
+                Toast.makeText(NormalListViewActivity.this, "onItemLongClick   position--->" + position, Toast.LENGTH_SHORT).show();
                 return false;
             }
         });
@@ -75,7 +75,7 @@ public class NormalActivity extends AppCompatActivity {
             CustomViewHolder cvh;
             if (convertView == null) {
                 cvh = new CustomViewHolder();
-                convertView = LayoutInflater.from(NormalActivity.this).inflate(R.layout.item_custom_btn, null);
+                convertView = LayoutInflater.from(NormalListViewActivity.this).inflate(R.layout.item_custom_btn, null);
                 cvh.imgLogo = (ImageView) convertView.findViewById(R.id.img_item_edit);
                 cvh.txtName = (TextView) convertView.findViewById(R.id.txt_item_edit);
                 cvh.btnClick = (Button) convertView.findViewById(R.id.btn_item_click);
@@ -103,7 +103,7 @@ public class NormalActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Object o = v.getTag();
                 if (o instanceof Integer) {
-                    Toast.makeText(NormalActivity.this, "button click-->" + ((Integer) o), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(NormalListViewActivity.this, "button click-->" + ((Integer) o), Toast.LENGTH_SHORT).show();
                 }
             }
         };

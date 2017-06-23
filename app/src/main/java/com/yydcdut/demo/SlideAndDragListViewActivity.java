@@ -26,12 +26,12 @@ import java.util.List;
 /**
  * Created by yuyidong on 16/1/23.
  */
-public class SimpleActivity extends AppCompatActivity implements AdapterView.OnItemLongClickListener,
+public class SlideAndDragListViewActivity extends AppCompatActivity implements AdapterView.OnItemLongClickListener,
         AdapterView.OnItemClickListener, AbsListView.OnScrollListener,
         SlideAndDragListView.OnDragListener, SlideAndDragListView.OnSlideListener,
         SlideAndDragListView.OnMenuItemClickListener, SlideAndDragListView.OnItemDeleteListener,
         SlideAndDragListView.OnItemScrollBackListener {
-    private static final String TAG = SimpleActivity.class.getSimpleName();
+    private static final String TAG = SlideAndDragListViewActivity.class.getSimpleName();
 
     private Menu mMenu;
     private List<ApplicationInfo> mAppList;
@@ -45,7 +45,7 @@ public class SimpleActivity extends AppCompatActivity implements AdapterView.OnI
         initData();
         initMenu();
         initUiAndListener();
-        mToast = Toast.makeText(SimpleActivity.this, "", Toast.LENGTH_SHORT);
+        mToast = Toast.makeText(SlideAndDragListViewActivity.this, "", Toast.LENGTH_SHORT);
     }
 
     public void initData() {
@@ -115,7 +115,7 @@ public class SimpleActivity extends AppCompatActivity implements AdapterView.OnI
             CustomViewHolder cvh;
             if (convertView == null) {
                 cvh = new CustomViewHolder();
-                convertView = LayoutInflater.from(SimpleActivity.this).inflate(R.layout.item_custom_btn, null);
+                convertView = LayoutInflater.from(SlideAndDragListViewActivity.this).inflate(R.layout.item_custom_btn, null);
                 cvh.imgLogo = (ImageView) convertView.findViewById(R.id.img_item_edit);
                 cvh.txtName = (TextView) convertView.findViewById(R.id.txt_item_edit);
                 cvh.btnClick = (Button) convertView.findViewById(R.id.btn_item_click);

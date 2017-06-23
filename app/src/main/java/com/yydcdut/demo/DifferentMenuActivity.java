@@ -25,10 +25,10 @@ import java.util.List;
 /**
  * Created by yuyidong on 16/1/23.
  */
-public class DifferentActivity extends AppCompatActivity implements AdapterView.OnItemLongClickListener, AdapterView.OnItemClickListener,
+public class DifferentMenuActivity extends AppCompatActivity implements AdapterView.OnItemLongClickListener, AdapterView.OnItemClickListener,
         SlideAndDragListView.OnDragListener, SlideAndDragListView.OnSlideListener,
         SlideAndDragListView.OnMenuItemClickListener, SlideAndDragListView.OnItemDeleteListener {
-    private static final String TAG = DifferentActivity.class.getSimpleName();
+    private static final String TAG = DifferentMenuActivity.class.getSimpleName();
 
     private List<Menu> mMenuList;
     private List<QQ> mQQList;
@@ -42,7 +42,7 @@ public class DifferentActivity extends AppCompatActivity implements AdapterView.
         initData();
         initMenu();
         initUiAndListener();
-        mToast = Toast.makeText(DifferentActivity.this, "", Toast.LENGTH_SHORT);
+        mToast = Toast.makeText(DifferentMenuActivity.this, "", Toast.LENGTH_SHORT);
     }
 
     public void initData() {
@@ -194,7 +194,7 @@ public class DifferentActivity extends AppCompatActivity implements AdapterView.
             CustomViewHolder cvh = null;
             if (convertView == null) {
                 cvh = new CustomViewHolder();
-                convertView = LayoutInflater.from(DifferentActivity.this).inflate(R.layout.item_qq, null);
+                convertView = LayoutInflater.from(DifferentMenuActivity.this).inflate(R.layout.item_qq, null);
                 cvh.imgLogo = (ImageView) convertView.findViewById(R.id.img_item_qq);
                 cvh.txtName = (TextView) convertView.findViewById(R.id.txt_item_qq_title);
                 cvh.txtContent = (TextView) convertView.findViewById(R.id.txt_item_qq_content);
@@ -230,7 +230,7 @@ public class DifferentActivity extends AppCompatActivity implements AdapterView.
 
     @Override
     public void onDragViewMoving(int position) {
-//        Toast.makeText(DifferentActivity.this, "onDragViewMoving   position--->" + position, Toast.LENGTH_SHORT).show();
+//        Toast.makeText(DifferentMenuActivity.this, "onDragViewMoving   position--->" + position, Toast.LENGTH_SHORT).show();
         Log.i(TAG, "onDragViewMoving   " + position);
     }
 

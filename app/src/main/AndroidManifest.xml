@@ -20,13 +20,13 @@
             android:name=".HeaderFooterActivity"
             android:label="SDLV with header and footer"/>
         <activity
-            android:name=".DifferentActivity"
+            android:name=".DifferentMenuActivity"
             android:label="SDLV with different menus"/>
         <activity
-            android:name=".NormalActivity"
+            android:name=".NormalListViewActivity"
             android:label="Normal ListView"/>
         <activity
-            android:name=".SimpleActivity"
+            android:name=".SlideAndDragListViewActivity"
             android:label="SlideAndDragListView"/>
         <activity
             android:name=".ItemDragActivity"
