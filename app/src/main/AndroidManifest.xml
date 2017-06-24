@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest package="com.yydcdut.demo"
-          xmlns:android="http://schemas.android.com/apk/res/android">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+          package="com.yydcdut.demo">
 
     <application
         android:allowBackup="true"
@@ -18,7 +18,7 @@
         </activity>
         <activity
             android:name=".HeaderFooterActivity"
-            android:label="SDLV with header and footer"/>
+            android:label="SDLV with headers and footers"/>
         <activity
             android:name=".DifferentMenuActivity"
             android:label="SDLV with different menus"/>
@@ -31,6 +31,9 @@
         <activity
             android:name=".ItemDragActivity"
             android:label="Touch Item to Drag"/>
+        <activity
+            android:name=".HeaderFooterViewTypeActivity"
+            android:label="SDLV with headers and footers (viewType)"/>
     </application>
 
 </manifest>
