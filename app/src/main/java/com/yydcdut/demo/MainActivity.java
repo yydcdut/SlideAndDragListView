@@ -18,8 +18,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         findViewById(R.id.btn_normal).setOnClickListener(this);
         findViewById(R.id.btn_simple).setOnClickListener(this);
         findViewById(R.id.btn_header_footer).setOnClickListener(this);
+        findViewById(R.id.btn_header_footer_view_type).setOnClickListener(this);
         findViewById(R.id.btn_view_type).setOnClickListener(this);
         findViewById(R.id.btn_touch_drag).setOnClickListener(this);
+        findViewById(R.id.btn_simple_adapter).setOnClickListener(this);
     }
 
     @Override
@@ -34,11 +36,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             case R.id.btn_header_footer:
                 startActivity(new Intent(this, HeaderFooterActivity.class));
                 break;
+            case R.id.btn_header_footer_view_type:
+                startActivity(new Intent(this, HeaderFooterViewTypeActivity.class));
+                break;
             case R.id.btn_view_type:
                 startActivity(new Intent(this, DifferentMenuActivity.class));
                 break;
             case R.id.btn_touch_drag:
                 startActivity(new Intent(this, ItemDragActivity.class));
+                break;
+            case R.id.btn_simple_adapter:
+                startActivity(new Intent(this, SimpleAdapterActivity.class));
                 break;
         }
     }

@@ -2,19 +2,14 @@ package com.yydcdut.demo;
 
 import android.content.pm.ApplicationInfo;
 import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
-import android.widget.Button;
-import android.widget.ImageView;
-import android.widget.TextView;
+import android.widget.SimpleAdapter;
 import android.widget.Toast;
 
 import com.yydcdut.sdlv.Menu;
@@ -22,26 +17,24 @@ import com.yydcdut.sdlv.MenuItem;
 import com.yydcdut.sdlv.SlideAndDragListView;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
- * Created by yuyidong on 2017/6/23.
+ * Created by yuyidong on 2017/6/24.
  */
-public class HeaderFooterViewTypeActivity extends AppCompatActivity implements AdapterView.OnItemLongClickListener,
+public class SimpleAdapterActivity extends AppCompatActivity implements AdapterView.OnItemLongClickListener,
         AdapterView.OnItemClickListener, SlideAndDragListView.OnItemScrollBackListener,
         SlideAndDragListView.OnDragListener, SlideAndDragListView.OnSlideListener,
         SlideAndDragListView.OnMenuItemClickListener, SlideAndDragListView.OnItemDeleteListener {
-    private static final String TAG = DifferentMenuActivity.class.getSimpleName();
+    private static final String TAG = SimpleAdapterActivity.class.getSimpleName();
 
-    private List<Menu> mMenuList;
     private List<ApplicationInfo> mAppList;
     private SlideAndDragListView<ApplicationInfo> mListView;
     private Toast mToast;
-    private View mHeaderView;
-    private View mFooterView;
-
-    private static final int TYPE_VIEW_HEADER = 1;
-    private static final int TYPE_VIEW_FOOTER = 2;
+    private Menu mMenu;
+    private BaseAdapter mAdapter;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -50,7 +43,7 @@ public class HeaderFooterViewTypeActivity extends AppCompatActivity implements A
         initData();
         initMenu();
         initUiAndListener();
-        mToast = Toast.makeText(HeaderFooterViewTypeActivity.this, "", Toast.LENGTH_SHORT);
+        mToast = Toast.makeText(SimpleAdapterActivity.this, "", Toast.LENGTH_SHORT);
     }
 
     public void initData() {
@@ -58,35 +51,43 @@ public class HeaderFooterViewTypeActivity extends AppCompatActivity implements A
     }
 
     public void initMenu() {
-        mMenuList = new ArrayList<>();
-        Menu menu0 = new Menu(true, 0);
-        menu0.addItem(new MenuItem.Builder().setWidth((int) getResources().getDimension(R.dimen.slv_item_bg_btn2_width))
-                .setBackground(new ColorDrawable(Color.RED))
-                .setText("Normal")
+        mMenu = new Menu(true);
+        mMenu.addItem(new MenuItem.Builder().setWidth((int) getResources().getDimension(R.dimen.slv_item_bg_btn_width) * 2)
+                .setBackground(Utils.getDrawable(this, R.drawable.btn_left0))
+                .setText("One")
+                .setTextColor(Color.GRAY)
+                .setTextSize(14)
+                .build());
+        mMenu.addItem(new MenuItem.Builder().setWidth((int) getResources().getDimension(R.dimen.slv_item_bg_btn_width))
+                .setBackground(Utils.getDrawable(this, R.drawable.btn_left1))
+                .setText("Two")
+                .setTextColor(Color.BLACK)
+                .setTextSize((14))
+                .build());
+        mMenu.addItem(new MenuItem.Builder().setWidth((int) getResources().getDimension(R.dimen.slv_item_bg_btn_width) + 30)
+                .setBackground(Utils.getDrawable(this, R.drawable.btn_right0))
+                .setText("Three")
                 .setDirection(MenuItem.DIRECTION_RIGHT)
-                .setTextColor(Color.WHITE)
-                .setTextSize(10)
+                .setTextColor(Color.BLACK)
+                .setTextSize(14)
                 .build());
-        menu0.addItem(new MenuItem.Builder().setWidth((int) getResources().getDimension(R.dimen.slv_item_bg_btn_width_img))
-                .setBackground(new ColorDrawable(Color.GREEN))
-                .setText("Normal")
-                .setDirection(MenuItem.DIRECTION_LEFT)
-                .setTextColor(Color.WHITE)
-                .setTextSize(10)
+        mMenu.addItem(new MenuItem.Builder().setWidth((int) getResources().getDimension(R.dimen.slv_item_bg_btn_width_img))
+                .setBackground(Utils.getDrawable(this, R.drawable.btn_right1))
+                .setDirection(MenuItem.DIRECTION_RIGHT)
+                .setIcon(getResources().getDrawable(R.drawable.ic_launcher))
                 .build());
-        Menu menu1 = new Menu(false, 1);
-        Menu menu2 = new Menu(false, 2);
-        mMenuList.add(menu0);
-        mMenuList.add(menu1);
-        mMenuList.add(menu2);
     }
 
     public void initUiAndListener() {
-        mHeaderView = LayoutInflater.from(this).inflate(R.layout.item_header_footer, null);
-        mFooterView = LayoutInflater.from(this).inflate(R.layout.item_header_footer, null);
-        mFooterView.setBackgroundColor(0xff0000bb);
         mListView = (SlideAndDragListView) findViewById(R.id.lv_edit);
-        mListView.setMenu(mMenuList);
+        mListView.setMenu(mMenu);
+        List<Map<String, String>> list = new ArrayList<>(mAppList.size());
+        for (ApplicationInfo applicationInfo : mAppList) {
+            Map<String, String> map = new HashMap<>();
+            map.put("text", applicationInfo.loadLabel(getPackageManager()).toString());
+            list.add(map);
+        }
+        mAdapter = new SimpleAdapter(this, list, R.layout.item_simple_adapter, new String[]{"text"}, new int[]{R.id.txt_simple});
         mListView.setAdapter(mAdapter);
         mListView.setOnDragListener(this, mAppList);
         mListView.setOnItemClickListener(this);
@@ -95,88 +96,7 @@ public class HeaderFooterViewTypeActivity extends AppCompatActivity implements A
         mListView.setOnItemDeleteListener(this);
         mListView.setOnItemLongClickListener(this);
         mListView.setOnItemScrollBackListener(this);
-        mListView.setDivider(new ColorDrawable(Color.GRAY));
-        mListView.setDividerHeight(1);
-//        mListView.setNotDragHeaderCount(1);
-//        mListView.setNotDragFooterCount(1);
     }
-
-    private BaseAdapter mAdapter = new BaseAdapter() {
-        private Object mHeaderObject = new Object();
-        private Object mFooterObject = new Object();
-
-        @Override
-        public int getCount() {
-            return mAppList.size() + 2;
-        }
-
-        @Override
-        public Object getItem(int position) {
-            if (position == 0) {
-                return mHeaderObject;
-            } else if (position == mAppList.size() + 1) {
-                return mFooterObject;
-            }
-            return mAppList.get(position - 1);
-        }
-
-        @Override
-        public long getItemId(int position) {
-            if (position == 0) {
-                return 1;
-            } else if (position == mAppList.size() + 1) {
-                return 2;
-            }
-            return mAppList.get(position - 1).hashCode();
-        }
-
-        @Override
-        public int getItemViewType(int position) {
-            if (position == 0) {
-                return TYPE_VIEW_HEADER;
-            } else if (position == mAppList.size() + 1) {
-                return TYPE_VIEW_FOOTER;
-            }
-            return super.getItemViewType(position);
-        }
-
-        @Override
-        public int getViewTypeCount() {
-            return 3;
-        }
-
-        @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
-            int viewType = getItemViewType(position);
-            if (viewType == TYPE_VIEW_HEADER) {
-                return mHeaderView;
-            } else if (viewType == TYPE_VIEW_FOOTER) {
-                return mFooterView;
-            }
-            CustomViewHolder cvh;
-            if (convertView == null) {
-                cvh = new CustomViewHolder();
-                convertView = LayoutInflater.from(HeaderFooterViewTypeActivity.this).inflate(R.layout.item_custom_btn, null);
-                cvh.imgLogo = (ImageView) convertView.findViewById(R.id.img_item_edit);
-                cvh.txtName = (TextView) convertView.findViewById(R.id.txt_item_edit);
-                cvh.btnClick = (Button) convertView.findViewById(R.id.btn_item_click);
-                cvh.btnClick.setVisibility(View.GONE);
-                convertView.setTag(cvh);
-            } else {
-                cvh = (CustomViewHolder) convertView.getTag();
-            }
-            ApplicationInfo item = (ApplicationInfo) this.getItem(position);
-            cvh.txtName.setText(item.loadLabel(getPackageManager()));
-            cvh.imgLogo.setImageDrawable(item.loadIcon(getPackageManager()));
-            return convertView;
-        }
-
-        class CustomViewHolder {
-            public ImageView imgLogo;
-            public TextView txtName;
-            public Button btnClick;
-        }
-    };
 
     @Override
     public void onDragViewStart(int position) {

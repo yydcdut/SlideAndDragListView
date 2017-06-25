@@ -11,7 +11,6 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
-import android.widget.SimpleAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -84,23 +83,10 @@ public class HeaderFooterActivity extends AppCompatActivity implements AdapterVi
         mListView = (SlideAndDragListView) findViewById(R.id.lv_edit);
         View header = LayoutInflater.from(this).inflate(R.layout.item_header_footer, null);
         View footer = LayoutInflater.from(this).inflate(R.layout.item_header_footer, null);
-        View footer2 = LayoutInflater.from(this).inflate(R.layout.item_header_footer, null);
         footer.setBackgroundColor(0xff0000bb);
         mListView.addHeaderView(header);
-        mListView.addHeaderView(footer);
-        mListView.addHeaderView(footer2);
-        mListView.addFooterView(header);
         mListView.addFooterView(footer);
-        mListView.addFooterView(footer2);
         mListView.setMenu(mMenu);
-//        List<Map<String, String>> list = new ArrayList<>(mAppList.size());
-//        for (ApplicationInfo applicationInfo : mAppList) {
-//            Map<String,String> map = new HashMap<>();
-//            map.put("text", applicationInfo.loadLabel(getPackageManager()).toString());
-//            list.add(map);
-//        }
-//        mSimpleAdapter = new SimpleAdapter(this, list, R.layout.item_simple_adapter, new String[]{"text"}, new int[]{R.id.txt_simple});
-//        mListView.setAdapter(mSimpleAdapter);
         mListView.setAdapter(mAdapter);
         mListView.setOnItemClickListener(this);
         mListView.setOnDragListener(this, mAppList);
@@ -109,8 +95,6 @@ public class HeaderFooterActivity extends AppCompatActivity implements AdapterVi
         mListView.setOnMenuItemClickListener(this);
         mListView.setOnItemDeleteListener(this);
     }
-
-    private SimpleAdapter mSimpleAdapter;
 
     private BaseAdapter mAdapter = new BaseAdapter() {
         @Override

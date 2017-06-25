@@ -32,6 +32,15 @@
         android:textAllCaps="false"/>
 
     <Button
+        android:id="@+id/btn_header_footer_view_type"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="5dp"
+        android:gravity="center"
+        android:text="SDLV with Header and Footer(ViewType)"
+        android:textAllCaps="false"/>
+
+    <Button
         android:id="@+id/btn_view_type"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -47,6 +56,15 @@
         android:layout_marginBottom="5dp"
         android:gravity="center"
         android:text="Touch Item to Drag"
+        android:textAllCaps="false"/>
+
+    <Button
+        android:id="@+id/btn_simple_adapter"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="5dp"
+        android:gravity="center"
+        android:text="SimpleAdapter"
         android:textAllCaps="false"/>
 
 </LinearLayout>
