@@ -186,19 +186,23 @@ public class SlideAndDragListView<T> extends FrameLayout implements Callback.OnD
     }
 
     @Override
-    public void onDragMoving(int x, int y, View view) {
+    public boolean onDragMoving(int x, int y, View view) {
         mDragView.setX(mSlideListView.getPaddingLeft() + getPaddingLeft());
         mDragView.setY(y - mDragDelta);
+        return true;
     }
 
     @Override
-    public void onDragFinished(int x, int y) {
+    public boolean onDragFinished(int x, int y) {
         mDragDelta = 0;
         if (mDragView != null) {
             ObjectAnimator objectAnimator = ObjectAnimator.ofFloat(mDragView, "alpha", DRAG_VIEW_ALPHA, 0.0f);
             objectAnimator.setDuration(100);
             objectAnimator.addListener(new DragFinishAnimation());
             objectAnimator.start();
+            return true;
+        } else {
+            return false;
         }
     }
 
@@ -410,14 +414,14 @@ public class SlideAndDragListView<T> extends FrameLayout implements Callback.OnD
     public void setNotDragHeaderCount(int headerCount) {
         WrapperAdapter adapter = mSlideListView.getWrapperAdapter();
         if (adapter != null) {
-            adapter.setStartLimit(headerCount);
+            adapter.setStartLimit(headerCount - 1);
         }
     }
 
     public void setNotDragFooterCount(int footerCount) {
         WrapperAdapter adapter = mSlideListView.getWrapperAdapter();
         if (adapter != null) {
-            adapter.setEndLimit(footerCount);
+            adapter.setEndLimit(adapter.getCount() - footerCount);
         }
     }
     //-------------------    API    -------------------

@@ -426,6 +426,7 @@ class WrapperAdapter implements WrapperListAdapter, ItemMainLayout.OnItemSlideLi
     private void popDragEntry(int index) {
         if (isIndexInBound(index)) {
             mDraggedEntity = mListView.getDataList().get(index);
+//            mDraggedEntity = getItem(index);
             mDraggedEntityIndex = index;
             mDragEnteredEntityIndex = index;
             markDropArea(index);
@@ -435,6 +436,7 @@ class WrapperAdapter implements WrapperListAdapter, ItemMainLayout.OnItemSlideLi
     private void markDropArea(int itemIndex) {
         if (mDraggedEntity != null && isIndexInBound(mDragEnteredEntityIndex) && isIndexInBound(itemIndex)) {
             cacheOffsetsForDataSetChanged();
+//            Object object = mListView.getDataList().remove(mDragEnteredEntityIndex);
             Object object = mListView.getDataList().remove(mDragEnteredEntityIndex);
             mDragEnteredEntityIndex = itemIndex;
             mListView.getDataList().add(mDragEnteredEntityIndex, object);
@@ -461,10 +463,10 @@ class WrapperAdapter implements WrapperListAdapter, ItemMainLayout.OnItemSlideLi
                 continue;
             }
             if (getItem(position - mListView.getHeaderViewsCount()) == null) {
-                throw new NullPointerException("todo ");
+                throw new NullPointerException("The value of getItem(position) is NULL!");
             }
             int itemId = getItem(position - mListView.getHeaderViewsCount()).hashCode();
-            mItemIdTopMap.put(itemId, child.getTop());
+            mItemIdTopMap.put((int) itemId, child.getTop());
         }
     }
 
@@ -473,21 +475,24 @@ class WrapperAdapter implements WrapperListAdapter, ItemMainLayout.OnItemSlideLi
     }
 
     @Override
-    public void onDragMoving(int x, int y, View view) {
+    public boolean onDragMoving(int x, int y, View view) {
         if (view == null) {
-            return;
+            return false;
         }
         int itemIndex = mListView.getPositionForView(view) - mListView.getHeaderViewsCount();
         if (isInDragging && mDragEnteredEntityIndex != itemIndex && isIndexInBound(itemIndex)
                 && itemIndex > mStartLimit && itemIndex < mEndLimit) {
             markDropArea(itemIndex);
         }
+        return isInDragging;
     }
 
     @Override
-    public void onDragFinished(int x, int y) {
+    public boolean onDragFinished(int x, int y) {
+        boolean bool = isInDragging;
         setInDragging(false);
         handleDrop();
+        return bool;
     }
 
     private void handleDrop() {

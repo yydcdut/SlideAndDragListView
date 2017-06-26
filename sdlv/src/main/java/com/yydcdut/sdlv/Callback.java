@@ -27,9 +27,9 @@ interface Callback {
 
         boolean onDragStarted(int x, int y, View view);
 
-        void onDragMoving(int x, int y, View view);
+        boolean onDragMoving(int x, int y, View view);
 
-        void onDragFinished(int x, int y);
+        boolean onDragFinished(int x, int y);
     }
 
     interface OnScrollListenerWrapper {

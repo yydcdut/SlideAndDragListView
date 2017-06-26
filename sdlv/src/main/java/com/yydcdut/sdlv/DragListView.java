@@ -106,25 +106,27 @@ class DragListView<T> extends ListView {
         if (view == null) {
             return;
         }
+        boolean isDragging = false;
+        if (mAdapterDragDropListener != null) {
+            isDragging = mAdapterDragDropListener.onDragMoving(x, y, view);
+        }
         if (mDragListDragDropListener != null) {
             mDragListDragDropListener.onDragMoving(x, y, view);
         }
-        if (mAdapterDragDropListener != null) {
-            mAdapterDragDropListener.onDragMoving(x, y, view);
-        }
-        if (mOnDragListener != null) {
+        if (mOnDragListener != null && isDragging) {
             mOnDragListener.onDragViewMoving(getPositionForView(view));
         }
     }
 
     protected void handleDragFinished(int x, int y) {
-        if (mDragListDragDropListener != null) {
+        boolean isDragging = false;
+        if (mAdapterDragDropListener != null) {
+            isDragging = mAdapterDragDropListener.onDragFinished(x, y);
+        }
+        if (mDragListDragDropListener != null && isDragging) {
             mDragListDragDropListener.onDragFinished(x, y);
         }
-        if (mAdapterDragDropListener != null) {
-            mAdapterDragDropListener.onDragFinished(x, y);
-        }
-        if (mOnDragListener != null) {
+        if (mOnDragListener != null && isDragging) {
             View view = getViewByPoint(x, y);
             if (view == null) {
                 if (y < 0) {
