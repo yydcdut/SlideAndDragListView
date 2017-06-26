@@ -5,7 +5,6 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -152,45 +151,35 @@ public class ItemDragActivity extends AppCompatActivity implements AdapterView.O
     @Override
     public void onDragViewStart(int beginPosition) {
         mDraggedEntity = mAppList.get(beginPosition);
-        mToast.setText("onDragViewStart   position--->" + beginPosition);
-        mToast.show();
-        Log.i(TAG, "onDragViewStart   " + beginPosition);
+        toast("onDragViewStart   beginPosition--->" + beginPosition);
     }
 
     @Override
     public void onDragViewMoving(int fromPosition, int toPosition) {
         ApplicationInfo applicationInfo = mAppList.remove(fromPosition);
         mAppList.add(toPosition, applicationInfo);
-        Log.i(TAG, "onDragViewMoving  fromPosition--> " + fromPosition + "  toPosition-->" + toPosition);
-        mToast.setText("onDragViewMoving  fromPosition--> " + fromPosition + "  toPosition-->" + toPosition);
-        mToast.show();
+        toast("onDragViewMoving   fromPosition--->" + fromPosition + "  toPosition-->" + toPosition);
     }
 
     @Override
     public void onDragViewDown(int finalPosition) {
         mAppList.set(finalPosition, mDraggedEntity);
-        mToast.setText("onDragViewDown   finalPosition--->" + finalPosition);
-        mToast.show();
-        Log.i(TAG, "onDragViewDown   " + finalPosition);
+        toast("onDragViewDown   finalPosition--->" + finalPosition);
     }
 
     @Override
     public void onSlideOpen(View view, View parentView, int position, int direction) {
-        mToast.setText("onSlideOpen   position--->" + position + "  direction--->" + direction);
-        mToast.show();
-        Log.i(TAG, "onSlideOpen   " + position);
+        toast("onSlideOpen   position--->" + position + "  direction--->" + direction);
     }
 
     @Override
     public void onSlideClose(View view, View parentView, int position, int direction) {
-        mToast.setText("onSlideClose   position--->" + position + "  direction--->" + direction);
-        mToast.show();
-        Log.i(TAG, "onSlideClose   " + position);
+        toast("onSlideClose   position--->" + position + "  direction--->" + direction);
     }
 
     @Override
     public int onMenuItemClick(View v, int itemPosition, int buttonPosition, int direction) {
-        Log.i(TAG, "onMenuItemClick   " + itemPosition + "   " + buttonPosition + "   " + direction);
+        toast("onMenuItemClick   itemPosition--->" + itemPosition + "  buttonPosition-->" + buttonPosition + "  direction-->" + direction);
         switch (direction) {
             case MenuItem.DIRECTION_LEFT:
                 switch (buttonPosition) {
@@ -215,6 +204,7 @@ public class ItemDragActivity extends AppCompatActivity implements AdapterView.O
     public void onItemDeleteAnimationFinished(View view, int position) {
         mAppList.remove(position - mListView.getHeaderViewsCount());
         mAdapter.notifyDataSetChanged();
+        toast("onItemDeleteAnimationFinished   position--->" + position);
     }
 
     @Override
@@ -236,16 +226,17 @@ public class ItemDragActivity extends AppCompatActivity implements AdapterView.O
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        mToast.setText("onItemClick   position--->" + position);
-        mToast.show();
-        Log.i(TAG, "onItemClick   " + position);
+        toast("onItemClick   position--->" + position);
     }
 
     @Override
     public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-        mToast.setText("onItemLongClick   position--->" + position);
-        mToast.show();
-        Log.i(TAG, "onItemLongClick   " + position);
+        toast("onItemLongClick   position--->" + position);
         return false;
+    }
+
+    private void toast(String toast) {
+        mToast.setText(toast);
+        mToast.show();
     }
 }
