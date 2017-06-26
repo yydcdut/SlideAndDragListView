@@ -55,8 +55,6 @@ class WrapperAdapter implements WrapperListAdapter, ItemMainLayout.OnItemSlideLi
     /* drag的entity */
     private Object mDraggedEntity = null;
     /* drag的entity的位置 */
-    private int mDraggedEntityIndex = -1;
-    /* drag的entity的位置 */
     private int mDragEnteredEntityIndex = -1;
     /* 记录top位置 */
     private HashMap<Integer, Integer> mItemIdTopMap;
@@ -425,21 +423,19 @@ class WrapperAdapter implements WrapperListAdapter, ItemMainLayout.OnItemSlideLi
 
     private void popDragEntry(int index) {
         if (isIndexInBound(index)) {
-            mDraggedEntity = mListView.getDataList().get(index);
-//            mDraggedEntity = getItem(index);
-            mDraggedEntityIndex = index;
+            mDraggedEntity = getItem(index);
             mDragEnteredEntityIndex = index;
-            markDropArea(index);
+            markDropArea(index, null);
         }
     }
 
-    private void markDropArea(int itemIndex) {
+    private void markDropArea(int itemIndex, SlideAndDragListView.OnDragListener listener) {
         if (mDraggedEntity != null && isIndexInBound(mDragEnteredEntityIndex) && isIndexInBound(itemIndex)) {
             cacheOffsetsForDataSetChanged();
-//            Object object = mListView.getDataList().remove(mDragEnteredEntityIndex);
-            Object object = mListView.getDataList().remove(mDragEnteredEntityIndex);
+            if (listener != null) {
+                listener.onDragViewMoving(mDragEnteredEntityIndex, itemIndex);
+            }
             mDragEnteredEntityIndex = itemIndex;
-            mListView.getDataList().add(mDragEnteredEntityIndex, object);
             doAnimation();
             notifyDataSetChanged();
         }
@@ -466,45 +462,39 @@ class WrapperAdapter implements WrapperListAdapter, ItemMainLayout.OnItemSlideLi
                 throw new NullPointerException("The value of getItem(position) is NULL!");
             }
             int itemId = getItem(position - mListView.getHeaderViewsCount()).hashCode();
-            mItemIdTopMap.put((int) itemId, child.getTop());
+            mItemIdTopMap.put(itemId, child.getTop());
         }
     }
 
     private boolean isIndexInBound(int itemIndex) {
-        return itemIndex >= 0 && itemIndex < mListView.getDataList().size();
+        return itemIndex >= 0 && itemIndex < getCount();
     }
 
     @Override
-    public boolean onDragMoving(int x, int y, View view) {
+    public void onDragMoving(int x, int y, View view, SlideAndDragListView.OnDragListener listener) {
         if (view == null) {
-            return false;
+            return;
         }
         int itemIndex = mListView.getPositionForView(view) - mListView.getHeaderViewsCount();
         if (isInDragging && mDragEnteredEntityIndex != itemIndex && isIndexInBound(itemIndex)
                 && itemIndex > mStartLimit && itemIndex < mEndLimit) {
-            markDropArea(itemIndex);
+            markDropArea(itemIndex, listener);
         }
-        return isInDragging;
     }
 
     @Override
-    public boolean onDragFinished(int x, int y) {
-        boolean bool = isInDragging;
+    public void onDragFinished(int x, int y, SlideAndDragListView.OnDragListener listener) {
         setInDragging(false);
-        handleDrop();
-        return bool;
+        handleDrop(listener);
     }
 
-    private void handleDrop() {
+    private void handleDrop(SlideAndDragListView.OnDragListener listener) {
         if (mDraggedEntity != null) {
-            if (isIndexInBound(mDragEnteredEntityIndex) && mDragEnteredEntityIndex != mDraggedEntityIndex) {
-                int dropIndex = mDragEnteredEntityIndex;
-                mListView.getDataList().set(dropIndex, mDraggedEntity);
+            if (isIndexInBound(mDragEnteredEntityIndex)) {
+                if (listener != null) {
+                    listener.onDragViewDown(mDragEnteredEntityIndex);
+                }
                 cacheOffsetsForDataSetChanged();
-                notifyDataSetChanged();
-            } else if (isIndexInBound(mDraggedEntityIndex)) {
-                mListView.getDataList().remove(mDragEnteredEntityIndex);
-                mListView.getDataList().add(mDraggedEntityIndex, mDraggedEntity);
                 notifyDataSetChanged();
             }
             mDraggedEntity = null;

@@ -48,13 +48,13 @@ import java.util.List;
 /**
  * Created by yuyidong on 2017/5/10.
  */
-public class SlideAndDragListView<T> extends FrameLayout implements Callback.OnDragDropListener {
+public class SlideAndDragListView extends FrameLayout implements Callback.OnDragDropListener {
     /* drag的时候透明度 */
     private static final float DRAG_VIEW_ALPHA = 0.7f;
     /* drag的View */
     private ImageView mDragView;
     /* Inner View */
-    private SlideListView<T> mSlideListView;
+    private SlideListView mSlideListView;
     /* Handler的延时 */
     private final long SCROLL_HANDLER_DELAY_MILLIS = 5;
     /* 移动距离 */
@@ -186,23 +186,19 @@ public class SlideAndDragListView<T> extends FrameLayout implements Callback.OnD
     }
 
     @Override
-    public boolean onDragMoving(int x, int y, View view) {
+    public void onDragMoving(int x, int y, View view, SlideAndDragListView.OnDragListener listener) {
         mDragView.setX(mSlideListView.getPaddingLeft() + getPaddingLeft());
         mDragView.setY(y - mDragDelta);
-        return true;
     }
 
     @Override
-    public boolean onDragFinished(int x, int y) {
+    public void onDragFinished(int x, int y, SlideAndDragListView.OnDragListener listener) {
         mDragDelta = 0;
-        if (mDragView != null) {
+        if (mDragView != null && mDragView.getVisibility() == VISIBLE) {
             ObjectAnimator objectAnimator = ObjectAnimator.ofFloat(mDragView, "alpha", DRAG_VIEW_ALPHA, 0.0f);
             objectAnimator.setDuration(100);
             objectAnimator.addListener(new DragFinishAnimation());
             objectAnimator.start();
-            return true;
-        } else {
-            return false;
         }
     }
 
@@ -368,33 +364,33 @@ public class SlideAndDragListView<T> extends FrameLayout implements Callback.OnD
         /**
          * 开始drag
          *
-         * @param position
+         * @param beginPosition
          */
-        void onDragViewStart(int position);
+        void onDragViewStart(int beginPosition);
 
         /**
          * drag的正在移动
          *
-         * @param position
+         * @param fromPosition
+         * @param toPosition
          */
-        void onDragViewMoving(int position);
+        void onDragViewMoving(int fromPosition, int toPosition);
 
         /**
          * drag的放下了
          *
-         * @param position
+         * @param finalPosition
          */
-        void onDragViewDown(int position);
+        void onDragViewDown(int finalPosition);
     }
 
     /**
      * 设置drag的监听器，加入数据
      *
      * @param onDragListener
-     * @param dataList
      */
-    public void setOnDragListener(OnDragListener onDragListener, List<T> dataList) {
-        mSlideListView.setOnDragListener(onDragListener, dataList);
+    public void setOnDragListener(OnDragListener onDragListener) {
+        mSlideListView.setOnDragListener(onDragListener);
     }
     //-------------------    drag & drop    -------------------
 

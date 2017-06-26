@@ -35,8 +35,9 @@ public class SlideAndDragListViewActivity extends AppCompatActivity implements A
 
     private Menu mMenu;
     private List<ApplicationInfo> mAppList;
-    private SlideAndDragListView<ApplicationInfo> mListView;
+    private SlideAndDragListView mListView;
     private Toast mToast;
+    private ApplicationInfo mDraggedEntity;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -85,7 +86,7 @@ public class SlideAndDragListViewActivity extends AppCompatActivity implements A
         mListView.setMenu(mMenu);
         mListView.setAdapter(mAdapter);
         mListView.setOnScrollListener(this);
-        mListView.setOnDragListener(this, mAppList);
+        mListView.setOnDragListener(this);
         mListView.setOnItemClickListener(this);
         mListView.setOnSlideListener(this);
         mListView.setOnMenuItemClickListener(this);
@@ -151,23 +152,28 @@ public class SlideAndDragListViewActivity extends AppCompatActivity implements A
     };
 
     @Override
-    public void onDragViewStart(int position) {
-        mToast.setText("onDragViewStart   position--->" + position);
+    public void onDragViewStart(int beginPosition) {
+        mDraggedEntity = mAppList.get(beginPosition);
+        mToast.setText("onDragViewStart   position--->" + beginPosition);
         mToast.show();
-        Log.i(TAG, "onDragViewStart   " + position);
+        Log.i(TAG, "onDragViewStart   " + beginPosition);
     }
 
     @Override
-    public void onDragViewMoving(int position) {
-//        Toast.makeText(DemoActivity.this, "onDragViewMoving   position--->" + position, Toast.LENGTH_SHORT).show();
-        Log.i("yuyidong", "onDragViewMoving   " + position);
+    public void onDragViewMoving(int fromPosition, int toPosition) {
+        ApplicationInfo applicationInfo = mAppList.remove(fromPosition);
+        mAppList.add(toPosition, applicationInfo);
+        Log.i(TAG, "onDragViewMoving  fromPosition--> " + fromPosition + "  toPosition-->" + toPosition);
+        mToast.setText("onDragViewMoving  fromPosition--> " + fromPosition + "  toPosition-->" + toPosition);
+        mToast.show();
     }
 
     @Override
-    public void onDragViewDown(int position) {
-        mToast.setText("onDragViewDown   position--->" + position);
+    public void onDragViewDown(int finalPosition) {
+        mAppList.set(finalPosition, mDraggedEntity);
+        mToast.setText("onDragViewDown   finalPosition--->" + finalPosition);
         mToast.show();
-        Log.i(TAG, "onDragViewDown   " + position);
+        Log.i(TAG, "onDragViewDown   " + finalPosition);
     }
 
     @Override
@@ -241,10 +247,10 @@ public class SlideAndDragListViewActivity extends AppCompatActivity implements A
         switch (item.getItemId()) {
             case R.id.menu_drag:
                 if (item.getTitle().toString().startsWith("Enable")) {
-                    mListView.setOnDragListener(this, mAppList);
+                    mListView.setOnDragListener(this);
                     item.setTitle("Disable Drag");
                 } else {
-                    mListView.setOnDragListener(null, null);
+                    mListView.setOnDragListener((SlideAndDragListView.OnDragListener) null);
                     item.setTitle("Enable Drag");
                 }
                 break;

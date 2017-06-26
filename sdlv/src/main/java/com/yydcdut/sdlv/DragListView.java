@@ -20,14 +20,10 @@ import android.util.AttributeSet;
 import android.view.View;
 import android.widget.ListView;
 
-import java.util.List;
-
 /**
  * Created by yuyidong on 15/9/30.
  */
-class DragListView<T> extends ListView {
-    /* 数据 */
-    protected List<T> mDataList;
+class DragListView extends ListView {
     /* 监听器 */
     private SlideAndDragListView.OnDragListener mOnDragListener;
     /* 监听器 */
@@ -61,15 +57,9 @@ class DragListView<T> extends ListView {
      * 设置drag的监听器，加入数据
      *
      * @param onDragListener
-     * @param dataList
      */
-    public void setOnDragListener(SlideAndDragListView.OnDragListener onDragListener, List<T> dataList) {
+    public void setOnDragListener(SlideAndDragListView.OnDragListener onDragListener) {
         mOnDragListener = onDragListener;
-        mDataList = dataList;
-    }
-
-    public List<T> getDataList() {
-        return mDataList;
     }
 
     private View getViewByPoint(int x, int y) {
@@ -97,7 +87,7 @@ class DragListView<T> extends ListView {
             mDragListDragDropListener.onDragStarted(x, y, view);
         }
         if (mOnDragListener != null && isDragging) {
-            mOnDragListener.onDragViewStart(getPositionForView(view));
+            mOnDragListener.onDragViewStart(getPositionForView(view) - getHeaderViewsCount());
         }
     }
 
@@ -106,37 +96,20 @@ class DragListView<T> extends ListView {
         if (view == null) {
             return;
         }
-        boolean isDragging = false;
         if (mAdapterDragDropListener != null) {
-            isDragging = mAdapterDragDropListener.onDragMoving(x, y, view);
+            mAdapterDragDropListener.onDragMoving(x, y, view, mOnDragListener);
         }
         if (mDragListDragDropListener != null) {
-            mDragListDragDropListener.onDragMoving(x, y, view);
-        }
-        if (mOnDragListener != null && isDragging) {
-            mOnDragListener.onDragViewMoving(getPositionForView(view));
+            mDragListDragDropListener.onDragMoving(x, y, view, null);
         }
     }
 
     protected void handleDragFinished(int x, int y) {
-        boolean isDragging = false;
         if (mAdapterDragDropListener != null) {
-            isDragging = mAdapterDragDropListener.onDragFinished(x, y);
+            mAdapterDragDropListener.onDragFinished(x, y, mOnDragListener);
         }
-        if (mDragListDragDropListener != null && isDragging) {
-            mDragListDragDropListener.onDragFinished(x, y);
-        }
-        if (mOnDragListener != null && isDragging) {
-            View view = getViewByPoint(x, y);
-            if (view == null) {
-                if (y < 0) {
-                    mOnDragListener.onDragViewDown(getFirstVisiblePosition());
-                } else {
-                    mOnDragListener.onDragViewDown(getLastVisiblePosition());
-                }
-            } else {
-                mOnDragListener.onDragViewDown(getPositionForView(view));
-            }
+        if (mDragListDragDropListener != null) {
+            mDragListDragDropListener.onDragFinished(x, y, null);
         }
     }
 

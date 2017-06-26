@@ -30,7 +30,7 @@ import java.util.List;
 /**
  * Created by yuyidong on 15/9/28.
  */
-class SlideListView<T> extends DragListView<T> implements WrapperAdapter.OnAdapterSlideListenerProxy,
+class SlideListView<T> extends DragListView implements WrapperAdapter.OnAdapterSlideListenerProxy,
         WrapperAdapter.OnAdapterMenuClickListenerProxy, WrapperAdapter.onItemDeleteListenerProxy,
         WrapperAdapter.OnScrollListenerProxy, AbsListView.OnItemLongClickListener, WrapperAdapter.OnItemScrollBackListenerProxy {
     /* onTouch里面的状态 */

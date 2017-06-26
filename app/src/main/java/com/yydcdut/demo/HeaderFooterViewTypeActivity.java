@@ -35,10 +35,11 @@ public class HeaderFooterViewTypeActivity extends AppCompatActivity implements A
 
     private List<Menu> mMenuList;
     private List<ApplicationInfo> mAppList;
-    private SlideAndDragListView<ApplicationInfo> mListView;
+    private SlideAndDragListView mListView;
     private Toast mToast;
     private View mHeaderView;
     private View mFooterView;
+    private ApplicationInfo mDraggedEntity;
 
     private static final int TYPE_VIEW_HEADER = 1;
     private static final int TYPE_VIEW_FOOTER = 2;
@@ -88,7 +89,7 @@ public class HeaderFooterViewTypeActivity extends AppCompatActivity implements A
         mListView = (SlideAndDragListView) findViewById(R.id.lv_edit);
         mListView.setMenu(mMenuList);
         mListView.setAdapter(mAdapter);
-        mListView.setOnDragListener(this, mAppList);
+        mListView.setOnDragListener(this);
         mListView.setOnItemClickListener(this);
         mListView.setOnSlideListener(this);
         mListView.setOnMenuItemClickListener(this);
@@ -179,42 +180,49 @@ public class HeaderFooterViewTypeActivity extends AppCompatActivity implements A
     };
 
     @Override
-    public void onDragViewStart(int position) {
-        mToast.setText("onDragViewStart   position--->" + position);
+    public void onDragViewStart(int beginPosition) {
+        if (beginPosition == 0) {
+            return;
+        }
+        mDraggedEntity = mAppList.get(beginPosition - 1);//-1 --> header viewType
+        mToast.setText("onDragViewStart   position--->" + beginPosition);
         mToast.show();
-        Log.i(TAG, "onDragViewStart   " + position);
     }
 
     @Override
-    public void onDragViewMoving(int position) {
-//        Toast.makeText(DemoActivity.this, "onDragViewMoving   position--->" + position, Toast.LENGTH_SHORT).show();
-        Log.i("yuyidong", "onDragViewMoving   " + position);
+    public void onDragViewMoving(int fromPosition, int toPosition) {
+        Log.d("yuyidong", "onDragViewMoving  fromPosition--> " + fromPosition + "  toPosition-->" + toPosition);
+        if (toPosition == 0 || toPosition == mAdapter.getCount()) {
+            return;
+        }
+        ApplicationInfo applicationInfo = mAppList.remove(fromPosition - 1);//-1 --> header viewType
+        mAppList.add(toPosition - 1, applicationInfo);//-1 --> header viewType
     }
 
     @Override
-    public void onDragViewDown(int position) {
-        mToast.setText("onDragViewDown   position--->" + position);
+    public void onDragViewDown(int finalPosition) {
+        if (finalPosition == mAdapter.getCount() - 1) {
+            return;
+        }
+        mAppList.set(finalPosition - 1, mDraggedEntity);//-1 --> header viewType
+        mToast.setText("onDragViewDown   position--->" + finalPosition);
         mToast.show();
-        Log.i(TAG, "onDragViewDown   " + position);
     }
 
     @Override
     public void onSlideOpen(View view, View parentView, int position, int direction) {
         mToast.setText("onSlideOpen   position--->" + position + "  direction--->" + direction);
         mToast.show();
-        Log.i(TAG, "onSlideOpen   " + position);
     }
 
     @Override
     public void onSlideClose(View view, View parentView, int position, int direction) {
         mToast.setText("onSlideClose   position--->" + position + "  direction--->" + direction);
         mToast.show();
-        Log.i(TAG, "onSlideClose   " + position);
     }
 
     @Override
     public int onMenuItemClick(View v, int itemPosition, int buttonPosition, int direction) {
-        Log.i(TAG, "onMenuItemClick   " + itemPosition + "   " + buttonPosition + "   " + direction);
         switch (direction) {
             case MenuItem.DIRECTION_LEFT:
                 switch (buttonPosition) {
@@ -245,7 +253,6 @@ public class HeaderFooterViewTypeActivity extends AppCompatActivity implements A
     public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
         mToast.setText("onItemLongClick   position--->" + position);
         mToast.show();
-        Log.i(TAG, "onItemLongClick   " + position);
         return true;
     }
 
@@ -253,7 +260,6 @@ public class HeaderFooterViewTypeActivity extends AppCompatActivity implements A
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         mToast.setText("onItemClick   position--->" + position);
         mToast.show();
-        Log.i(TAG, "onItemClick   " + position);
     }
 
     @Override
