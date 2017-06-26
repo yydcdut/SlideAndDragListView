@@ -153,8 +153,10 @@ public class DifferentMenuActivity extends AppCompatActivity implements AdapterV
             ApplicationInfo item = (ApplicationInfo) this.getItem(position);
             if (getItemViewType(position) == 2) {
                 cvh.txtName.setText("No Menu");
+            } else if (getItemViewType(position) == 0) {
+                cvh.txtName.setText("right");
             } else {
-                cvh.txtName.setText(item.loadLabel(getPackageManager()));
+                cvh.txtName.setText("left");
             }
             cvh.imgLogo.setImageDrawable(item.loadIcon(getPackageManager()));
             return convertView;
