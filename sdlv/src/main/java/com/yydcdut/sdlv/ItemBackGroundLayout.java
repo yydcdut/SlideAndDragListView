@@ -20,18 +20,21 @@ import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewGroup;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by yuyidong on 15/9/24.
  */
-class ItemBackGroundLayout extends ViewGroup {
+class ItemBackGroundLayout extends ViewGroup implements View.OnClickListener {
     /* 下一个View的距离 */
     private int mMarginLeft = 0;
     private int mMarginRight = 0;
-    /* 添加的子View */
-    private List<View> mViewsList;
+
+    private Map<View, Integer> mViewPositionMap;
+    private int mDirection = -1;
+
+    private OnMenuItemClickListener mOnMenuItemClickListener;
 
     public ItemBackGroundLayout(Context context) {
         this(context, null);
@@ -43,19 +46,26 @@ class ItemBackGroundLayout extends ViewGroup {
 
     public ItemBackGroundLayout(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        mViewsList = new ArrayList<>();
+        mViewPositionMap = new HashMap<>();
         setVisibility(GONE);
     }
 
-    protected View addMenuItem(MenuItem menuItem) {
+    protected void addMenuItem(MenuItem menuItem, int position) {
         int count = getChildCount();
         BaseLayout parent = new SDMenuItemView(getContext(), menuItem);
         parent.build();
         addView(parent, count);
-        mViewsList.add(parent);
-        return parent;
+        mViewPositionMap.put(parent, position);
+        parent.setOnClickListener(this);
     }
 
+    public void setOnMenuItemClickListener(OnMenuItemClickListener onMenuItemClickListener) {
+        mOnMenuItemClickListener = onMenuItemClickListener;
+    }
+
+    public void setDirection(int direction) {
+        mDirection = direction;
+    }
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
@@ -86,7 +96,20 @@ class ItemBackGroundLayout extends ViewGroup {
         }
     }
 
-    protected List<View> getViewsList() {
-        return mViewsList;
+    protected boolean hasMenuItemViews() {
+        return mViewPositionMap.size() != 0;
+    }
+
+    @Override
+    public void onClick(View v) {
+        Integer position = mViewPositionMap.get(v);
+        if (mOnMenuItemClickListener != null) {
+            mOnMenuItemClickListener.onClick(position, mDirection, v);
+        }
+
+    }
+
+    protected interface OnMenuItemClickListener {
+        void onClick(int position, int direction, View view);
     }
 }

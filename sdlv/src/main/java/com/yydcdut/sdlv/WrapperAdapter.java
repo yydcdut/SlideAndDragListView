@@ -37,7 +37,7 @@ import java.util.HashMap;
  */
 class WrapperAdapter implements WrapperListAdapter, ItemMainLayout.OnItemSlideListenerProxy, View.OnClickListener,
         AbsListView.OnScrollListener, ItemMainLayout.OnItemDeleteListenerProxy, Callback.OnDragDropListener,
-        ItemMainLayout.OnItemScrollBackListenerProxy {
+        ItemMainLayout.OnItemScrollBackListenerProxy, ItemBackGroundLayout.OnMenuItemClickListener {
     private final static int TAG_LEFT = 3 << 24;
     private final static int TAG_RIGHT = 4 << 24;
     /* 上下文 */
@@ -187,18 +187,20 @@ class WrapperAdapter implements WrapperListAdapter, ItemMainLayout.OnItemSlideLi
     private void createMenu(Menu menu, ItemMainLayout itemMainLayout) {
         if (menu.getTotalBtnLength(MenuItem.DIRECTION_LEFT) > 0) {
             for (int i = 0; i < menu.getMenuItems(MenuItem.DIRECTION_LEFT).size(); i++) {
-                View v = itemMainLayout.getItemLeftBackGroundLayout().addMenuItem(menu.getMenuItems(MenuItem.DIRECTION_LEFT).get(i));
-                v.setOnClickListener(this);
-                v.setTag(TAG_LEFT, i);
+                ItemBackGroundLayout itemBackGroundLayout = itemMainLayout.getItemLeftBackGroundLayout();
+                itemBackGroundLayout.addMenuItem(menu.getMenuItems(MenuItem.DIRECTION_LEFT).get(i), i);
+                itemBackGroundLayout.setDirection(MenuItem.DIRECTION_LEFT);
+                itemBackGroundLayout.setOnMenuItemClickListener(this);
             }
         } else {
             itemMainLayout.getItemLeftBackGroundLayout().setVisibility(View.GONE);
         }
         if (menu.getTotalBtnLength(MenuItem.DIRECTION_RIGHT) > 0) {
             for (int i = 0; i < menu.getMenuItems(MenuItem.DIRECTION_RIGHT).size(); i++) {
-                View v = itemMainLayout.getItemRightBackGroundLayout().addMenuItem(menu.getMenuItems(MenuItem.DIRECTION_RIGHT).get(i));
-                v.setOnClickListener(this);
-                v.setTag(TAG_RIGHT, i);
+                ItemBackGroundLayout itemBackGroundLayout = itemMainLayout.getItemRightBackGroundLayout();
+                itemBackGroundLayout.addMenuItem(menu.getMenuItems(MenuItem.DIRECTION_RIGHT).get(i), i);
+                itemBackGroundLayout.setDirection(MenuItem.DIRECTION_RIGHT);
+                itemBackGroundLayout.setOnMenuItemClickListener(this);
             }
         } else {
             itemMainLayout.getItemRightBackGroundLayout().setVisibility(View.GONE);
@@ -341,10 +343,13 @@ class WrapperAdapter implements WrapperListAdapter, ItemMainLayout.OnItemSlideLi
 
     @Override
     public void onClick(View v) {
+
+    }
+
+    @Override
+    public void onClick(int position, int direction, View view) {
         if (mOnAdapterMenuClickListenerProxy != null) {
-            int scroll = mOnAdapterMenuClickListenerProxy.onMenuItemClick(v, mSlideItemPosition,
-                    (Integer) (v.getTag(TAG_LEFT) != null ? v.getTag(TAG_LEFT) : v.getTag(TAG_RIGHT)),
-                    v.getTag(TAG_LEFT) != null ? MenuItem.DIRECTION_LEFT : MenuItem.DIRECTION_RIGHT);
+            int scroll = mOnAdapterMenuClickListenerProxy.onMenuItemClick(view, mSlideItemPosition, position, direction);
             switch (scroll) {
                 case Menu.ITEM_NOTHING:
                     break;
