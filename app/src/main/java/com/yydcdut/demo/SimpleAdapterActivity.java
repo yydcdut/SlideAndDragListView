@@ -26,7 +26,7 @@ import java.util.Map;
  */
 public class SimpleAdapterActivity extends AppCompatActivity implements AdapterView.OnItemLongClickListener,
         AdapterView.OnItemClickListener, SlideAndDragListView.OnItemScrollBackListener,
-        SlideAndDragListView.OnDragListener, SlideAndDragListView.OnSlideListener,
+        SlideAndDragListView.OnDragDropListener, SlideAndDragListView.OnSlideListener,
         SlideAndDragListView.OnMenuItemClickListener, SlideAndDragListView.OnItemDeleteListener {
     private static final String TAG = SimpleAdapterActivity.class.getSimpleName();
 
@@ -90,7 +90,7 @@ public class SimpleAdapterActivity extends AppCompatActivity implements AdapterV
         }
         mAdapter = new SimpleAdapter(this, list, R.layout.item_simple_adapter, new String[]{"text"}, new int[]{R.id.txt_simple});
         mListView.setAdapter(mAdapter);
-        mListView.setOnDragListener(this);
+        mListView.setOnDragDropListener(this);
         mListView.setOnItemClickListener(this);
         mListView.setOnSlideListener(this);
         mListView.setOnMenuItemClickListener(this);
@@ -106,10 +106,10 @@ public class SimpleAdapterActivity extends AppCompatActivity implements AdapterV
     }
 
     @Override
-    public void onDragViewMoving(int fromPosition, int toPosition) {
+    public void onDragDropViewMoved(int fromPosition, int toPosition) {
         ApplicationInfo applicationInfo = mAppList.remove(fromPosition);
         mAppList.add(toPosition, applicationInfo);
-        toast("onDragViewMoving   fromPosition--->" + fromPosition + "  toPosition-->" + toPosition);
+        toast("onDragDropViewMoved   fromPosition--->" + fromPosition + "  toPosition-->" + toPosition);
     }
 
     @Override

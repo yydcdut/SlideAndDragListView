@@ -186,13 +186,13 @@ public class SlideAndDragListView extends FrameLayout implements Callback.OnDrag
     }
 
     @Override
-    public void onDragMoving(int x, int y, View view, SlideAndDragListView.OnDragListener listener) {
+    public void onDragMoving(int x, int y, View view, OnDragDropListener listener) {
         mDragView.setX(mSlideListView.getPaddingLeft() + getPaddingLeft());
         mDragView.setY(y - mDragDelta);
     }
 
     @Override
-    public void onDragFinished(int x, int y, SlideAndDragListView.OnDragListener listener) {
+    public void onDragFinished(int x, int y, OnDragDropListener listener) {
         mDragDelta = 0;
         if (mDragView != null && mDragView.getVisibility() == VISIBLE) {
             ObjectAnimator objectAnimator = ObjectAnimator.ofFloat(mDragView, "alpha", DRAG_VIEW_ALPHA, 0.0f);
@@ -360,7 +360,7 @@ public class SlideAndDragListView extends FrameLayout implements Callback.OnDrag
     /**
      * 当发生drag的时候触发的监听器
      */
-    public interface OnDragListener {
+    public interface OnDragDropListener {
         /**
          * 开始drag
          *
@@ -374,7 +374,7 @@ public class SlideAndDragListView extends FrameLayout implements Callback.OnDrag
          * @param fromPosition
          * @param toPosition
          */
-        void onDragViewMoving(int fromPosition, int toPosition);
+        void onDragDropViewMoved(int fromPosition, int toPosition);
 
         /**
          * drag的放下了
@@ -387,10 +387,10 @@ public class SlideAndDragListView extends FrameLayout implements Callback.OnDrag
     /**
      * 设置drag的监听器，加入数据
      *
-     * @param onDragListener
+     * @param onDragDropListener
      */
-    public void setOnDragListener(OnDragListener onDragListener) {
-        mSlideListView.setOnDragListener(onDragListener);
+    public void setOnDragDropListener(OnDragDropListener onDragDropListener) {
+        mSlideListView.setOnDragDropListener(onDragDropListener);
     }
     //-------------------    drag & drop    -------------------
 

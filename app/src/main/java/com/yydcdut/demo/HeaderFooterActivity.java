@@ -24,7 +24,7 @@ import java.util.List;
  */
 public class HeaderFooterActivity extends AppCompatActivity implements AdapterView.OnItemLongClickListener,
         AdapterView.OnItemClickListener,
-        SlideAndDragListView.OnDragListener, SlideAndDragListView.OnSlideListener,
+        SlideAndDragListView.OnDragDropListener, SlideAndDragListView.OnSlideListener,
         SlideAndDragListView.OnMenuItemClickListener, SlideAndDragListView.OnItemDeleteListener {
     private static final String TAG = HeaderFooterActivity.class.getSimpleName();
 
@@ -89,7 +89,7 @@ public class HeaderFooterActivity extends AppCompatActivity implements AdapterVi
         mListView.setMenu(mMenu);
         mListView.setAdapter(mAdapter);
         mListView.setOnItemClickListener(this);
-        mListView.setOnDragListener(this);
+        mListView.setOnDragDropListener(this);
         mListView.setOnItemLongClickListener(this);
         mListView.setOnSlideListener(this);
         mListView.setOnMenuItemClickListener(this);
@@ -146,10 +146,10 @@ public class HeaderFooterActivity extends AppCompatActivity implements AdapterVi
     }
 
     @Override
-    public void onDragViewMoving(int fromPosition, int toPosition) {
+    public void onDragDropViewMoved(int fromPosition, int toPosition) {
         ApplicationInfo applicationInfo = mAppList.remove(fromPosition);
         mAppList.add(toPosition, applicationInfo);
-        toast("onDragViewMoving   fromPosition--->" + fromPosition + "  toPosition-->" + toPosition);
+        toast("onDragDropViewMoved   fromPosition--->" + fromPosition + "  toPosition-->" + toPosition);
     }
 
     @Override

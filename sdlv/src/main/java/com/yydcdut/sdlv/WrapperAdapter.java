@@ -429,11 +429,11 @@ class WrapperAdapter implements WrapperListAdapter, ItemMainLayout.OnItemSlideLi
         }
     }
 
-    private void markDropArea(int itemIndex, SlideAndDragListView.OnDragListener listener) {
+    private void markDropArea(int itemIndex, SlideAndDragListView.OnDragDropListener listener) {
         if (mDraggedEntity != null && isIndexInBound(mDragEnteredEntityIndex) && isIndexInBound(itemIndex)) {
             cacheOffsetsForDataSetChanged();
             if (listener != null) {
-                listener.onDragViewMoving(mDragEnteredEntityIndex, itemIndex);
+                listener.onDragDropViewMoved(mDragEnteredEntityIndex, itemIndex);
             }
             mDragEnteredEntityIndex = itemIndex;
             doAnimation();
@@ -471,7 +471,7 @@ class WrapperAdapter implements WrapperListAdapter, ItemMainLayout.OnItemSlideLi
     }
 
     @Override
-    public void onDragMoving(int x, int y, View view, SlideAndDragListView.OnDragListener listener) {
+    public void onDragMoving(int x, int y, View view, SlideAndDragListView.OnDragDropListener listener) {
         if (view == null) {
             return;
         }
@@ -483,12 +483,12 @@ class WrapperAdapter implements WrapperListAdapter, ItemMainLayout.OnItemSlideLi
     }
 
     @Override
-    public void onDragFinished(int x, int y, SlideAndDragListView.OnDragListener listener) {
+    public void onDragFinished(int x, int y, SlideAndDragListView.OnDragDropListener listener) {
         setInDragging(false);
         handleDrop(listener);
     }
 
-    private void handleDrop(SlideAndDragListView.OnDragListener listener) {
+    private void handleDrop(SlideAndDragListView.OnDragDropListener listener) {
         if (mDraggedEntity != null) {
             if (isIndexInBound(mDragEnteredEntityIndex)) {
                 if (listener != null) {

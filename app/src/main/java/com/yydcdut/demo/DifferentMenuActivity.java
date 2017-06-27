@@ -27,7 +27,7 @@ import java.util.List;
  * Created by yuyidong on 16/1/23.
  */
 public class DifferentMenuActivity extends AppCompatActivity implements AdapterView.OnItemLongClickListener, AdapterView.OnItemClickListener,
-        SlideAndDragListView.OnDragListener, SlideAndDragListView.OnSlideListener,
+        SlideAndDragListView.OnDragDropListener, SlideAndDragListView.OnSlideListener,
         SlideAndDragListView.OnMenuItemClickListener, SlideAndDragListView.OnItemDeleteListener {
     private static final String TAG = DifferentMenuActivity.class.getSimpleName();
 
@@ -101,7 +101,7 @@ public class DifferentMenuActivity extends AppCompatActivity implements AdapterV
         mListView.setMenu(mMenuList);
         mListView.setAdapter(mAdapter);
         mListView.setOnItemLongClickListener(this);
-        mListView.setOnDragListener(this);
+        mListView.setOnDragDropListener(this);
         mListView.setOnItemClickListener(this);
         mListView.setOnSlideListener(this);
         mListView.setOnMenuItemClickListener(this);
@@ -178,11 +178,11 @@ public class DifferentMenuActivity extends AppCompatActivity implements AdapterV
     }
 
     @Override
-    public void onDragViewMoving(int fromPosition, int toPosition) {
+    public void onDragDropViewMoved(int fromPosition, int toPosition) {
         ApplicationInfo applicationInfo = mAppList.remove(fromPosition);
         mAppList.add(toPosition, applicationInfo);
-        Log.i(TAG, "onDragViewMoving  fromPosition--> " + fromPosition + "  toPosition-->" + toPosition);
-        mToast.setText("onDragViewMoving  fromPosition--> " + fromPosition + "  toPosition-->" + toPosition);
+        Log.i(TAG, "onDragDropViewMoved  fromPosition--> " + fromPosition + "  toPosition-->" + toPosition);
+        mToast.setText("onDragDropViewMoved  fromPosition--> " + fromPosition + "  toPosition-->" + toPosition);
         mToast.show();
     }
 

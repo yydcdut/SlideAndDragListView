@@ -25,7 +25,7 @@ import android.widget.ListView;
  */
 class DragListView extends ListView {
     /* 监听器 */
-    private SlideAndDragListView.OnDragListener mOnDragListener;
+    private SlideAndDragListView.OnDragDropListener mOnDragDropListener;
     /* 监听器 */
     private Callback.OnDragDropListener mAdapterDragDropListener;
     private Callback.OnDragDropListener mDragListDragDropListener;
@@ -44,7 +44,7 @@ class DragListView extends ListView {
 
     protected void setDragPosition(int position) {
         View view = getChildAt(position - getFirstVisiblePosition());
-        if (mOnDragListener != null && view instanceof ItemMainLayout) {
+        if (mOnDragDropListener != null && view instanceof ItemMainLayout) {
             ItemMainLayout itemMainLayout = (ItemMainLayout) getChildAt(position - getFirstVisiblePosition());
             itemMainLayout.getItemLeftBackGroundLayout().setVisibility(GONE);
             itemMainLayout.getItemRightBackGroundLayout().setVisibility(GONE);
@@ -56,10 +56,10 @@ class DragListView extends ListView {
     /**
      * 设置drag的监听器，加入数据
      *
-     * @param onDragListener
+     * @param onDragDropListener
      */
-    public void setOnDragListener(SlideAndDragListView.OnDragListener onDragListener) {
-        mOnDragListener = onDragListener;
+    public void setOnDragDropListener(SlideAndDragListView.OnDragDropListener onDragDropListener) {
+        mOnDragDropListener = onDragDropListener;
     }
 
     private View getViewByPoint(int x, int y) {
@@ -86,8 +86,8 @@ class DragListView extends ListView {
         if (mDragListDragDropListener != null && isDragging) {
             mDragListDragDropListener.onDragStarted(x, y, view);
         }
-        if (mOnDragListener != null && isDragging) {
-            mOnDragListener.onDragViewStart(getPositionForView(view) - getHeaderViewsCount());
+        if (mOnDragDropListener != null && isDragging) {
+            mOnDragDropListener.onDragViewStart(getPositionForView(view) - getHeaderViewsCount());
         }
     }
 
@@ -97,7 +97,7 @@ class DragListView extends ListView {
             return;
         }
         if (mAdapterDragDropListener != null) {
-            mAdapterDragDropListener.onDragMoving(x, y, view, mOnDragListener);
+            mAdapterDragDropListener.onDragMoving(x, y, view, mOnDragDropListener);
         }
         if (mDragListDragDropListener != null) {
             mDragListDragDropListener.onDragMoving(x, y, view, null);
@@ -106,7 +106,7 @@ class DragListView extends ListView {
 
     protected void handleDragFinished(int x, int y) {
         if (mAdapterDragDropListener != null) {
-            mAdapterDragDropListener.onDragFinished(x, y, mOnDragListener);
+            mAdapterDragDropListener.onDragFinished(x, y, mOnDragDropListener);
         }
         if (mDragListDragDropListener != null) {
             mDragListDragDropListener.onDragFinished(x, y, null);

@@ -28,7 +28,7 @@ import java.util.List;
  */
 public class SlideAndDragListViewActivity extends AppCompatActivity implements AdapterView.OnItemLongClickListener,
         AdapterView.OnItemClickListener, AbsListView.OnScrollListener,
-        SlideAndDragListView.OnDragListener, SlideAndDragListView.OnSlideListener,
+        SlideAndDragListView.OnDragDropListener, SlideAndDragListView.OnSlideListener,
         SlideAndDragListView.OnMenuItemClickListener, SlideAndDragListView.OnItemDeleteListener,
         SlideAndDragListView.OnItemScrollBackListener {
     private static final String TAG = SlideAndDragListViewActivity.class.getSimpleName();
@@ -86,7 +86,7 @@ public class SlideAndDragListViewActivity extends AppCompatActivity implements A
         mListView.setMenu(mMenu);
         mListView.setAdapter(mAdapter);
         mListView.setOnScrollListener(this);
-        mListView.setOnDragListener(this);
+        mListView.setOnDragDropListener(this);
         mListView.setOnItemClickListener(this);
         mListView.setOnSlideListener(this);
         mListView.setOnMenuItemClickListener(this);
@@ -158,10 +158,10 @@ public class SlideAndDragListViewActivity extends AppCompatActivity implements A
     }
 
     @Override
-    public void onDragViewMoving(int fromPosition, int toPosition) {
+    public void onDragDropViewMoved(int fromPosition, int toPosition) {
         ApplicationInfo applicationInfo = mAppList.remove(fromPosition);
         mAppList.add(toPosition, applicationInfo);
-        toast("onDragViewMoving   fromPosition--->" + fromPosition + "  toPosition-->" + toPosition);
+        toast("onDragDropViewMoved   fromPosition--->" + fromPosition + "  toPosition-->" + toPosition);
     }
 
     @Override
@@ -237,10 +237,10 @@ public class SlideAndDragListViewActivity extends AppCompatActivity implements A
         switch (item.getItemId()) {
             case R.id.menu_drag:
                 if (item.getTitle().toString().startsWith("Enable")) {
-                    mListView.setOnDragListener(this);
+                    mListView.setOnDragDropListener(this);
                     item.setTitle("Disable Drag");
                 } else {
-                    mListView.setOnDragListener((SlideAndDragListView.OnDragListener) null);
+                    mListView.setOnDragDropListener((SlideAndDragListView.OnDragDropListener) null);
                     item.setTitle("Enable Drag");
                 }
                 break;

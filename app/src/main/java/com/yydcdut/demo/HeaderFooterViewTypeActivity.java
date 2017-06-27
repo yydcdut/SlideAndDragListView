@@ -28,7 +28,7 @@ import java.util.List;
  */
 public class HeaderFooterViewTypeActivity extends AppCompatActivity implements AdapterView.OnItemLongClickListener,
         AdapterView.OnItemClickListener, SlideAndDragListView.OnItemScrollBackListener,
-        SlideAndDragListView.OnDragListener, SlideAndDragListView.OnSlideListener,
+        SlideAndDragListView.OnDragDropListener, SlideAndDragListView.OnSlideListener,
         SlideAndDragListView.OnMenuItemClickListener, SlideAndDragListView.OnItemDeleteListener {
     private static final String TAG = DifferentMenuActivity.class.getSimpleName();
 
@@ -88,7 +88,7 @@ public class HeaderFooterViewTypeActivity extends AppCompatActivity implements A
         mListView = (SlideAndDragListView) findViewById(R.id.lv_edit);
         mListView.setMenu(mMenuList);
         mListView.setAdapter(mAdapter);
-        mListView.setOnDragListener(this);
+        mListView.setOnDragDropListener(this);
         mListView.setOnItemClickListener(this);
         mListView.setOnSlideListener(this);
         mListView.setOnMenuItemClickListener(this);
@@ -188,13 +188,13 @@ public class HeaderFooterViewTypeActivity extends AppCompatActivity implements A
     }
 
     @Override
-    public void onDragViewMoving(int fromPosition, int toPosition) {
+    public void onDragDropViewMoved(int fromPosition, int toPosition) {
         if (toPosition == 0 || toPosition == mAdapter.getCount()) {
             return;
         }
         ApplicationInfo applicationInfo = mAppList.remove(fromPosition - 1);//-1 --> header viewType
         mAppList.add(toPosition - 1, applicationInfo);//-1 --> header viewType
-        toast("onDragViewMoving   fromPosition--->" + fromPosition + "  toPosition-->" + toPosition);
+        toast("onDragDropViewMoved   fromPosition--->" + fromPosition + "  toPosition-->" + toPosition);
     }
 
     @Override
