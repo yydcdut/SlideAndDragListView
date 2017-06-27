@@ -60,9 +60,9 @@ class WrapperAdapter implements WrapperListAdapter, ItemMainLayout.OnItemSlideLi
     /* 记录top位置 */
     private HashMap<Integer, Integer> mItemIdTopMap;
     /* drag的时候不移动的header */
-    private int mStartLimit = -1;//todo header
+    private int mStartLimit = -1;
     /* drag的时候不移动的footer */
-    private int mEndLimit = Integer.MAX_VALUE;//todo footer
+    private int mEndLimit = Integer.MAX_VALUE;
     /* drag的动画时间 */
     private int mAnimationDuration = 300;
 
