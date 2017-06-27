@@ -20,6 +20,7 @@ import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.database.DataSetObserver;
+import android.os.Build;
 import android.util.SparseArray;
 import android.view.View;
 import android.view.ViewGroup;
@@ -38,8 +39,8 @@ import java.util.HashMap;
 class WrapperAdapter implements WrapperListAdapter, ItemMainLayout.OnItemSlideListenerProxy, View.OnClickListener,
         AbsListView.OnScrollListener, ItemMainLayout.OnItemDeleteListenerProxy, Callback.OnDragDropListener,
         ItemMainLayout.OnItemScrollBackListenerProxy {
-    private static final int TAG_LEFT = 3 << 24;
-    private static final int TAG_RIGHT = 4 << 24;
+    private static int TAG_LEFT = 3 << 24;
+    private static int TAG_RIGHT = 4 << 24;
     /* 上下文 */
     private Context mContext;
     /* 适配器 */
@@ -81,6 +82,10 @@ class WrapperAdapter implements WrapperListAdapter, ItemMainLayout.OnItemSlideLi
         mAdapter.registerDataSetObserver(mDataSetObserver);
         mListView.serAdapterDragDropListener(this);
         mItemIdTopMap = new HashMap<>();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+            TAG_LEFT = View.generateViewId();
+            TAG_RIGHT = View.generateViewId();
+        }
     }
 
     @Override
