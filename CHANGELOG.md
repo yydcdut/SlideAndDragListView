@@ -1,3 +1,9 @@
+## 0.7.0
+
+* update drag & drop
+* can't drag and drop header & footer (view type)
+* add ListView methods
+
 ## 0.6.3
 
 * add scroll back listener

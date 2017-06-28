@@ -1,6 +1,6 @@
 # SlideAndDragListView
 
-  [![Download](https://api.bintray.com/packages/yydcdut/maven/sdlv/images/download.svg)](https://bintray.com/yydcdut/maven/sdlv/_latestVersion)       [![License](http://img.shields.io/:license-apache-blue.svg)](LICENSE.txt)  [![Build Status](https://travis-ci.org/yydcdut/SlideAndDragListView.svg?branch=master)](https://travis-ci.org/yydcdut/SlideAndDragListView)    [![API](https://img.shields.io/badge/API-11%2B-brightgreen.svg?style=flat)](https://android-arsenal.com/api?level=11)  <a href="http://www.methodscount.com/?lib=com.yydcdut.sdlv%3Asdlv%3A0.6.3"><img src="https://img.shields.io/badge/Methods count-287-e91e63.svg"></img></a>   <a href="http://www.methodscount.com/?lib=com.yydcdut.sdlv%3Asdlv%3A0.6.3"><img src="https://img.shields.io/badge/Size-29 KB-e91e63.svg"></img></a>
+  [![Download](https://api.bintray.com/packages/yydcdut/maven/sdlv/images/download.svg)](https://bintray.com/yydcdut/maven/sdlv/_latestVersion)       [![License](http://img.shields.io/:license-apache-blue.svg)](LICENSE.txt)  [![Build Status](https://travis-ci.org/yydcdut/SlideAndDragListView.svg?branch=master)](https://travis-ci.org/yydcdut/SlideAndDragListView)    [![API](https://img.shields.io/badge/API-11%2B-brightgreen.svg?style=flat)](https://android-arsenal.com/api?level=11)  <a href="http://www.methodscount.com/?lib=com.yydcdut.sdlv%3Asdlv%3A0.7.0"><img src="https://img.shields.io/badge/Methods count-287-e91e63.svg"></img></a>   <a href="http://www.methodscount.com/?lib=com.yydcdut.sdlv%3Asdlv%3A0.7.0"><img src="https://img.shields.io/badge/Size-29 KB-e91e63.svg"></img></a>
 
 一个可以左右滑动 item 和拖放 item 的 ListView
 
@@ -32,7 +32,7 @@ SlideAndDragListView 用于各种优先级列表：收藏夹，播放列表，�
 ## Gradle
 
 ``` groovy
-compile 'com.yydcdut.sdlv:sdlv:0.6.3'
+compile 'com.yydcdut.sdlv:sdlv:0.7.0'
 ```
 
 ## Jar
@@ -191,27 +191,33 @@ listView.setMenu(menuList)
 ## 拖放
 
 ``` java
-slideAndDragListView.setOnDragListener(new OnDragListener() {
+ApplicationInfo mDraggedEntity;
+List<ApplicationInfo> mDataList;
+
+// ...init...
+
+slideAndDragListView.setOnDragDropListener(new OnDragDropListener() {
     @Override
-    public void onDragViewStart(int position) {
-        
+    public void onDragViewStart(int beginPosition) {
+        mDraggedEntity = mDataList.get(beginPosition);
     }
 
     @Override
-    public void onDragViewMoving(int position) {
-
+    public void onDragDropViewMoved(int fromPosition, int toPosition) {
+		ApplicationInfo applicationInfo = mDataList.remove(fromPosition);
+      	mDataList.add(toPosition, applicationInfo);
     }
 
     @Override
-    public void onDragViewDown(int position) {
-
+    public void onDragViewDown(int finalPosition) {
+		mDataList.set(finalPosition, mDraggedEntity);
     }
-}, dataList);
+});
 ```
 
 `public void onDragViewStart(int position)`.参数 `position` 表示的是刚开始拖动的时候取的 item 在 ListView 中的位置
 
-`public void onDragViewMoving(int position)` .参数 `position` 表示的是当前拖动的item在 ListView 的位置，当处于拖动的时候这个函数是会一直回调的
+`public void onDragDropViewMoved(int fromPosition, int toPosition)` .参数 `fromPosition` 和 `toPosition` 表示从哪个位置拖动到哪个位置
 
 `public void onDragViewDown(int position)` . 参数 `position` 表示的是拖动的 item 最放到了 ListView 的哪个位置
 
@@ -284,6 +290,15 @@ slideAndDragListView.startDrag(position);
 ```
 
 调用 API 手动实施拖拽
+
+###  不拖动 ViewType 类型的 Header 或 Footer
+
+```java
+slideAndDragListView.setNotDragHeaderCount(1);
+slideAndDragListView.setNotDragFooterCount(1);
+```
+
+具体操作： [HeaderFooterViewTypeActivity.java](https://github.com/yydcdut/SlideAndDragListView/blob/master/app/src/main/java/com/yydcdut/demo/HeaderFooterViewTypeActivity.java)
 
 # License
 

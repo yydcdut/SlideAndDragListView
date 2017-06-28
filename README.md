@@ -1,6 +1,6 @@
 # SlideAndDragListView
 
-  [![Download](https://api.bintray.com/packages/yydcdut/maven/sdlv/images/download.svg)](https://bintray.com/yydcdut/maven/sdlv/_latestVersion)       [![License](http://img.shields.io/:license-apache-blue.svg)](LICENSE.txt)  [![Build Status](https://travis-ci.org/yydcdut/SlideAndDragListView.svg?branch=master)](https://travis-ci.org/yydcdut/SlideAndDragListView)    [![API](https://img.shields.io/badge/API-11%2B-brightgreen.svg?style=flat)](https://android-arsenal.com/api?level=11)  <a href="http://www.methodscount.com/?lib=com.yydcdut.sdlv%3Asdlv%3A0.6.3"><img src="https://img.shields.io/badge/Methods count-287-e91e63.svg"></img></a>   <a href="http://www.methodscount.com/?lib=com.yydcdut.sdlv%3Asdlv%3A0.6.3"><img src="https://img.shields.io/badge/Size-29 KB-e91e63.svg"></img></a>
+  [![Download](https://api.bintray.com/packages/yydcdut/maven/sdlv/images/download.svg)](https://bintray.com/yydcdut/maven/sdlv/_latestVersion)       [![License](http://img.shields.io/:license-apache-blue.svg)](LICENSE.txt)  [![Build Status](https://travis-ci.org/yydcdut/SlideAndDragListView.svg?branch=master)](https://travis-ci.org/yydcdut/SlideAndDragListView)    [![API](https://img.shields.io/badge/API-11%2B-brightgreen.svg?style=flat)](https://android-arsenal.com/api?level=11)  <a href="http://www.methodscount.com/?lib=com.yydcdut.sdlv%3Asdlv%3A0.7.0"><img src="https://img.shields.io/badge/Methods count-287-e91e63.svg"></img></a>   <a href="http://www.methodscount.com/?lib=com.yydcdut.sdlv%3Asdlv%3A0.7.0"><img src="https://img.shields.io/badge/Size-29 KB-e91e63.svg"></img></a>
 
 A ListView that you can slide ( or swipe ) the items, drag and drop the items to other places.
 
@@ -32,7 +32,7 @@ SlideAndDragListView is useful for all kinds of prioritized lists: favorites, pl
 ## Gradle
 
 ``` groovy
-compile 'com.yydcdut.sdlv:sdlv:0.6.3'
+compile 'com.yydcdut.sdlv:sdlv:0.7.0'
 ```
 
 ## Jar
@@ -191,27 +191,33 @@ listView.setMenu(menuList)
 ## Drag
 
 ``` java
-slideAndDragListView.setOnDragListener(new OnDragListener() {
+ApplicationInfo mDraggedEntity;
+List<ApplicationInfo> mDataList;
+
+// ...init...
+
+slideAndDragListView.setOnDragDropListener(new OnDragDropListener() {
     @Override
-    public void onDragViewStart(int position) {
-        
+    public void onDragViewStart(int beginPosition) {
+        mDraggedEntity = mDataList.get(beginPosition);
     }
 
     @Override
-    public void onDragViewMoving(int position) {
-
+    public void onDragDropViewMoved(int fromPosition, int toPosition) {
+		ApplicationInfo applicationInfo = mDataList.remove(fromPosition);
+      	mDataList.add(toPosition, applicationInfo);
     }
 
     @Override
-    public void onDragViewDown(int position) {
-
+    public void onDragViewDown(int finalPosition) {
+		mDataList.set(finalPosition, mDraggedEntity);
     }
-}, dataList);
+});
 ```
 
 `public void onDragViewStart(int position)`.The parameter `position` is the position in ListView where dragged from.
 
-`public void onDragViewMoving(int position)` .The parameter `position` is the position in ListView where dragged from, and this method will be called while the dragged item moving, as the same time, the position is changing.
+`public void onDragDropViewMoved(int fromPosition, int toPosition)` .The parameters `fromPosition` and `toPosition` are the positions in ListView where dragged from and dragged to.
 
 `public void onDragViewDown(int position)` . The parameter `position` is the position in ListView where dropped down.
 
@@ -288,6 +294,15 @@ slideAndDragListView.startDrag(position);
 ```
 
 Drag list item.
+
+### Not Drag headers or footers view types
+
+```java
+slideAndDragListView.setNotDragHeaderCount(1);
+slideAndDragListView.setNotDragFooterCount(1);
+```
+
+See more: [HeaderFooterViewTypeActivity.java](https://github.com/yydcdut/SlideAndDragListView/blob/master/app/src/main/java/com/yydcdut/demo/HeaderFooterViewTypeActivity.java)
 
 # License
 
