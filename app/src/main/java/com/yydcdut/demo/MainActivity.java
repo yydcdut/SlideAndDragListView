@@ -22,6 +22,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         findViewById(R.id.btn_view_type).setOnClickListener(this);
         findViewById(R.id.btn_touch_drag).setOnClickListener(this);
         findViewById(R.id.btn_simple_adapter).setOnClickListener(this);
+        findViewById(R.id.btn_simple_adapter).setVisibility(View.GONE);
     }
 
     @Override
