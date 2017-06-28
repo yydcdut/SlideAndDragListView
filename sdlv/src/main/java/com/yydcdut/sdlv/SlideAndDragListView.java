@@ -957,7 +957,7 @@ public class SlideAndDragListView extends FrameLayout implements Callback.OnDrag
      * Specifies the style of the fast scroller decorations.
      *
      * @param styleResId style resource containing fast scroller properties
-     * @see android[dot]R[dot]styleable[dot]FastScroll
+     * see android[dot]R[dot]styleable[dot]FastScroll
      */
     public void setFastScrollStyle(int styleResId) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -1018,7 +1018,7 @@ public class SlideAndDragListView extends FrameLayout implements Callback.OnDrag
      * navigates through a list of items with varying heights.
      *
      * @param enabled Whether or not to enable smooth scrollbar.
-     * @attr ref android.R.styleable#AbsListView_smoothScrollbar
+     * attr ref android.R.styleable#AbsListView_smoothScrollbar
      * @see #setSmoothScrollbarEnabled(boolean)
      */
     public void setSmoothScrollbarEnabled(boolean enabled) {
@@ -1185,7 +1185,7 @@ public class SlideAndDragListView extends FrameLayout implements Callback.OnDrag
      *
      * @param onTop If true, the selector will be drawn on the item it is highlighting. The default
      *              is false.
-     * @attr ref android.R.styleable#AbsListView_drawSelectorOnTop
+     * attr ref android.R.styleable#AbsListView_drawSelectorOnTop
      */
     public void setDrawSelectorOnTop(boolean onTop) {
         mSlideListView.setDrawSelectorOnTop(onTop);
@@ -1195,7 +1195,7 @@ public class SlideAndDragListView extends FrameLayout implements Callback.OnDrag
      * Set a Drawable that should be used to highlight the currently selected item.
      *
      * @param resID A Drawable resource to use as the selection highlight.
-     * @attr ref android.R.styleable#AbsListView_listSelector
+     * attr ref android.R.styleable#AbsListView_listSelector
      */
     public void setSelector(int resID) {
         mSlideListView.setSelector(resID);
@@ -1380,8 +1380,8 @@ public class SlideAndDragListView extends FrameLayout implements Callback.OnDrag
      *
      * @param listener The recycler listener to be notified of views set aside
      *                 in the recycler.
-     * @see android.widget.AbsListView[dot]RecycleBin
-     * @see android.widget.AbsListView.RecyclerListener
+     * see android.widget.AbsListView[dot]RecycleBin
+     * see android.widget.AbsListView.RecyclerListener
      */
     public void setRecyclerListener(AbsListView.RecyclerListener listener) {
         mSlideListView.setRecyclerListener(listener);
