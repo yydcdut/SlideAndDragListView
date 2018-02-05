@@ -78,7 +78,6 @@ class WrapperAdapter implements WrapperListAdapter, ItemMainLayout.OnItemSlideLi
         mListView.setOnSuperScrollListener(this);
         mAdapter = adapter;
         mMenuSparseArray = sparseArray;
-        mAdapter.registerDataSetObserver(mDataSetObserver);
         mListView.serAdapterDragDropListener(this);
         mItemIdTopMap = new HashMap<>();
     }
@@ -301,6 +300,12 @@ class WrapperAdapter implements WrapperListAdapter, ItemMainLayout.OnItemSlideLi
             return ItemMainLayout.SCROLL_BACK_CLICK_NOTHING;
         }
         return ItemMainLayout.SCROLL_BACK_CLICK_NOTHING;
+    }
+
+    protected void addDataSetObserver() {
+        if (mAdapter != null) {
+            mAdapter.registerDataSetObserver(mDataSetObserver);
+        }
     }
 
     protected void removeDataSetObserver() {
