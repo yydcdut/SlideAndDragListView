@@ -1,3 +1,6 @@
+## fork 20180205
+* fix bug: exception with singleton mode
+
 ## 0.7.0
 
 * update drag & drop

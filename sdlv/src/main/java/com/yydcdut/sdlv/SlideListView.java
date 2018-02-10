@@ -475,6 +475,14 @@ class SlideListView<T> extends DragListView implements WrapperAdapter.OnAdapterS
     }
 
     @Override
+    protected void onAttachedToWindow() {
+        super.onAttachedToWindow();
+        if (mWrapperAdapter != null)
+            mWrapperAdapter.addDataSetObserver();
+    }
+
+
+    @Override
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
         if (mWrapperAdapter != null) {
