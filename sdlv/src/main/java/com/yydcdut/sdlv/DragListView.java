@@ -16,7 +16,9 @@
 package com.yydcdut.sdlv;
 
 import android.content.Context;
+import android.graphics.Canvas;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.View;
 import android.widget.ListView;
 
@@ -121,4 +123,10 @@ class DragListView extends ListView {
         mAdapterDragDropListener = listener;
     }
 
+
+    @Override
+    protected void onDraw(Canvas canvas) {
+        super.onDraw(canvas);
+        Log.i("yuyidong", "1234656789");
+    }
 }

@@ -15,15 +15,12 @@
  */
 package com.yydcdut.sdlv;
 
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
-import android.animation.ObjectAnimator;
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
+import android.graphics.Canvas;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
-import android.os.Handler;
 import android.util.AttributeSet;
 import android.util.SparseBooleanArray;
 import android.view.ActionMode;
@@ -38,7 +35,6 @@ import android.widget.AdapterView;
 import android.widget.Filterable;
 import android.widget.FrameLayout;
 import android.widget.HeaderViewListAdapter;
-import android.widget.ImageView;
 import android.widget.ListAdapter;
 import android.widget.SectionIndexer;
 import android.widget.WrapperListAdapter;
@@ -48,38 +44,10 @@ import java.util.List;
 /**
  * Created by yuyidong on 2017/5/10.
  */
-public class SlideAndDragListView extends FrameLayout implements Callback.OnDragDropListener {
-    /* drag的时候透明度 */
-    private static final float DRAG_VIEW_ALPHA = 0.7f;
-    /* drag的View */
-    private ImageView mDragView;
-    /* Inner View */
+public class SlideAndDragListView extends FrameLayout {
+
+    private DragManager mDragManager;
     private SlideListView mSlideListView;
-    /* Handler的延时 */
-    private final long SCROLL_HANDLER_DELAY_MILLIS = 5;
-    /* 移动距离 */
-    private final int DRAG_SCROLL_PX_UNIT = 25;
-    /* Handler */
-    private Handler mScrollHandler;
-    /* 边界比例，到这个比例的位置就开始移动 */
-    private final float BOUND_GAP_RATIO = 0.2f;
-    /* 边界 */
-    private int mTopScrollBound;
-    private int mBottomScrollBound;
-    /* 按下的时候的Y轴坐标 */
-    private int mTouchDownForDragStartY;
-    /* Move的时候的Y轴坐标 */
-    private int mLastDragY;
-    /* 是否进入了scroll的handler里面了 */
-    private boolean mIsDragScrollerRunning = false;
-    /* 最小距离 */
-    private float mTouchSlop;
-    /* drag的View的Bitmap */
-    private Bitmap mDragViewBitmap;
-    /* 拦截参数 */
-    private boolean interceptTouchEvent = false;
-    /* drag的误差 */
-    private int mDragDelta;
 
     public SlideAndDragListView(Context context) {
         this(context, null);
@@ -91,149 +59,35 @@ public class SlideAndDragListView extends FrameLayout implements Callback.OnDrag
 
     public SlideAndDragListView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        mTouchSlop = ViewConfiguration.get(context).getScaledPagingTouchSlop();
-        createView(context, attrs);
-    }
-
-    private void createView(Context context, AttributeSet attrs) {
         mSlideListView = new SlideListView(context, attrs);
         addView(mSlideListView, new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
-        mDragView = new ImageView(context);
-        addView(mDragView, new LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-        mDragView.setVisibility(GONE);
-        mSlideListView.setListDragDropListener(this);
+        ViewGroup decorView = null;
+        if (context instanceof Activity) {
+            decorView = (ViewGroup) ((Activity) context).getWindow().getDecorView();
+        }
+        mDragManager = new DragManager(context, mSlideListView, this, decorView);
     }
 
     protected void setInterceptTouchEvent(boolean interceptTouchEvent) {
-        this.interceptTouchEvent = interceptTouchEvent;
+        mDragManager.setInterceptTouchEvent(interceptTouchEvent);
     }
 
     @Override
     public boolean onInterceptTouchEvent(MotionEvent ev) {
-        if (ev.getAction() == MotionEvent.ACTION_DOWN) {
-            mTouchDownForDragStartY = (int) ev.getY();
-        }
-        if (interceptTouchEvent) {
-            final int boundGap = (int) (getHeight() * BOUND_GAP_RATIO);
-            mTopScrollBound = (getTop() + boundGap);
-            mBottomScrollBound = (getBottom() - boundGap);
-            mSlideListView.handleDragStarted((int) ev.getX(), (int) ev.getY());
-        }
-        return interceptTouchEvent;
+        return mDragManager.onInterceptTouchEvent(ev);
     }
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        int eX = (int) event.getX();
-        int eY = (int) event.getY();
-        switch (event.getAction() & MotionEvent.ACTION_MASK) {
-            case MotionEvent.ACTION_MOVE:
-                mLastDragY = eY;
-                mSlideListView.handleDragMoving(eX, eY);
-                if (!mIsDragScrollerRunning && (Math.abs(mLastDragY - mTouchDownForDragStartY) >= 4 * mTouchSlop)) {
-                    mIsDragScrollerRunning = true;
-                    ensureScrollHandler();
-                    mScrollHandler.postDelayed(mDragScroller, SCROLL_HANDLER_DELAY_MILLIS);
-                }
-                break;
-            case MotionEvent.ACTION_UP:
-            case MotionEvent.ACTION_CANCEL:
-                ensureScrollHandler();
-                mScrollHandler.removeCallbacks(mDragScroller);
-                mIsDragScrollerRunning = false;
-                mSlideListView.handleDragFinished(eX, eY);
-                interceptTouchEvent = false;
-                break;
-        }
-        return interceptTouchEvent || super.onTouchEvent(event);
+        return mDragManager.onTouchEvent(event) || super.onTouchEvent(event);
     }
 
     @Override
-    public boolean onDragStarted(int x, int y, View view) {
-        mDragViewBitmap = createDraggedChildBitmap(view);
-        if (mDragViewBitmap == null) {
-            return false;
-        }
-        mDragView.setImageBitmap(mDragViewBitmap);
-        mDragView.setVisibility(VISIBLE);
-        mDragView.setAlpha(DRAG_VIEW_ALPHA);
-        mDragView.setX(mSlideListView.getPaddingLeft() + getPaddingLeft());
-        mDragDelta = y - view.getTop();
-        mDragView.setY(y - mDragDelta);
-        return true;
+    protected void onDraw(Canvas canvas) {
+        super.onDraw(canvas);
+        mDragManager.draw(canvas);
     }
 
-    private Bitmap createDraggedChildBitmap(View view) {
-        if (view instanceof ItemMainLayout) {
-            ((ItemMainLayout) view).disableBackgroundDrawable();
-        }
-        view.setDrawingCacheEnabled(true);
-        Bitmap cache = view.getDrawingCache();
-        Bitmap bitmap = null;
-        if (cache != null) {
-            try {
-                bitmap = cache.copy(Bitmap.Config.ARGB_8888, false);
-            } catch (OutOfMemoryError e) {
-                bitmap = null;
-            }
-        }
-        view.destroyDrawingCache();
-        view.setDrawingCacheEnabled(false);
-        if (view instanceof ItemMainLayout) {
-            ((ItemMainLayout) view).enableBackgroundDrawable();
-        }
-        return bitmap;
-    }
-
-    @Override
-    public void onDragMoving(int x, int y, View view, OnDragDropListener listener) {
-        mDragView.setX(mSlideListView.getPaddingLeft() + getPaddingLeft());
-        mDragView.setY(y - mDragDelta);
-    }
-
-    @Override
-    public void onDragFinished(int x, int y, OnDragDropListener listener) {
-        mDragDelta = 0;
-        if (mDragView != null && mDragView.getVisibility() == VISIBLE) {
-            ObjectAnimator objectAnimator = ObjectAnimator.ofFloat(mDragView, "alpha", DRAG_VIEW_ALPHA, 0.0f);
-            objectAnimator.setDuration(100);
-            objectAnimator.addListener(new DragFinishAnimation());
-            objectAnimator.start();
-        }
-    }
-
-    private class DragFinishAnimation extends AnimatorListenerAdapter {
-        @Override
-        public void onAnimationEnd(Animator animation) {
-            if (mDragViewBitmap != null) {
-                mDragViewBitmap.recycle();
-                mDragViewBitmap = null;
-            }
-            mDragView.setVisibility(GONE);
-            mDragView.setImageBitmap(null);
-        }
-    }
-
-    private void ensureScrollHandler() {
-        if (mScrollHandler == null) {
-            mScrollHandler = getHandler();
-        }
-        if (mScrollHandler == null) {
-            mScrollHandler = new Handler();
-        }
-    }
-
-    private final Runnable mDragScroller = new Runnable() {
-        @Override
-        public void run() {
-            if (mLastDragY <= mTopScrollBound) {
-                mSlideListView.smoothScrollBy(-DRAG_SCROLL_PX_UNIT, (int) SCROLL_HANDLER_DELAY_MILLIS);
-            } else if (mLastDragY >= mBottomScrollBound) {
-                mSlideListView.smoothScrollBy(DRAG_SCROLL_PX_UNIT, (int) SCROLL_HANDLER_DELAY_MILLIS);
-            }
-            mScrollHandler.postDelayed(this, SCROLL_HANDLER_DELAY_MILLIS);
-        }
-    };
 
     //-------------------    click    -------------------
 
@@ -957,7 +811,7 @@ public class SlideAndDragListView extends FrameLayout implements Callback.OnDrag
      * Specifies the style of the fast scroller decorations.
      *
      * @param styleResId style resource containing fast scroller properties
-     * see android[dot]R[dot]styleable[dot]FastScroll
+     *                   see android[dot]R[dot]styleable[dot]FastScroll
      */
     public void setFastScrollStyle(int styleResId) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -1018,7 +872,7 @@ public class SlideAndDragListView extends FrameLayout implements Callback.OnDrag
      * navigates through a list of items with varying heights.
      *
      * @param enabled Whether or not to enable smooth scrollbar.
-     * attr ref android.R.styleable#AbsListView_smoothScrollbar
+     *                attr ref android.R.styleable#AbsListView_smoothScrollbar
      * @see #setSmoothScrollbarEnabled(boolean)
      */
     public void setSmoothScrollbarEnabled(boolean enabled) {
@@ -1185,7 +1039,7 @@ public class SlideAndDragListView extends FrameLayout implements Callback.OnDrag
      *
      * @param onTop If true, the selector will be drawn on the item it is highlighting. The default
      *              is false.
-     * attr ref android.R.styleable#AbsListView_drawSelectorOnTop
+     *              attr ref android.R.styleable#AbsListView_drawSelectorOnTop
      */
     public void setDrawSelectorOnTop(boolean onTop) {
         mSlideListView.setDrawSelectorOnTop(onTop);
@@ -1195,7 +1049,7 @@ public class SlideAndDragListView extends FrameLayout implements Callback.OnDrag
      * Set a Drawable that should be used to highlight the currently selected item.
      *
      * @param resID A Drawable resource to use as the selection highlight.
-     * attr ref android.R.styleable#AbsListView_listSelector
+     *              attr ref android.R.styleable#AbsListView_listSelector
      */
     public void setSelector(int resID) {
         mSlideListView.setSelector(resID);
@@ -1380,8 +1234,8 @@ public class SlideAndDragListView extends FrameLayout implements Callback.OnDrag
      *
      * @param listener The recycler listener to be notified of views set aside
      *                 in the recycler.
-     * see android.widget.AbsListView[dot]RecycleBin
-     * see android.widget.AbsListView.RecyclerListener
+     *                 see android.widget.AbsListView[dot]RecycleBin
+     *                 see android.widget.AbsListView.RecyclerListener
      */
     public void setRecyclerListener(AbsListView.RecyclerListener listener) {
         mSlideListView.setRecyclerListener(listener);
