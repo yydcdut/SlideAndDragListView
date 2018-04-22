@@ -3,7 +3,7 @@ apply plugin: 'com.android.library'
 //apply plugin: 'com.jfrog.bintray'
 
 android {
-    compileSdkVersion 22
+    compileSdkVersion 26
     buildToolsVersion "26.0.2"
     resourcePrefix "sdlv_"
 
