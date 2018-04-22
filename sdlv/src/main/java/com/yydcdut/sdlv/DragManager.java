@@ -1,30 +1,44 @@
+/*
+ * Copyright (C) 2018 yydcdut (yuyidong2015@gmail.com)
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
 package com.yydcdut.sdlv;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
-import android.animation.ValueAnimator;
+import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.Canvas;
-import android.graphics.Rect;
 import android.os.Handler;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewConfiguration;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
+import android.widget.ImageView;
 
 /**
  * Created by yuyidong on 2018/4/21.
  */
-public class DragManager implements Callback.OnDragDropListener {
-    /* drag的时候透明度 */
+class DragManager implements Callback.OnDragDropListener {
+    /* drag 的时候透明度 */
     private static final float DRAG_VIEW_ALPHA = 0.7f;
 
+    /* drag 的 View */
+    private ImageView mDragView;
     /* Inner View */
-    private SlideListView mSlideListView;
-    /* current View */
-    private View mCurrentView;
+    private DragListView mDragListView;
     /* Handler的延时 */
     private final long SCROLL_HANDLER_DELAY_MILLIS = 5;
     /* 移动距离 */
@@ -38,53 +52,107 @@ public class DragManager implements Callback.OnDragDropListener {
     private int mBottomScrollBound;
     /* 按下的时候的Y轴坐标 */
     private int mTouchDownForDragStartY;
-    /* Move的时候的Y轴坐标 */
+    /* move 的时候的 Y 轴坐标 */
     private int mLastDragY;
     /* 是否进入了scroll的handler里面了 */
     private boolean mIsDragScrollerRunning = false;
     /* 最小距离 */
     private float mTouchSlop;
-    /* drag的View的Bitmap */
+    /* drag 的 View 的 Bitmap */
     private Bitmap mDragViewBitmap;
-    /* 拦截参数 */
-    private boolean interceptTouchEvent = false;
-    /* drag的误差 */
+    /* drag 的误差 */
     private int mDragDelta;
+    /* 是否正在被 drag */
+    private boolean isDragging;
+    /* 是否已经回调了 handleDragStarted */
+    private boolean isInvokedDraggingStarted;
+    /* 手指的 X 和 Y */
+    private float mFingerX, mFingerY;
+    /* decorView */
+    private ViewGroup mDecorView;
+    /* 当前 View 与 decorView 的差 */
+    private int[] mLeftAndTopOffset;
+    /* 被 drag 的 View */
+    private ItemMainLayout mItemMainLayout;
 
-    private int mX, mY;
-    private boolean isVisible;
-
-    public DragManager(Context context, SlideListView slideListView, View currentView, ViewGroup decorView) {
+    public DragManager(Context context, DragListView dragListView, ViewGroup decorView) {
         mTouchSlop = ViewConfiguration.get(context).getScaledPagingTouchSlop();
-        mCurrentView = currentView;
-        mSlideListView = slideListView;
-        mSlideListView.setListDragDropListener(this);
+        mDragListView = dragListView;
+        mDragListView.setListDragDropListener(this);
+        mDragView = new ImageView(context);
+        mDecorView = decorView;
+        mDecorView.addView(mDragView, new FrameLayout.LayoutParams(FrameLayout.LayoutParams.WRAP_CONTENT, FrameLayout.LayoutParams.WRAP_CONTENT));
+        mLeftAndTopOffset = new int[]{0, 0};
     }
 
-    protected void setInterceptTouchEvent(boolean interceptTouchEvent) {
-        this.interceptTouchEvent = interceptTouchEvent;
+    protected void onSizeChanged() {
+        getOffset(mDragListView, mDecorView, mLeftAndTopOffset);
+    }
+
+    private void getOffset(View current, View decorView, int[] array) {
+        if (current != decorView) {
+            getOffset(current, array);
+            if (current.getParent() != null) {
+                View view = (View) current.getParent();
+                getOffset(view, decorView, array);
+            }
+        }
+    }
+
+    private void getOffset(View view, int[] array) {
+        array[0] = array[0] + view.getLeft() + view.getPaddingLeft();
+        array[1] = array[1] + view.getTop() + view.getPaddingLeft();
+    }
+
+    protected void setDragging(boolean dragging) {
+        this.isDragging = dragging;
+        invokedDraggingStarted();
+    }
+
+    protected boolean isDragging() {
+        return isDragging;
+    }
+
+    private void invokedDraggingStarted() {
+        if (!isInvokedDraggingStarted && isDragging) {
+            mDragListView.handleDragStarted((int) mFingerX, (int) mFingerY);
+            isInvokedDraggingStarted = true;
+            calculateBound();
+        }
+    }
+
+    private void calculateBound() {
+        final int boundGap = (int) (mDragListView.getHeight() * BOUND_GAP_RATIO);
+        mTopScrollBound = (mDragListView.getTop() + boundGap);
+        mBottomScrollBound = (mDragListView.getBottom() - boundGap);
     }
 
     protected boolean onInterceptTouchEvent(MotionEvent ev) {
+        mFingerX = ev.getX();
+        mFingerY = ev.getY();
         if (ev.getAction() == MotionEvent.ACTION_DOWN) {
             mTouchDownForDragStartY = (int) ev.getY();
         }
-        if (interceptTouchEvent) {
-            final int boundGap = (int) (mCurrentView.getHeight() * BOUND_GAP_RATIO);
-            mTopScrollBound = (mCurrentView.getTop() + boundGap);
-            mBottomScrollBound = (mCurrentView.getBottom() - boundGap);
-            mSlideListView.handleDragStarted((int) ev.getX(), (int) ev.getY());
-        }
-        return interceptTouchEvent;
+        invokedDraggingStarted();
+        return isDragging;
     }
 
     protected boolean onTouchEvent(MotionEvent event) {
+        mFingerX = event.getX();
+        mFingerY = event.getY();
+        if (!isDragging) {
+            return false;
+        }
         int eX = (int) event.getX();
         int eY = (int) event.getY();
         switch (event.getAction() & MotionEvent.ACTION_MASK) {
+            case MotionEvent.ACTION_DOWN:
+                invokedDraggingStarted();
+                break;
             case MotionEvent.ACTION_MOVE:
+                invokedDraggingStarted();
                 mLastDragY = eY;
-                mSlideListView.handleDragMoving(eX, eY);
+                mDragListView.handleDragMoving(eX, eY);
                 if (!mIsDragScrollerRunning && (Math.abs(mLastDragY - mTouchDownForDragStartY) >= 4 * mTouchSlop)) {
                     mIsDragScrollerRunning = true;
                     ensureScrollHandler();
@@ -96,11 +164,12 @@ public class DragManager implements Callback.OnDragDropListener {
                 ensureScrollHandler();
                 mScrollHandler.removeCallbacks(mDragScroller);
                 mIsDragScrollerRunning = false;
-                mSlideListView.handleDragFinished(eX, eY);
-                interceptTouchEvent = false;
+                mDragListView.handleDragFinished(eX, eY);
+                isDragging = false;
+                isInvokedDraggingStarted = false;
                 break;
         }
-        return interceptTouchEvent;
+        return isDragging;
     }
 
     private void ensureScrollHandler() {
@@ -113,9 +182,9 @@ public class DragManager implements Callback.OnDragDropListener {
         @Override
         public void run() {
             if (mLastDragY <= mTopScrollBound) {
-                mSlideListView.smoothScrollBy(-DRAG_SCROLL_PX_UNIT, (int) SCROLL_HANDLER_DELAY_MILLIS);
+                mDragListView.smoothScrollBy(-DRAG_SCROLL_PX_UNIT, (int) SCROLL_HANDLER_DELAY_MILLIS);
             } else if (mLastDragY >= mBottomScrollBound) {
-                mSlideListView.smoothScrollBy(DRAG_SCROLL_PX_UNIT, (int) SCROLL_HANDLER_DELAY_MILLIS);
+                mDragListView.smoothScrollBy(DRAG_SCROLL_PX_UNIT, (int) SCROLL_HANDLER_DELAY_MILLIS);
             }
             mScrollHandler.postDelayed(this, SCROLL_HANDLER_DELAY_MILLIS);
         }
@@ -127,17 +196,16 @@ public class DragManager implements Callback.OnDragDropListener {
         if (mDragViewBitmap == null) {
             return false;
         }
-//        mDragView.setImageBitmap(mDragViewBitmap);
-//        mDragView.setVisibility(View.VISIBLE);
-//        mDragView.setAlpha(DRAG_VIEW_ALPHA);
-//        mDragView.setX(mSlideListView.getPaddingLeft() + mCurrentView.getPaddingLeft());
-//        mDragDelta = y - view.getTop();
-//        mDragView.setY(y - mDragDelta);
-        mX = mSlideListView.getPaddingLeft() + mCurrentView.getPaddingLeft();
+        if (view instanceof ItemMainLayout) {
+            mItemMainLayout = (ItemMainLayout) view;
+            mItemMainLayout.disableBackgroundDrawable();
+        }
+        mDragView.setImageBitmap(mDragViewBitmap);
+        mDragView.setVisibility(View.VISIBLE);
+        mDragView.setAlpha(DRAG_VIEW_ALPHA);
+        mDragView.setX(mDragListView.getPaddingLeft());
         mDragDelta = y - view.getTop();
-        mY = y - mDragDelta;
-        isVisible = true;
-        mCurrentView.invalidate();
+        mDragView.setY(y - mDragDelta + mLeftAndTopOffset[1]);
         return true;
     }
 
@@ -165,29 +233,17 @@ public class DragManager implements Callback.OnDragDropListener {
 
     @Override
     public void onDragMoving(int x, int y, View view, SlideAndDragListView.OnDragDropListener listener) {
-        mX = mSlideListView.getPaddingLeft() + mCurrentView.getPaddingLeft();
-        mY = y - mDragDelta;
-        mCurrentView.invalidate();
+        mDragView.setX(mLeftAndTopOffset[0]);
+        mDragView.setY(y - mDragDelta + mLeftAndTopOffset[1]);
     }
 
     @Override
     public void onDragFinished(int x, int y, SlideAndDragListView.OnDragDropListener listener) {
-        mDragDelta = 0;
-        if (isVisible) {
-            ValueAnimator valueAnimator = ValueAnimator.ofFloat(DRAG_VIEW_ALPHA, 0.0f);
-            valueAnimator.setDuration(100);
-            valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-                @Override
-                public void onAnimationUpdate(ValueAnimator animation) {
-                    mCurrentView.invalidate();
-                }
-            });
-            valueAnimator.addListener(new DragFinishAnimation());
-            valueAnimator.start();
-//            ObjectAnimator objectAnimator = ObjectAnimator.ofFloat(mDragView, "alpha", DRAG_VIEW_ALPHA, 0.0f);
-//            objectAnimator.setDuration(100);
-//            objectAnimator.addListener(new DragFinishAnimation());
-//            objectAnimator.start();
+        if (mDragView != null && mDragView.getVisibility() == View.VISIBLE) {
+            ObjectAnimator objectAnimator = ObjectAnimator.ofFloat(mDragView, "alpha", DRAG_VIEW_ALPHA, 0.0f);
+            objectAnimator.setDuration(100);
+            objectAnimator.addListener(new DragFinishAnimation());
+            objectAnimator.start();
         }
     }
 
@@ -198,20 +254,12 @@ public class DragManager implements Callback.OnDragDropListener {
                 mDragViewBitmap.recycle();
                 mDragViewBitmap = null;
             }
-            isVisible = false;
-            mCurrentView.invalidate();
-//            mDragView.setVisibility(View.GONE);
-//            mDragView.setImageBitmap(null);
+            mDragView.setVisibility(View.GONE);
+            mDragView.setImageBitmap(null);
+            if (mItemMainLayout != null) {
+                mItemMainLayout.enableBackgroundDrawable();
+                mItemMainLayout = null;
+            }
         }
-    }
-
-    public void draw(Canvas canvas) {
-        Log.i("yuyidong", "00000");
-        if (mDragViewBitmap == null || !isVisible) {
-            return;
-        }
-        Log.i("yuyidong", "1111");
-        canvas.drawBitmap(mDragViewBitmap, new Rect(0, 0, mDragViewBitmap.getWidth(), mDragViewBitmap.getHeight())
-                , new Rect(mX, mY, mX + mDragViewBitmap.getWidth(), mY + mDragViewBitmap.getHeight()), null);
     }
 }

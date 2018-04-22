@@ -30,7 +30,7 @@ import java.util.List;
 /**
  * Created by yuyidong on 15/9/28.
  */
-class SlideListView<T> extends DragListView implements WrapperAdapter.OnAdapterSlideListenerProxy,
+class SlideListView extends DragListView implements WrapperAdapter.OnAdapterSlideListenerProxy,
         WrapperAdapter.OnAdapterMenuClickListenerProxy, WrapperAdapter.onItemDeleteListenerProxy,
         WrapperAdapter.OnScrollListenerProxy, AbsListView.OnItemLongClickListener, WrapperAdapter.OnItemScrollBackListenerProxy {
     /* onTouch里面的状态 */
@@ -112,6 +112,9 @@ class SlideListView<T> extends DragListView implements WrapperAdapter.OnAdapterS
 
     @Override
     public boolean onInterceptTouchEvent(MotionEvent ev) {
+        if (isDragging()){
+            return super.onInterceptTouchEvent(ev);
+        }
         switch (ev.getAction() & MotionEvent.ACTION_MASK) {
             case MotionEvent.ACTION_DOWN:
                 //当Menu滑开，然后在Menu的位置滑动，是不会经过onTouchEvent的ACTION_DOWN的
@@ -142,6 +145,9 @@ class SlideListView<T> extends DragListView implements WrapperAdapter.OnAdapterS
             return false;
         }
         if (mIsScrolling) {
+            return super.onTouchEvent(ev);
+        }
+        if (isDragging()){
             return super.onTouchEvent(ev);
         }
         switch (ev.getAction() & MotionEvent.ACTION_MASK) {
@@ -561,7 +567,7 @@ class SlideListView<T> extends DragListView implements WrapperAdapter.OnAdapterS
         };
     }
 
-    protected void setOnItemDeleteListener(SlideAndDragListView.OnItemDeleteListener onItemDeleteListener) {
+    public void setOnItemDeleteListener(SlideAndDragListView.OnItemDeleteListener onItemDeleteListener) {
         mOnItemDeleteListener = onItemDeleteListener;
     }
 

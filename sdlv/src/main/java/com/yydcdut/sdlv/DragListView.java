@@ -15,11 +15,12 @@
  */
 package com.yydcdut.sdlv;
 
+import android.app.Activity;
 import android.content.Context;
-import android.graphics.Canvas;
 import android.util.AttributeSet;
-import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ListView;
 
 /**
@@ -31,6 +32,8 @@ class DragListView extends ListView {
     /* 监听器 */
     private Callback.OnDragDropListener mAdapterDragDropListener;
     private Callback.OnDragDropListener mDragListDragDropListener;
+    /* drag */
+    public DragManager mDragManager;
 
     public DragListView(Context context) {
         this(context, null);
@@ -42,6 +45,11 @@ class DragListView extends ListView {
 
     public DragListView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
+        ViewGroup decorView = null;
+        if (context instanceof Activity) {
+            decorView = (ViewGroup) ((Activity) context).getWindow().getDecorView();
+        }
+        mDragManager = new DragManager(context, this, decorView);
     }
 
     protected void setDragPosition(int position) {
@@ -50,9 +58,18 @@ class DragListView extends ListView {
             ItemMainLayout itemMainLayout = (ItemMainLayout) getChildAt(position - getFirstVisiblePosition());
             itemMainLayout.getItemLeftBackGroundLayout().setVisibility(GONE);
             itemMainLayout.getItemRightBackGroundLayout().setVisibility(GONE);
-            SlideAndDragListView slideAndDragListView = (SlideAndDragListView) getParent();
-            slideAndDragListView.setInterceptTouchEvent(true);
+            mDragManager.setDragging(true);
         }
+    }
+
+    @Override
+    public boolean onInterceptTouchEvent(MotionEvent ev) {
+        return mDragManager.onInterceptTouchEvent(ev);
+    }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        return mDragManager.onTouchEvent(event) || super.onTouchEvent(event);
     }
 
     /**
@@ -123,10 +140,13 @@ class DragListView extends ListView {
         mAdapterDragDropListener = listener;
     }
 
+    protected boolean isDragging() {
+        return mDragManager.isDragging();
+    }
 
     @Override
-    protected void onDraw(Canvas canvas) {
-        super.onDraw(canvas);
-        Log.i("yuyidong", "1234656789");
+    protected void onSizeChanged(int w, int h, int oldw, int oldh) {
+        super.onSizeChanged(w, h, oldw, oldh);
+        mDragManager.onSizeChanged();
     }
 }
