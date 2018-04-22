@@ -23,6 +23,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         findViewById(R.id.btn_touch_drag).setOnClickListener(this);
         findViewById(R.id.btn_simple_adapter).setOnClickListener(this);
         findViewById(R.id.btn_simple_adapter).setVisibility(View.GONE);
+        findViewById(R.id.btn_pull_refresh).setOnClickListener(this);
     }
 
     @Override
@@ -48,6 +49,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 break;
             case R.id.btn_simple_adapter:
                 startActivity(new Intent(this, SimpleAdapterActivity.class));
+                break;
+            case R.id.btn_pull_refresh:
+                startActivity(new Intent(this, PullRefreshWithSDLVActivity.class));
                 break;
         }
     }

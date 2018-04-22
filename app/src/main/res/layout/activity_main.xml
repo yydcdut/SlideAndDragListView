@@ -67,4 +67,13 @@
         android:text="SimpleAdapter"
         android:textAllCaps="false"/>
 
+    <Button
+        android:id="@+id/btn_pull_refresh"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="5dp"
+        android:gravity="center"
+        android:text="Pull Refresh With SDLV"
+        android:textAllCaps="false"/>
+
 </LinearLayout>

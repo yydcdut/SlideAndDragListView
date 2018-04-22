@@ -37,6 +37,10 @@
         <activity
             android:name=".SimpleAdapterActivity"
             android:label="SDLV with SimpleAdapter"/>
+
+        <activity
+            android:name=".PullRefreshWithSDLVActivity"
+            android:label="Pull Refresh With SDLV"/>
     </application>
 
 </manifest>
