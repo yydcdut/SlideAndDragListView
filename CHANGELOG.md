@@ -1,4 +1,9 @@
+## 0.7.1
+
+* fix bug, supports pull refresh
+
 ## fork 20180205
+
 * fix bug: exception with singleton mode
 
 ## 0.7.0
