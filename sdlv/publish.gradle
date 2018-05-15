@@ -7,16 +7,8 @@ task sourcesJar(type: Jar) {
 }
 
 task javadoc(type: Javadoc) {
-    source = project.android.sourceSets.main.java.srcDirs
-    classpath += project.files(project.android.getBootClasspath().join(File.pathSeparator))
-    def files = new File(projectDir.getPath() + File.separator + "libs" + File.separator).listFiles()
-    def absolutePathArray = new String[files.length]
-    for (int i = 0; i < files.length; i++) {
-        absolutePathArray[i] = files[i].absolutePath
-    }
-    classpath += project.files(absolutePathArray)
-    classpath += configurations.compile
-    options.encoding = 'UTF-8'
+    source = android.sourceSets.main.java.srcDirs
+    classpath += project.files(android.getBootClasspath().join(File.pathSeparator))
 }
 
 task javadocJar(type: Jar, dependsOn: javadoc) {
@@ -45,7 +37,7 @@ if (project.rootProject.file('local.properties').exists()) {
         configurations = ['archives']
         pkg {
             repo = "maven"
-            name = "sdlv"
+            name = "SlideAndDragListView"
             websiteUrl = siteUrl
             vcsUrl = gitUrl
             licenses = ["Apache-2.0"]
@@ -53,6 +45,7 @@ if (project.rootProject.file('local.properties').exists()) {
         }
     }
 }
+
 install {
     repositories.mavenInstaller {
         // This generates POM.xml with proper parameters
