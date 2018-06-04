@@ -38,8 +38,6 @@ import java.util.HashMap;
 class WrapperAdapter implements WrapperListAdapter, ItemMainLayout.OnItemSlideListenerProxy, View.OnClickListener,
         AbsListView.OnScrollListener, ItemMainLayout.OnItemDeleteListenerProxy, Callback.OnDragDropListener,
         ItemMainLayout.OnItemScrollBackListenerProxy, ItemBackGroundLayout.OnMenuItemClickListener {
-    private final static int TAG_LEFT = 3 << 24;
-    private final static int TAG_RIGHT = 4 << 24;
     /* 上下文 */
     private Context mContext;
     /* 适配器 */
@@ -51,9 +49,9 @@ class WrapperAdapter implements WrapperListAdapter, ItemMainLayout.OnItemSlideLi
     /* 当前滑动的item的位置 */
     private int mSlideItemPosition = -1;
     /* 当前是否drag状态 */
-    private boolean isInDragging = false;
+    private boolean isInDragging;
     /* drag的entity */
-    private Object mDraggedEntity = null;
+    private Object mDraggedEntity;
     /* drag的entity的位置 */
     private int mDragEnteredEntityIndex = -1;
     /* 记录top位置 */
@@ -64,6 +62,8 @@ class WrapperAdapter implements WrapperListAdapter, ItemMainLayout.OnItemSlideLi
     private int mEndLimit = Integer.MAX_VALUE;
     /* drag的动画时间 */
     private int mAnimationDuration = 300;
+    /* 是否添加了Observer */
+    private boolean isRegisterDataSetObserver;
 
     /* 监听器 */
     private OnAdapterSlideListenerProxy mOnAdapterSlideListenerProxy;
@@ -305,12 +305,14 @@ class WrapperAdapter implements WrapperListAdapter, ItemMainLayout.OnItemSlideLi
     protected void addDataSetObserver() {
         if (mAdapter != null) {
             mAdapter.registerDataSetObserver(mDataSetObserver);
+            isRegisterDataSetObserver = true;
         }
     }
 
     protected void removeDataSetObserver() {
-        if (mAdapter != null) {
+        if (mAdapter != null && isRegisterDataSetObserver) {
             mAdapter.unregisterDataSetObserver(mDataSetObserver);
+            isRegisterDataSetObserver = false;
         }
     }
 
