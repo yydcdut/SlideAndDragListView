@@ -8,7 +8,7 @@ A ListView that you can slide ( or swipe ) the items, drag and drop the items to
 
 中文：[CHINESE.md](https://github.com/yydcdut/SlideAndDragListView/blob/master/CHINESE.md)
 
-Demo: [DOWNLOAD](https://github.com/yydcdut/SlideAndDragListView/blob/master/apk/sdlv.apk?raw=true) or [QR Code](http://fir.im/sjfh)
+Demo: [DOWNLOAD](https://github.com/yydcdut/SlideAndDragListView/blob/master/apk/sdlv.apk?raw=true)
 
 ChangeLog: [CHANGELOG.md](https://github.com/yydcdut/SlideAndDragListView/blob/master/CHANGELOG.md)
 
@@ -32,7 +32,7 @@ SlideAndDragListView is useful for all kinds of prioritized lists: favorites, pl
 ## Gradle
 
 ``` groovy
-compile 'com.yydcdut:sdlv:0.7.2'
+compile 'com.yydcdut:sdlv:0.7.3'
 ```
 
 ## Jar

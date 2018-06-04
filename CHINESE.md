@@ -6,7 +6,7 @@
 
 ![sdlv](https://raw.githubusercontent.com/yydcdut/SlideAndDragListView/master/gif/v1.1.gif)
 
-Demo: [下载](https://github.com/yydcdut/SlideAndDragListView/blob/master/apk/sdlv.apk?raw=true) 或者 [二维码](http://fir.im/sjfh)
+Demo: [下载](https://github.com/yydcdut/SlideAndDragListView/blob/master/apk/sdlv.apk?raw=true)
 
 更新日志: [CHANGELOG.md](https://github.com/yydcdut/SlideAndDragListView/blob/master/CHANGELOG.md)
 
@@ -32,7 +32,7 @@ SlideAndDragListView 用于各种优先级列表：收藏夹，播放列表，�
 ## Gradle
 
 ``` groovy
-compile 'com.yydcdut:sdlv:0.7.2'
+compile 'com.yydcdut:sdlv:0.7.3'
 ```
 
 ## Jar

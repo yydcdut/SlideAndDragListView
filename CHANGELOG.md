@@ -1,3 +1,7 @@
+## 0.7.3
+
+* Fix issue 50
+
 ## 0.7.1
 
 * fix bug, supports pull refresh
