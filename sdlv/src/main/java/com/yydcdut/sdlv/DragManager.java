@@ -86,6 +86,7 @@ class DragManager implements Callback.OnDragDropListener {
     }
 
     protected void onSizeChanged() {
+        mLeftAndTopOffset = new int[]{0, 0};
         getOffset(mDragListView, mDecorView, mLeftAndTopOffset);
     }
 
