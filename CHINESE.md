@@ -32,7 +32,7 @@ SlideAndDragListView 用于各种优先级列表：收藏夹，播放列表，�
 ## Gradle
 
 ``` groovy
-compile 'com.yydcdut:sdlv:0.7.4'
+compile 'com.yydcdut:sdlv:0.7.5'
 ```
 
 ## Jar

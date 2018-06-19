@@ -9,6 +9,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AlphaAnimation;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
@@ -96,6 +97,7 @@ public class SlideAndDragListViewActivity extends AppCompatActivity implements A
     }
 
     private BaseAdapter mAdapter = new BaseAdapter() {
+
         @Override
         public int getCount() {
             return mAppList.size();
@@ -130,6 +132,9 @@ public class SlideAndDragListViewActivity extends AppCompatActivity implements A
             cvh.imgLogo.setImageDrawable(item.loadIcon(getPackageManager()));
             cvh.btnClick.setText(position + "");
             cvh.btnClick.setTag(position);
+            AlphaAnimation alphaAnimation = new AlphaAnimation(0, 1);
+            alphaAnimation.setDuration(300);
+            convertView.startAnimation(alphaAnimation);
             return convertView;
         }
 
