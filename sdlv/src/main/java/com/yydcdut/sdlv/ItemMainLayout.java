@@ -279,14 +279,13 @@ class ItemMainLayout extends FrameLayout {
                         break;
                 }
                 mIntention = INTENTION_ZERO;
-                postInvalidate();
+                invalidate();
                 mIsMoving = false;
                 break;
             default:
                 break;
         }
     }
-
 
     /**
      * 设置哪边显示哪边不显示
@@ -296,22 +295,14 @@ class ItemMainLayout extends FrameLayout {
      */
     private void setBackGroundVisible(boolean leftVisible, boolean rightVisible) {
         if (leftVisible) {
-            if (mItemLeftBackGroundLayout.getVisibility() != VISIBLE) {
-                mItemLeftBackGroundLayout.setVisibility(VISIBLE);
-            }
+            mItemLeftBackGroundLayout.setVisibility(VISIBLE);
         } else {
-            if (mItemLeftBackGroundLayout.getVisibility() == VISIBLE) {
-                mItemLeftBackGroundLayout.setVisibility(GONE);
-            }
+            mItemLeftBackGroundLayout.setVisibility(GONE);
         }
         if (rightVisible) {
-            if (mItemRightBackGroundLayout.getVisibility() != VISIBLE) {
-                mItemRightBackGroundLayout.setVisibility(VISIBLE);
-            }
+            mItemRightBackGroundLayout.setVisibility(VISIBLE);
         } else {
-            if (mItemRightBackGroundLayout.getVisibility() == VISIBLE) {
-                mItemRightBackGroundLayout.setVisibility(GONE);
-            }
+            mItemRightBackGroundLayout.setVisibility(GONE);
         }
     }
 
@@ -384,9 +375,8 @@ class ItemMainLayout extends FrameLayout {
     public void computeScroll() {
         if (mScroller.computeScrollOffset()) {
             int left = mScroller.getCurrX();
-            mItemCustomView.layout(left, mItemCustomView.getTop(),
-                    mScroller.getCurrX() + mItemCustomView.getWidth(), mItemCustomView.getBottom());
-            postInvalidate();
+            mItemCustomView.layout(left, mItemCustomView.getTop(), mScroller.getCurrX() + mItemCustomView.getWidth(), mItemCustomView.getBottom());
+            invalidate();
             if (left == 0) {
                 setBackGroundVisible(false, false);
                 //当item归位的时候才将drawable设置回去
@@ -457,6 +447,21 @@ class ItemMainLayout extends FrameLayout {
     }
 
     /**
+     * 滑开
+     *
+     * @param direction
+     */
+    protected void scrollOpen(int direction) {
+        if (direction == MenuItem.DIRECTION_LEFT && mBtnLeftTotalWidth != 0) {
+            setBackGroundVisible(true, false);
+            mScroller.startScroll(0, 0, mBtnLeftTotalWidth, 0, SCROLL_TIME);
+        } else if (direction == MenuItem.DIRECTION_RIGHT && mBtnRightTotalWidth != 0) {
+            setBackGroundVisible(false, true);
+            mScroller.startScroll(mItemCustomView.getLeft(), 0, -mBtnRightTotalWidth, 0, SCROLL_TIME);
+        }
+    }
+
+    /**
      * 初始化Drawable
      */
     private void initBackgroundDrawable() {
@@ -509,7 +514,6 @@ class ItemMainLayout extends FrameLayout {
             Compat.setBackgroundDrawable(getItemRightBackGroundLayout(), mTotalListSelectorDrawable);
         }
     }
-
 
     /**
      * 设置item滑动的监听器

@@ -112,7 +112,7 @@ class SlideListView extends DragListView implements WrapperAdapter.OnAdapterSlid
 
     @Override
     public boolean onInterceptTouchEvent(MotionEvent ev) {
-        if (isDragging()){
+        if (isDragging()) {
             return super.onInterceptTouchEvent(ev);
         }
         switch (ev.getAction() & MotionEvent.ACTION_MASK) {
@@ -147,7 +147,7 @@ class SlideListView extends DragListView implements WrapperAdapter.OnAdapterSlid
         if (mIsScrolling) {
             return super.onTouchEvent(ev);
         }
-        if (isDragging()){
+        if (isDragging()) {
             return super.onTouchEvent(ev);
         }
         switch (ev.getAction() & MotionEvent.ACTION_MASK) {
@@ -404,6 +404,9 @@ class SlideListView extends DragListView implements WrapperAdapter.OnAdapterSlid
         mWrapperAdapter.returnSlideItemPosition();
     }
 
+    /**
+     * 删除滑开的item
+     */
     public void deleteSlideItem() {
         if (mWrapperAdapter == null) {
             return;
@@ -411,10 +414,32 @@ class SlideListView extends DragListView implements WrapperAdapter.OnAdapterSlid
         mWrapperAdapter.deleteSlideItemPosition();
     }
 
+    /**
+     * 滑开 position 位置上的item
+     *
+     * @param position  index
+     * @param direction 方向
+     */
+    public void slideItem(int position, int direction) {
+        if (mWrapperAdapter == null || position < getFirstVisiblePosition() || position > getLastVisiblePosition()
+                || mMenuSparseArray == null || mMenuSparseArray.get(mWrapperAdapter.getItemViewType(position)) == null
+                || (direction != MenuItem.DIRECTION_LEFT && direction != MenuItem.DIRECTION_RIGHT)) {
+            return;
+        }
+        List<MenuItem> list = mMenuSparseArray.get(mWrapperAdapter.getItemViewType(position)).getMenuItems(direction);
+        if (list.size() == 0) {
+            return;
+        }
+        if (mWrapperAdapter.getSlideItemPosition() != 0 && mWrapperAdapter.getSlideItemPosition() != position) {
+            closeSlidedItem();
+        }
+        mWrapperAdapter.slideItem(position, direction);
+    }
+
     @Override
     public void setAdapter(final ListAdapter adapter) {
         if (mMenuSparseArray == null || mMenuSparseArray.size() == 0) {
-            throw new IllegalArgumentException("先设置Menu");
+            throw new IllegalArgumentException("Set Menu first!");
         }
         mWrapperAdapter = new WrapperAdapter(getContext(), this, adapter, mMenuSparseArray);
         mWrapperAdapter.setOnAdapterSlideListenerProxy(this);
@@ -483,8 +508,9 @@ class SlideListView extends DragListView implements WrapperAdapter.OnAdapterSlid
     @Override
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
-        if (mWrapperAdapter != null)
+        if (mWrapperAdapter != null) {
             mWrapperAdapter.addDataSetObserver();
+        }
     }
 
 

@@ -268,6 +268,9 @@ public class SlideAndDragListViewActivity extends AppCompatActivity implements A
             case R.id.menu_item_delete_menu:
                 mListView.deleteSlideItem();
                 break;
+            case R.id.menu_item_slide_menu:
+                mListView.slideItem(mListView.getFirstVisiblePosition() + 1, MenuItem.DIRECTION_LEFT);
+                break;
         }
         return true;
     }

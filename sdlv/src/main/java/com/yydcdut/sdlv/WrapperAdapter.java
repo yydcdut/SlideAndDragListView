@@ -302,6 +302,15 @@ class WrapperAdapter implements WrapperListAdapter, ItemMainLayout.OnItemSlideLi
         return ItemMainLayout.SCROLL_BACK_CLICK_NOTHING;
     }
 
+    protected void slideItem(int position, int direction) {
+        ItemMainLayout itemMainLayout = (ItemMainLayout) mListView.getChildAt(position - mListView.getFirstVisiblePosition());
+        if (itemMainLayout == null) {
+            return;
+        }
+        mSlideItemPosition = position;
+        itemMainLayout.scrollOpen(direction);
+    }
+
     protected void addDataSetObserver() {
         if (mAdapter != null) {
             mAdapter.registerDataSetObserver(mDataSetObserver);
@@ -406,6 +415,9 @@ class WrapperAdapter implements WrapperListAdapter, ItemMainLayout.OnItemSlideLi
                 mOnItemDeleteListenerProxy.onItemDelete(view, position);
             }
             mSlideItemPosition = -1;
+            if (position == getCount() - 1) {
+                mListView.requestLayout();
+            }
         }
     }
 
