@@ -32,7 +32,7 @@ SlideAndDragListView 用于各种优先级列表：收藏夹，播放列表，�
 ## Gradle
 
 ``` groovy
-compile 'com.yydcdut:sdlv:0.7.3'
+compile 'com.yydcdut:sdlv:0.7.4'
 ```
 
 ## Jar
@@ -266,6 +266,14 @@ slideAndDragListView.setOnItemScrollBackListener(new OnItemScrollBackListener() 
 `public void onScrollBackAnimationFinished(View view, int position)` 的调用是在 `int onMenuItemClick(View v, int itemPosition, int buttonPosition, int direction)` 返回 `Menu.ITEM_SCROLL_BACK` 之后
 
 ## API
+
+### 打开 Menu
+
+```java
+slideAndDragListView.slideItem(position, direction)
+```
+
+调用 API 手动打开 Menu
 
 ### 关闭 Menu
 

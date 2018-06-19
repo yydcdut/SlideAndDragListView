@@ -32,7 +32,7 @@ SlideAndDragListView is useful for all kinds of prioritized lists: favorites, pl
 ## Gradle
 
 ``` groovy
-compile 'com.yydcdut:sdlv:0.7.3'
+compile 'com.yydcdut:sdlv:0.7.4'
 ```
 
 ## Jar
@@ -271,13 +271,21 @@ slideAndDragListView.setOnItemScrollBackListener(new OnItemScrollBackListener() 
 
 ## API
 
+### Slide(Open) Menu
+
+```java
+slideAndDragListView.slideItem(position, direction)
+```
+
+slide(open) menu by API.
+
 ### Close Menu
 
 ```java
 slideAndDragListView.closeSlidedItem();
 ```
 
-Close menu manually.
+Close menu by API.
 
 ### Delete Menu
 
@@ -285,7 +293,7 @@ Close menu manually.
 slideAndDragListView.deleteSlideItem();
 ```
 
-Delete menu manually.
+Delete menu by API.
 
 ### Drag
 

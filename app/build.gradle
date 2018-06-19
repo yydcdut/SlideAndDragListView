@@ -8,8 +8,8 @@ android {
         applicationId "com.yydcdut.demo"
         minSdkVersion 12
         targetSdkVersion 22
-        versionCode 15
-        versionName "1.4.1"
+        versionCode 74
+        versionName "0.7.4"
     }
     buildTypes {
         release {
@@ -26,8 +26,8 @@ android {
 
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
-    implementation project(':sdlv')
-//    implementation 'com.yydcdut:sdlv:0.7.3'
+//    implementation project(':sdlv')
+    implementation 'com.yydcdut:sdlv:0.7.4'
     implementation 'com.scwang.smartrefresh:SmartRefreshLayout:1.1.0-alpha-5'
     implementation 'com.scwang.smartrefresh:SmartRefreshHeader:1.1.0-alpha-5'//没有使用特殊Header，可以不加这行
     implementation 'com.android.support:appcompat-v7:25.3.1'//版本 23以上（必须）
