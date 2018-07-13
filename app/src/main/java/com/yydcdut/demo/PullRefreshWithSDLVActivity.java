@@ -321,7 +321,7 @@ public class PullRefreshWithSDLVActivity extends AppCompatActivity implements Ad
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        toast("onScrollBackAnimationFinished   position--->" + position);
+        toast("onItemClick   position--->" + position);
     }
 
     @Override

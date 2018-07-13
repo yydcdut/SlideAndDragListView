@@ -48,11 +48,11 @@ class SlideListView extends DragListView implements WrapperAdapter.OnAdapterSlid
     private static final int RETURN_SCROLL_BACK_NOTHING = 0;//所以位置都没有回归操作
 
     /* 是否要触发itemClick */
-    private boolean mIsWannaTriggerClick = true;
+    private boolean isWannaTriggerClick = true;
     /* 是否在滑动 */
-    private boolean mIsScrolling = false;
+    private boolean isScrolling = false;
     /* 是否正在进行delete的动画 */
-    private boolean mIsDeleteAnimationRunning = false;
+    private boolean isDeleteAnimationRunning = false;
     /* 手指放下的坐标 */
     private int mXDown;
     private int mYDown;
@@ -66,6 +66,8 @@ class SlideListView extends DragListView implements WrapperAdapter.OnAdapterSlid
     private int mItemLeftDistance = 0;
     /* ItemMainView是否正在处理手势操作 */
     private boolean isItemViewHandlingMotionEvent = false;
+    /* 是否到了底部 */
+    private boolean isAtBottom = false;
 
     /* 监听器 */
     private SlideAndDragListView.OnSlideListener mOnSlideListener;
@@ -141,10 +143,15 @@ class SlideListView extends DragListView implements WrapperAdapter.OnAdapterSlid
 
     @Override
     public boolean onTouchEvent(MotionEvent ev) {
-        if (mIsDeleteAnimationRunning) {
+        if (isDeleteAnimationRunning) {
             return false;
         }
-        if (mIsScrolling) {
+        if (isScrolling) {
+            if ((ev.getAction() & MotionEvent.ACTION_MASK) == MotionEvent.ACTION_CANCEL) {
+                reset();
+                isWannaTriggerClick = isAtBottom ? true : isWannaTriggerClick;
+                isScrolling = isAtBottom ? false : isScrolling;
+            }
             return super.onTouchEvent(ev);
         }
         if (isDragging()) {
@@ -225,7 +232,7 @@ class SlideListView extends DragListView implements WrapperAdapter.OnAdapterSlid
                         //是否ScrollBack了，是的话就不去执行onListItemClick操作了
                         int scrollBackState = scrollBack(position, ev.getX());
                         if (scrollBackState == RETURN_SCROLL_BACK_NOTHING) {
-                            if (mOnListItemClickListener != null && mIsWannaTriggerClick && !mIsScrolling) {
+                            if (mOnListItemClickListener != null && isWannaTriggerClick && !isScrolling) {
                                 View v = getChildAt(position - getFirstVisiblePosition());
                                 if (v instanceof ItemMainLayout) {
                                     ItemMainLayout itemMainLayout = (ItemMainLayout) v;
@@ -246,15 +253,22 @@ class SlideListView extends DragListView implements WrapperAdapter.OnAdapterSlid
                 break;
             case MotionEvent.ACTION_POINTER_UP:
             case MotionEvent.ACTION_CANCEL:
-                mState = STATE_NOTHING;
-                mItemLeftDistance = 0;
-                isItemViewHandlingMotionEvent = false;
+                reset();
                 break;
             default:
                 break;
 
         }
         return super.onTouchEvent(ev);
+    }
+
+    /**
+     * 归位状态
+     */
+    private void reset() {
+        mState = STATE_NOTHING;
+        mItemLeftDistance = 0;
+        isItemViewHandlingMotionEvent = false;
     }
 
     /**
@@ -457,11 +471,11 @@ class SlideListView extends DragListView implements WrapperAdapter.OnAdapterSlid
     @Override
     public void onScrollStateChangedProxy(AbsListView view, int scrollState) {
         if (scrollState == WrapperAdapter.SCROLL_STATE_IDLE) {
-            mIsWannaTriggerClick = true;
-            mIsScrolling = false;
+            isWannaTriggerClick = true;
+            isScrolling = false;
         } else {
-            mIsWannaTriggerClick = false;
-            mIsScrolling = true;
+            isWannaTriggerClick = false;
+            isScrolling = true;
         }
         if (mOnListScrollListener != null) {
             mOnListScrollListener.onScrollStateChanged(view, scrollState);
@@ -470,6 +484,7 @@ class SlideListView extends DragListView implements WrapperAdapter.OnAdapterSlid
 
     @Override
     public void onScrollProxy(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+        isAtBottom = firstVisibleItem + visibleItemCount >= totalItemCount;
         if (mOnListScrollListener != null) {
             mOnListScrollListener.onScroll(view, firstVisibleItem, visibleItemCount, totalItemCount);
         }
@@ -477,12 +492,12 @@ class SlideListView extends DragListView implements WrapperAdapter.OnAdapterSlid
 
     @Override
     public void onDeleteBegin() {
-        mIsDeleteAnimationRunning = true;
+        isDeleteAnimationRunning = true;
     }
 
     @Override
     public void onItemDelete(View view, int position) {
-        mIsDeleteAnimationRunning = false;
+        isDeleteAnimationRunning = false;
         if (mOnItemDeleteListener != null && view instanceof ItemMainLayout) {
             ItemMainLayout itemMainLayout = (ItemMainLayout) view;
             mOnItemDeleteListener.onItemDeleteAnimationFinished(itemMainLayout.getItemCustomView(), position);
