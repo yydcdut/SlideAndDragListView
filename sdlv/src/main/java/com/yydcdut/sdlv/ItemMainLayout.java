@@ -279,7 +279,7 @@ class ItemMainLayout extends FrameLayout {
                         break;
                 }
                 mIntention = INTENTION_ZERO;
-                invalidate();
+                postInvalidate();
                 mIsMoving = false;
                 break;
             default:
@@ -376,7 +376,7 @@ class ItemMainLayout extends FrameLayout {
         if (mScroller.computeScrollOffset()) {
             int left = mScroller.getCurrX();
             mItemCustomView.layout(left, mItemCustomView.getTop(), mScroller.getCurrX() + mItemCustomView.getWidth(), mItemCustomView.getBottom());
-            invalidate();
+            postInvalidate();
             if (left == 0) {
                 setBackGroundVisible(false, false);
                 //当item归位的时候才将drawable设置回去
